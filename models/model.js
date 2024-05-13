@@ -1,7 +1,7 @@
 import { pool } from "../database/connection.js";
 
 const findAll = async () => {
-  const { rows } = await pool.query("SELECT * FROM todos");
+  const { rows } = await pool.query("select * from Usuario");
   return rows;
 };
 
