@@ -9,17 +9,6 @@ const getAll = async (_, res) => {
   }
 };
 
-const create = async (req, res) => {
-  try {
-    const { title } = req.body;
-    const response = await todoModel.create(title);
-    res.json(response);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const todoController = {
-  getAll,
-  create,
+  getAll
 };
