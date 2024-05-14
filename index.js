@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 import todoRoute from "./routes/route.js";
 
