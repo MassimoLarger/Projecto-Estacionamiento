@@ -9,7 +9,6 @@ export const pool = new Pool({
 try {
   await pool.query("SELECT NOW()");
   console.log("Database connected");
-  await pool.query("select * from usuario");
 } catch (error) {
   console.log(error);
 }
@@ -20,7 +19,7 @@ const connectToDatabase = async () => {
   });
 
   try {
-    const result = await pool.query("SELECT * FROM usuario");
+    const result = await pool.query("SELECT nombre FROM usuario");
     console.log("Usuarios:", result.rows);
   } catch (error) {
     console.error("Error connecting to database:", error);
