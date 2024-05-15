@@ -26,4 +26,18 @@ const connectToDatabase = async () => {
   }
 };
 
-connectToDatabase();
+const extract_data = async () => {
+  const pool = new Pool({
+    allowExitOnIdle: true,
+  });
+
+  try {
+    const result = await pool.query("SELECT (id_usuario,nombre) FROM usuario WHERE nombre = 'Massimo Larger';");
+    console.log("Usuarios:", result.rows);
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+  }
+};
+
+//connectToDatabase();
+extract_data();
