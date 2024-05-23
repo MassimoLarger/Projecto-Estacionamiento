@@ -5,110 +5,84 @@ class InicioWidget extends StatefulWidget {
   const InicioWidget({super.key});
   @override
   InicioWidgetState createState() => InicioWidgetState();
-
-  Widget buildTextWithStroke({
-  required String text,
-  required double fontSize,
-  required Color strokeColor,
-  required Color fillColor,
-  double strokeWidth = 3,
-}) {
-  return Stack(
-    children: <Widget>[
-      // Texto con borde (stroke)
-      Text(
-        text,
-        style: TextStyle(
-          fontSize: fontSize,
-          foreground: Paint()
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = strokeWidth
-            ..color = strokeColor,
-        ),
-      ),
-      // Texto de relleno (fill)
-      Text(
-        text,
-        style: TextStyle(
-          fontSize: fontSize,
-          color: fillColor,
-        ),
-      ),
-    ],
-  );
-}
 }
 
 class InicioWidgetState extends State<InicioWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,  // Responsive width
-      height: MediaQuery.of(context).size.height,  // Responsive height
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(25)),
-        color: Color.fromRGBO(243, 246, 255, 1),  // Correct alpha value
-      ),
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Container(
-              width: MediaQuery.of(context).size.width,  // Responsive width
-              height: MediaQuery.of(context).size.height,  // Responsive height
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(243, 246, 255, 1),  // Correct alpha value
-              ),
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                    top: 478,
-                    left: 80,
-                    child: Text(
-                      'PARKING APP',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.monoton(
-                        color: Colors.black,
-                        fontSize: 32,
-                        fontWeight: FontWeight.normal,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 531,
-                    left: 80,
-                    child: Text(
-                      'ULAGOS',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.monoton(
-                        color: Colors.black,
-                        fontSize: 32,
-                        fontWeight: FontWeight.normal,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 100,
-                    left: 15,
-                    child: Container(
-                      width: 401,
-                      height: 304,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/logo.png'),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      body: Container(
+        width: MediaQuery.of(context).size.width,  // Ancho responsive
+        height: MediaQuery.of(context).size.height,  // Alto responsive
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          color: Color.fromRGBO(243, 246, 255, 1),  // Correct alpha value
+        ),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 478,
+              left: 80,
+              child: Text(
+                'PARKING APP',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.monoton(
+                  color: Colors.black,
+                  fontSize: 32,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 531,
+              left: 130,
+              child: Text(
+                'ULAGOS',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.monoton(
+                  color: Colors.black,
+                  fontSize: 32,
+                  fontWeight: FontWeight.normal,
+                  height: 1.5,
+                ),
+              ),
+            ),
+            Positioned(
+              top: 750, // Ajustar según sea necesario
+              left: MediaQuery.of(context).size.width * 0.32 - 90, // Centrar el botón
+              child: ElevatedButton(
+                onPressed: () {
+                  // Acción cuando se presiona el botón
+                  print("Botón presionado");
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromRGBO(86, 125, 244, 1),  // Usa backgroundColor en lugar de primary
+                  foregroundColor: const Color.fromRGBO(255, 255, 255, 1), // Color del texto
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(27.5),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 15),
+                ),
+                child: const Text('Iniciar'),
+              ),
+            ),
+            Positioned(
+              top: 100,
+              left: 15,
+              child: Container(
+                width: 401,
+                height: 304,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/logo.png'),
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
