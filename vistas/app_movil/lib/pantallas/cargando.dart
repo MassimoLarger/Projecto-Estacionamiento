@@ -17,7 +17,7 @@ class CargandoWidget extends StatelessWidget {
           height: 84.1148, // Ajustado para simplificar
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage('images/logo.png'),
+              image: AssetImage('assets/images/logo.png'),
               fit: BoxFit.fitWidth,
             ),
           ),

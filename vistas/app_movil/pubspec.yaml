@@ -29,7 +29,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
-    sdk: flutter
+    sdk: flutter 
+  google_fonts: ^6.2.1  # Verifica la última versión en https://pub.dev/packages/google_fonts
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -56,8 +57,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - images/logo.png
-  #   - images/a_dot_ham.jpeg
+    - assets/images/logo.png
+  
+  #fonts:
+    #- family: Monoton
+      #fonts:
+        #- asset: assets/fonts/Monoton-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -81,6 +86,5 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
-  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

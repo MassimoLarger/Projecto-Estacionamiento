@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'pantallas/cargando.dart'; 
-import 'pantallas/bienvenido.dart';  
+import 'cargando.dart'; 
+import 'bienvenido.dart';  
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,7 +12,7 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       // Navega a BienvenidaWidget después de 3 segundos
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const InicioWidget()));
     });

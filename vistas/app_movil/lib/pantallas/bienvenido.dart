@@ -1,9 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class InicioWidget extends StatefulWidget {
   const InicioWidget({super.key});
   @override
   InicioWidgetState createState() => InicioWidgetState();
+
+  Widget buildTextWithStroke({
+  required String text,
+  required double fontSize,
+  required Color strokeColor,
+  required Color fillColor,
+  double strokeWidth = 3,
+}) {
+  return Stack(
+    children: <Widget>[
+      // Texto con borde (stroke)
+      Text(
+        text,
+        style: TextStyle(
+          fontSize: fontSize,
+          foreground: Paint()
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = strokeWidth
+            ..color = strokeColor,
+        ),
+      ),
+      // Texto de relleno (fill)
+      Text(
+        text,
+        style: TextStyle(
+          fontSize: fontSize,
+          color: fillColor,
+        ),
+      ),
+    ],
+  );
+}
 }
 
 class InicioWidgetState extends State<InicioWidget> {
@@ -14,7 +47,7 @@ class InicioWidgetState extends State<InicioWidget> {
       height: MediaQuery.of(context).size.height,  // Responsive height
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(25)),
-        color: Color.fromRGBO(255, 255, 255, 255),  // Correct alpha value
+        color: Color.fromRGBO(243, 246, 255, 1),  // Correct alpha value
       ),
       child: Stack(
         children: <Widget>[
@@ -25,34 +58,32 @@ class InicioWidgetState extends State<InicioWidget> {
               width: MediaQuery.of(context).size.width,  // Responsive width
               height: MediaQuery.of(context).size.height,  // Responsive height
               decoration: const BoxDecoration(
-                color: Color.fromRGBO(243, 246, 255, 255),  // Correct alpha value
+                color: Color.fromRGBO(243, 246, 255, 1),  // Correct alpha value
               ),
               child: Stack(
                 children: <Widget>[
-                  const Positioned(
+                  Positioned(
                     top: 478,
                     left: 80,
                     child: Text(
                       'PARKING APP',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 255),
-                        fontFamily: 'Monoton',
+                      style: GoogleFonts.monoton(
+                        color: Colors.black,
                         fontSize: 32,
                         fontWeight: FontWeight.normal,
                         height: 1.5,
                       ),
                     ),
                   ),
-                  const Positioned(
+                  Positioned(
                     top: 531,
                     left: 80,
                     child: Text(
                       'ULAGOS',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color.fromRGBO(0, 0, 0, 255),
-                        fontFamily: 'Monoton',
+                      style: GoogleFonts.monoton(
+                        color: Colors.black,
                         fontSize: 32,
                         fontWeight: FontWeight.normal,
                         height: 1.5,
@@ -61,13 +92,13 @@ class InicioWidgetState extends State<InicioWidget> {
                   ),
                   Positioned(
                     top: 100,
-                    left: 32,
+                    left: 15,
                     child: Container(
                       width: 401,
                       height: 304,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('images/logo.png'),
+                          image: AssetImage('assets/images/logo.png'),
                           fit: BoxFit.fitWidth,
                         ),
                       ),
