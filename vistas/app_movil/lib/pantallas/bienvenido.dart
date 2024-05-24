@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'tipo_de_cuenta.dart';
+//import 'iniciar_sesion.dart';
 
 class InicioWidget extends StatefulWidget {
   const InicioWidget({super.key});
@@ -53,11 +55,13 @@ class InicioWidgetState extends State<InicioWidget> {
               left: MediaQuery.of(context).size.width * 0.32 - 90, // Centrar el botón
               child: ElevatedButton(
                 onPressed: () {
-                  // Acción cuando se presiona el botón
-                  print("Botón presionado");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(86, 125, 244, 1),  // Usa backgroundColor en lugar de primary
+                  backgroundColor: const Color.fromRGBO(86, 125, 244, 1),  // Color del botón
                   foregroundColor: const Color.fromRGBO(255, 255, 255, 1), // Color del texto
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(27.5),
