@@ -8,53 +8,55 @@ class TipodecuentaWidget extends StatefulWidget {
 
 class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,  // Responsive width
-        height: MediaQuery.of(context).size.height,  // Responsive height
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(255, 255, 255, 1),
-        ),
-        child: SingleChildScrollView( // Allows for scrolling when content is overflow
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 128,
-              ),
-              Container(
-                width: 570.095947265625, // You may need to adjust this to fit the container properly or use MediaQuery if needed
-                height: 321,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/images/foto1.png'),
-                    fit: BoxFit.cover,
+    Widget build(BuildContext context) {
+      final screenWidth = MediaQuery.of(context).size.width; // Ancho de pantalla
+      final screenHeight = MediaQuery.of(context).size.height; // Alto de pantalla
+      return Scaffold(
+        body: Container(
+          width: screenWidth,
+          height: screenHeight,
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(255, 255, 255, 1),
+          ),
+          child: SingleChildScrollView( // Allows for scrolling when content is overflow
+            child: Column(
+              children: <Widget>[
+                const SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  width: 570.095947265625, // You may need to adjust this to fit the container properly or use MediaQuery if needed
+                  height: 321,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/foto1.png'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(top: 50, bottom: 10),
-                child: Text(
-                  'Seleccione su tipo de cuenta',
-                  style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 1),
-                    fontFamily: 'Lato',
-                    fontSize: 22,
-                    fontWeight: FontWeight.normal,
-                    height: 1.5,
+                const Padding(
+                  padding: EdgeInsets.only(top: 30, bottom: 10),
+                  child: Text(
+                    'Seleccione su tipo de cuenta',
+                    style: TextStyle(
+                      color: Color.fromRGBO(0, 0, 0, 1),
+                      fontFamily: 'Lato',
+                      fontSize: 22,
+                      fontWeight: FontWeight.normal,
+                      height: 1.5,
+                    ),
                   ),
                 ),
-              ),
-              _buildButton(context, "Visita", Colors.blue), //,VisitaScreen()),
-              _buildButton(context, "Academico/Funcionario", Colors.blue), //,VisitaScreen()),
-              _buildButton(context, "Estudiante", Colors.blue), //,VisitaScreen()),
-              _buildButton(context, "Guardia", Colors.blue), //,VisitaScreen()),
-            ],
+                _buildButton(context, "Visita", Colors.blue), //,VisitaScreen()),
+                _buildButton(context, "Academico/Funcionario", Colors.blue), //,VisitaScreen()),
+                _buildButton(context, "Estudiante", Colors.blue), //,VisitaScreen()),
+                _buildButton(context, "Guardia", Colors.blue), //,VisitaScreen()),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
   Widget _buildButton(BuildContext context, String text, Color color){ //, Widget destination) {
     return Padding(
