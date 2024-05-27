@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'operacion_exitosa.dart';
+import 'codigo_erroneo.dart';
 
 class TipodecuentaWidget extends StatefulWidget {
   const TipodecuentaWidget({super.key});
@@ -47,10 +49,10 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
                     ),
                   ),
                 ),
-                _buildButton(context, "Visita", Colors.blue), //,VisitaScreen()),
-                _buildButton(context, "Academico/Funcionario", Colors.blue), //,VisitaScreen()),
-                _buildButton(context, "Estudiante", Colors.blue), //,VisitaScreen()),
-                _buildButton(context, "Guardia", Colors.blue), //,VisitaScreen()),
+                _buildButton(context, "Visita", Colors.blue, const CodigoVerificadoErrorWidget()),
+                _buildButton(context, "Academico/Funcionario", Colors.blue, const CodigoVerificadoErrorWidget()),
+                _buildButton(context, "Estudiante", Colors.blue, const CodigoVerificadoWidget()),
+                _buildButton(context, "Guardia", Colors.blue, const CodigoVerificadoWidget()),
               ],
             ),
           ),
@@ -58,15 +60,17 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
       );
     }
 
-  Widget _buildButton(BuildContext context, String text, Color color){ //, Widget destination) {
+  Widget _buildButton(BuildContext context, String text, Color color, Widget destination) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
       child: SizedBox(
         width: double.infinity, // Makes the button expand to fill the width
         child: ElevatedButton(
           onPressed: () {
-            // Add your onPressed code here!
-            print('$text button pressed');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CodigoVerificadoWidget()),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor:  const Color.fromRGBO(198, 212, 255, 1), // Button color
