@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'operacion_exitosa.dart';
+import 'codigo_verificado.dart';
 import 'codigo_erroneo.dart';
 
 class TipodecuentaWidget extends StatefulWidget {
