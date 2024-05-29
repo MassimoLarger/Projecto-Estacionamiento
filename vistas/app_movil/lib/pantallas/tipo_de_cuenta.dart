@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'codigo_verificado.dart';
-import 'codigo_erroneo.dart';
+//import 'codigo_verificado.dart';
+//import 'codigo_erroneo.dart';
+import 'movilizacion.dart';
 
 class TipodecuentaWidget extends StatefulWidget {
   const TipodecuentaWidget({super.key});
@@ -37,22 +38,21 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(top: 30, bottom: 10),
+                  padding: EdgeInsets.only(top: 30, bottom: 70),
                   child: Text(
                     'Seleccione su tipo de cuenta',
                     style: TextStyle(
                       color: Color.fromRGBO(0, 0, 0, 1),
                       fontFamily: 'Lato',
                       fontSize: 22,
-                      fontWeight: FontWeight.normal,
+                      fontWeight: FontWeight.bold,
                       height: 1.5,
                     ),
                   ),
                 ),
-                _buildButton(context, "Visita", Colors.blue, const CodigoVerificadoErrorWidget()),
-                _buildButton(context, "Academico/Funcionario", Colors.blue, const CodigoVerificadoErrorWidget()),
-                _buildButton(context, "Estudiante", Colors.blue, const CodigoVerificadoWidget()),
-                _buildButton(context, "Guardia", Colors.blue, const CodigoVerificadoWidget()),
+                _buildButton(context, "Visita", Colors.blue, const CarSelectionWidget()),
+                _buildButton(context, "Academico/Funcionario", Colors.blue, const CarSelectionWidget()),
+                _buildButton(context, "Estudiante", Colors.blue, const CarSelectionWidget()),
               ],
             ),
           ),
@@ -69,7 +69,7 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CodigoVerificadoWidget()),
+              MaterialPageRoute(builder: (context) => const CarSelectionWidget()),
             );
           },
           style: ElevatedButton.styleFrom(
