@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'registrar_vehiculo.dart';
 
 class CarSelectionWidget extends StatelessWidget {
   const CarSelectionWidget({super.key});
@@ -24,7 +25,7 @@ class CarSelectionWidget extends StatelessWidget {
             },
           ),
         ],
-        backgroundColor: Colors.white,
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
         elevation: 0,
       ),
       body: Column(
@@ -54,7 +55,10 @@ class CarSelectionWidget extends StatelessWidget {
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Botón presionado")));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const RegisterVehiclePage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),

@@ -60,6 +60,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/foto1.png
     - assets/images/imagen4.png
+    - assets/images/imagen5.png
   
   #fonts:
     #- family: Monoton
