@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'tipo_de_cuenta.dart';
+import 'iniciar_sesion.dart';
 
 class InicioWidget extends StatefulWidget {
   const InicioWidget({super.key});
@@ -61,7 +61,7 @@ class InicioWidgetState extends State<InicioWidget> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
