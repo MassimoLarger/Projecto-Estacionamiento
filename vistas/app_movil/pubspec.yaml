@@ -61,11 +61,20 @@ flutter:
     - assets/images/foto1.png
     - assets/images/imagen4.png
     - assets/images/imagen5.png
+    - assets/images/inicio.png
   
-  #fonts:
-    #- family: Monoton
-      #fonts:
-        #- asset: assets/fonts/Monoton-Regular.ttf
+  fonts:
+    - family: Luckiest Guy
+      fonts:
+        - asset: assets/fonts/LuckiestGuy-Regular.ttf
+
+    - family: Monoton
+      fonts:
+        - asset: assets/fonts/Monoton-Regular.ttf
+
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

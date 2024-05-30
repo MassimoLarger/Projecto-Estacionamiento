@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'iniciar_sesion.dart';
 
 class InicioWidget extends StatefulWidget {
@@ -28,28 +27,28 @@ class InicioWidgetState extends State<InicioWidget> {
             Positioned(
               top: screenHeight * 0.5,  // Posición relativa
               left: screenWidth * 0.15,  // Posición relativa
-              child: Text(
+              child: const Text(
                 'PARKING APP',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.monoton(
-                  color: Colors.black,
-                  fontSize: screenWidth * 0.08,  // Tamaño de fuente basado en el ancho de pantalla
-                  fontWeight: FontWeight.normal,
-                  height: 1.5,
+                style: TextStyle(
+                  fontFamily: 'Monoton', // Specify the custom font
+                  color: Color.fromARGB(255, 0, 0, 0), // Custom color
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             Positioned(
               top: screenHeight * 0.57,  // Posición relativa
               left: screenWidth * 0.28,  // Posición relativa
-              child: Text(
+              child: const Text(
                 'ULAGOS',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.monoton(
-                  color: Colors.black,
-                  fontSize: screenWidth * 0.08,  // Tamaño de fuente basado en el ancho de pantalla
-                  fontWeight: FontWeight.normal,
-                  height: 1.5,
+                style: TextStyle(
+                  fontFamily: 'Monoton', // Specify the custom font
+                  color: Color.fromARGB(255, 0, 0, 0), // Custom color
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
