@@ -49,7 +49,7 @@ class RegisterVehiclePage extends StatelessWidget {
               ),
               SizedBox(height: screenHeight * 0.17), // Adjust space between title and image
               Image.asset('assets/images/imagen5.png', fit: BoxFit.contain),
-              SizedBox(height: screenHeight * 0.19), // Adjust space between image and buttons
+              SizedBox(height: screenHeight * 0.16), // Adjust space between image and buttons
               ElevatedButton(
                 onPressed: () {
                   // Placeholder for functionality
