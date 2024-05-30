@@ -90,7 +90,7 @@ class LoginScreen extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
                       foregroundColor: Colors.white,
-                      minimumSize: Size(screenSize.width * 0.85, 50), // Hace que el botón sea tan ancho como el 85% del ancho de la pantalla
+                      minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 85% del ancho de la pantalla
                     ),
                     child: const Text('Iniciar Sesión'),
                   ),
