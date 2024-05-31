@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sede.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
   const RegisterVehiclePage({super.key});
@@ -52,7 +53,10 @@ class RegisterVehiclePage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.16), // Adjust space between image and buttons
               ElevatedButton(
                 onPressed: () {
-                  // Placeholder for functionality
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
@@ -70,7 +74,10 @@ class RegisterVehiclePage extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02), // Space between buttons
               ElevatedButton(
                 onPressed: () {
-                  // Placeholder for functionality
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),

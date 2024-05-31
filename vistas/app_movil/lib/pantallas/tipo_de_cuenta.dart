@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'codigo_verificado.dart';
 //import 'codigo_erroneo.dart';
-import 'movilizacion.dart';
+import 'registrar.dart';
 
 class TipodecuentaWidget extends StatefulWidget {
   const TipodecuentaWidget({super.key});
@@ -50,9 +50,9 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
                     ),
                   ),
                 ),
-                _buildButton(context, "Visita", Colors.blue, const CarSelectionWidget()),
-                _buildButton(context, "Academico/Funcionario", Colors.blue, const CarSelectionWidget()),
-                _buildButton(context, "Estudiante", Colors.blue, const CarSelectionWidget()),
+                _buildButton(context, "Visita", Colors.blue, const RegisterScreen()),
+                _buildButton(context, "Academico/Funcionario", Colors.blue, const RegisterScreen()),
+                _buildButton(context, "Estudiante", Colors.blue, const RegisterScreen()),
               ],
             ),
           ),
@@ -69,7 +69,7 @@ class TipodecuentaWidgetState extends State<TipodecuentaWidget> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const CarSelectionWidget()),
+              MaterialPageRoute(builder: (context) => const RegisterScreen()),
             );
           },
           style: ElevatedButton.styleFrom(

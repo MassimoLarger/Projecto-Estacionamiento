@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'movilizacion.dart';
+import 'tipo_de_cuenta.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -84,7 +84,7 @@ class LoginScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const CarSelectionWidget()),
+                        MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
                       );
                     },
                     style: ElevatedButton.styleFrom(

@@ -62,6 +62,9 @@ flutter:
     - assets/images/imagen4.png
     - assets/images/imagen5.png
     - assets/images/inicio.png
+    - assets/images/meyer.png
+    - assets/images/chuyaca.png
+    - assets/images/foto3.png
   
   fonts:
     - family: Luckiest Guy
