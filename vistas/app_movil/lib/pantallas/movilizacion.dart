@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'registrar_vehiculo.dart';
+import 'tipo_vehiculo.dart';
 
 class CarSelectionWidget extends StatelessWidget {
   const CarSelectionWidget({super.key});
@@ -55,10 +55,11 @@ class CarSelectionWidget extends StatelessWidget {
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const RegisterVehiclePage()),
-                  );
+                  showVehicleTypeSelector(context);
+                  //Navigator.push(
+                    //context,
+                    //MaterialPageRoute(builder: (context) => const VehicleTypeSelector()),
+                  //);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
@@ -79,3 +80,16 @@ class CarSelectionWidget extends StatelessWidget {
     );
   }
 }
+
+void showVehicleTypeSelector(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return const VehicleTypeSelector();
+    },
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+     isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
+  );
+ }
