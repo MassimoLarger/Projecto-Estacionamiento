@@ -25,8 +25,8 @@ Para ejecutar esta aplicación en tu dispositivo, sigue los siguientes pasos:
 
 bash
 Copiar código
-git clone https://github.com/tuusuario/app-estacionamiento-ulagos.git
-cd app-estacionamiento-ulagos
+git clone https://github.com/MassimoLarger/Projecto-Estacionamiento.git
+cd app_estacionamiento_ulagos
 flutter pub get
 flutter run
 
