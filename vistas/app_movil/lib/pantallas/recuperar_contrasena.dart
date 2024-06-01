@@ -1,10 +1,8 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'tipo_de_cuenta.dart';
-import 'recuperar_contrasena.dart';
+//import 'tipo_de_cuenta.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RecuperarContraScreen extends StatelessWidget {
+  const RecuperarContraScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class LoginScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
               child: const Text(
-                '¿Buscas un lugar para estacionarte?',
+                'Recuperar contraseña',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Luckiest Guy',
@@ -34,7 +32,7 @@ class LoginScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
               child: Text(
-                'Inicie sesión o regístrese en su cuenta de la aplicación Parking Ulagos',
+                'Ingresa tu número de teléfono para recuperar tú contraseña ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -65,22 +63,6 @@ class LoginScreen extends StatelessWidget {
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 20),
-                  const Text('Contraseña', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Introduce tu contraseña',
-                      prefixIcon: const Icon(Icons.lock),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Color.fromRGBO(198, 212, 255, 1), width: 1.0),
-                      ),
-                      filled: true,
-                      fillColor: const Color.fromRGBO(198, 212, 255, 1),
-                    ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       //Navigator.push(
@@ -93,51 +75,7 @@ class LoginScreen extends StatelessWidget {
                       foregroundColor: Colors.white,
                       minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 85% del ancho de la pantalla
                     ),
-                    child: const Text('Iniciar Sesión'),
-                  ),
-                  const SizedBox(height: 16),
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: '¿No tienes cuenta? ',
-                        style: const TextStyle(color: Colors.black, fontSize: 16),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Crear Cuenta',
-                            style: const TextStyle(
-                              color: Color.fromRGBO(41, 87, 194, 1),
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const TipodecuentaWidget()));
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: '¿Olvidaste la contraseña? ',
-                        style: const TextStyle(color: Colors.black, fontSize: 16),
-                        children: <TextSpan>[
-                          TextSpan(
-                            text: 'Recupérala',
-                            style: const TextStyle(
-                              color: Color.fromRGBO(41, 87, 194, 1),
-                              decoration: TextDecoration.underline,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const RecuperarContraScreen()));
-                              },
-                          ),
-                        ],
-                      ),
-                    ),
+                    child: const Text('Enviar SMS'),
                   ),
                 ],
               ),

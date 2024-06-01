@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'chuyaca.dart';
+import 'meyer.dart';
 
 class SelectCampusPage extends StatelessWidget {
   const SelectCampusPage({super.key});
@@ -9,6 +11,7 @@ class SelectCampusPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -23,6 +26,7 @@ class SelectCampusPage extends StatelessWidget {
             },
           ),
         ],
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
         elevation: 0, // Remove the shadow of the AppBar
       ),
       body: ListView(
@@ -40,10 +44,12 @@ class SelectCampusPage extends StatelessWidget {
             ),
           ),
           campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth, () {
+            showSedeChuyacaSelector(context);
             // Action for Chuyaca
             // Navigator.of(context).push(MaterialPageRoute(builder: (context) => ChuyacaScreen()));
           }),
           campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth, () {
+            showSedeMeyerSelector(context);
             // Action for Meyer
             // Navigator.of(context).push(MaterialPageRoute(builder: (context) => MeyerScreen()));
           }),
@@ -82,3 +88,29 @@ class SelectCampusPage extends StatelessWidget {
     );
   }
 }
+
+void showSedeChuyacaSelector(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return const SedeChuyacaSelector();
+    },
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+     isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
+  );
+ }
+
+void showSedeMeyerSelector(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (BuildContext context) {
+      return const SedeMeyerSelector();
+    },
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+     isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
+  );
+ }

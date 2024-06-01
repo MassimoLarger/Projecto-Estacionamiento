@@ -56,10 +56,6 @@ class CarSelectionWidget extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   showVehicleTypeSelector(context);
-                  //Navigator.push(
-                    //context,
-                    //MaterialPageRoute(builder: (context) => const VehicleTypeSelector()),
-                  //);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
