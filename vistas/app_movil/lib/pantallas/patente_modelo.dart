@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'verificaciones/vehiculo_agregado.dart';
 
 class VehicleInfoPage extends StatelessWidget {
   const VehicleInfoPage({super.key});
@@ -88,7 +89,10 @@ class VehicleInfoPage extends StatelessWidget {
               SizedBox(height: screenSize.height * 0.38),
               ElevatedButton(
                 onPressed: () {
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const VehiculoAgregadoWidget()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
