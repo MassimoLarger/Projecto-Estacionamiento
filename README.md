@@ -23,12 +23,10 @@ Google Maps API: Para la integración de mapas y servicios de localización.
 
 Para ejecutar esta aplicación en tu dispositivo, sigue los siguientes pasos:
 
-1.- bash\n 
-2.- Copiar código\n
-3.- git clone https://github.com/MassimoLarger/Projecto-Estacionamiento.git\n
-4.- cd app_estacionamiento_ulagos\n
-5.- flutter pub get\n
-6.- flutter run\n
+git clone https://github.com/MassimoLarger/Projecto-Estacionamiento.git
+cd app-estacionamiento-ulagos
+flutter pub get
+flutter run
 
 # Contacto
 Correo Electrónico: massimoalberto.larger@alumnos.ulagos.cl / constanzamarisol.jaramillo@alumnos.ulagos.cl / claudioandres.uribe@alumnos.ulagos.cl / carolinaivone.hernandez@alumnos.ulagos.cl
