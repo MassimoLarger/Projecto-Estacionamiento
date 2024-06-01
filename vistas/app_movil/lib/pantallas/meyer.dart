@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'registrar_vehiculo.dart'; // Ensure this file is correctly configured.
+import 'agenda_reserva.dart';
 
 class SedeMeyerSelector extends StatefulWidget {
   const SedeMeyerSelector({super.key});
@@ -70,7 +70,7 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
                       });
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterVehiclePage()),
+                        MaterialPageRoute(builder: (context) => const BookingScreen()),
                       );
                     },
                     child: SizedBox(

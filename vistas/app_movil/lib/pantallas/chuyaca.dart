@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'registrar_vehiculo.dart'; // Ensure this file is correctly configured.
+import 'agenda_reserva.dart';
 
 class SedeChuyacaSelector extends StatefulWidget {
   const SedeChuyacaSelector({super.key});
@@ -73,7 +73,7 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
                       });
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterVehiclePage()),
+                        MaterialPageRoute(builder: (context) => const BookingScreen()),
                       );
                     },
                     child: SizedBox(
