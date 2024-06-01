@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'sede.dart';
+import 'patente_modelo.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
   const RegisterVehiclePage({super.key});
@@ -55,7 +56,7 @@ class RegisterVehiclePage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+                    MaterialPageRoute(builder: (context) => const VehicleInfoPage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

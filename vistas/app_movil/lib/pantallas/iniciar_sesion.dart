@@ -82,10 +82,10 @@ class LoginScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
-                      );
+                      //Navigator.push(
+                        //context,
+                        //MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
+                      //);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
@@ -109,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                // Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAccountScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const TipodecuentaWidget()));
                               },
                           ),
                         ],
