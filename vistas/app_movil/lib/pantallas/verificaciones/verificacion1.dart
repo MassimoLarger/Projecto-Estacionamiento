@@ -30,6 +30,9 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -43,23 +46,23 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(screenWidth * 0.05),  // Padding relativo al ancho de la pantalla
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const SizedBox(height: 20),
-              Image.asset('assets/images/logo2.png'),
-              const SizedBox(height: 40),
-              const Text(
+              SizedBox(height: screenHeight * 0.02),
+              Image.asset('assets/images/logo2.png', width: screenWidth * 0.6), // Imagen escalada según ancho de pantalla
+              SizedBox(height: screenHeight * 0.05),
+              Text(
                 "Verificar número de teléfono",
-                style: TextStyle(fontSize: 24, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Color.fromARGB(255, 0, 0, 0)),
+                style: TextStyle(fontSize: screenWidth * 0.06, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 0, 0, 0)),
               ),
-              const SizedBox(height: 10),
-              const Text(
+              SizedBox(height: screenHeight * 0.01),
+              Text(
                 "Ingrese su código aquí",
-                style: TextStyle(fontSize: 18, fontFamily: 'Lato', color: Colors.black),
+                style: TextStyle(fontSize: screenWidth * 0.045, fontFamily: 'Lato', color: Colors.black),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.03),
               PinCodeTextField(
                 appContext: context,
                 length: 4,
@@ -68,15 +71,15 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(5),
-                  fieldHeight: 60,
-                  fieldWidth: 50,
+                  fieldHeight: screenWidth * 0.12, // Altura de los campos proporcional al ancho
+                  fieldWidth: screenWidth * 0.1, // Ancho de los campos proporcional al ancho
                   activeFillColor: Colors.blue[50],
                   selectedFillColor: Colors.white,
                   inactiveFillColor: Colors.white,
                 ),
                 keyboardType: TextInputType.number,
               ),
-              const SizedBox(height: 170),
+              SizedBox(height: screenHeight * 0.28),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
@@ -84,10 +87,10 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(27.5),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 110, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.3, vertical: screenHeight * 0.02),
                 ),
                 onPressed: () => verificarCodigo(_pinController.text),
-                child: const Text("Verificar ahora"),
+                child: const Text("Verificar Ahora"),
               )
             ],
           ),

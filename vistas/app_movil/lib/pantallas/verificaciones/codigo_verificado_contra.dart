@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CodigoVerificadoWidget extends StatefulWidget {
-  const CodigoVerificadoWidget({super.key});
+class CodigoVerificadoContraWidget extends StatefulWidget {
+  const CodigoVerificadoContraWidget({super.key});
 
   @override
-  CodigoVerificadoWidgetState createState() => CodigoVerificadoWidgetState();
+  CodigoVerificadoContraWidgetState createState() => CodigoVerificadoContraWidgetState();
 }
 
-class CodigoVerificadoWidgetState extends State<CodigoVerificadoWidget> {
+class CodigoVerificadoContraWidgetState extends State<CodigoVerificadoContraWidget> {
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla
