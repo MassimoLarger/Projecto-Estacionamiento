@@ -9,16 +9,6 @@ class CodigoVerificadoErrorWidget extends StatefulWidget {
 
 class CodigoVerificadoErrorWidgetState extends State<CodigoVerificadoErrorWidget> {
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
-      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pop(); // Vuelve a la pantalla anterior.
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla
     final screenHeight = MediaQuery.of(context).size.height;
@@ -66,11 +56,11 @@ class CodigoVerificadoErrorWidgetState extends State<CodigoVerificadoErrorWidget
                 padding: EdgeInsets.only(top: 250),
                 child: Text(
                   'Código erróneo.',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 0, 0, 0),
-                    fontSize: 20,
-                    fontFamily: 'Lato',
-                  ),
+                style: TextStyle(
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  fontSize: 20,
+                  fontFamily: 'Lato',
+                ),
                 ),  
               ),
             ],

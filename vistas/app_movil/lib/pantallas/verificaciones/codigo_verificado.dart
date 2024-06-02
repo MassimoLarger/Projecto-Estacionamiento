@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../movilizacion.dart';
 
 class CodigoVerificadoWidget extends StatefulWidget {
   const CodigoVerificadoWidget({super.key});
@@ -8,6 +9,17 @@ class CodigoVerificadoWidget extends StatefulWidget {
 }
 
 class CodigoVerificadoWidgetState extends State<CodigoVerificadoWidget> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      // Aquí puedes decidir a dónde quieres que el usuario vaya después de la verificación exitosa
+      // Ejemplo: Navegar a la pantalla principal de la aplicación
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CarSelectionWidget()));
+      //Navigator.of(context).pop();  // Cierra esta pantalla y vuelve a la anterior
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla
@@ -56,11 +68,11 @@ class CodigoVerificadoWidgetState extends State<CodigoVerificadoWidget> {
                 padding: EdgeInsets.only(top: 250),
                 child: Text(
                   'Código verificado.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Lato',
-                ),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                  ),
                 ),  
               ),
             ],

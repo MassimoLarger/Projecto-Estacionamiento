@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'movilizacion.dart'; // Asegúrate de que este importe es correcto para tus rutas
+//import 'movilizacion.dart'; // Asegúrate de que este importe es correcto para tus rutas
 import 'iniciar_sesion.dart';
+import 'verificaciones/verificacion1.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -109,7 +110,7 @@ class RegisterScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const CarSelectionWidget()),
+                          MaterialPageRoute(builder: (context) => const VerifyPhoneScreen()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
