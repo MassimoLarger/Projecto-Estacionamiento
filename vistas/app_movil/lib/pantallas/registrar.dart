@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'movilizacion.dart'; // Asegúrate de que este importe es correcto para tus rutas
+import 'iniciar_sesion.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -35,7 +36,7 @@ class RegisterScreen extends StatelessWidget {
                   const Text('¿Ya registró su cuenta? '),
                   GestureDetector(
                     onTap: () {
-                      // Navegar a la pantalla de inicio de sesión
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                     },
                     child: const Text('Iniciar Sesión', style: TextStyle(color:Color.fromRGBO(41, 87, 194, 1))),
                   ),
