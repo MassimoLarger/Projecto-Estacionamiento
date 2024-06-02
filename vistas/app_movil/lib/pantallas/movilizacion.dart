@@ -59,7 +59,7 @@ class CarSelectionWidget extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.01), // 1% of total screen height
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(27.5)
                   )

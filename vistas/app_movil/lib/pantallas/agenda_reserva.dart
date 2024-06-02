@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -14,12 +14,12 @@ class BookingScreenState extends State<BookingScreen> {
   void _selectDate(BuildContext context) async {
     final ThemeData datePickerTheme = ThemeData.light().copyWith(
       colorScheme: const ColorScheme.light(
-        primary: Color(0xFF567DF4), // Color del encabezado y botón "OK"
-        onPrimary: Colors.white, // Color del texto en el encabezado y botón "OK"
-        surface: Colors.white, // Color de fondo del DatePicker
-        onSurface: Colors.black, // Color del texto y números en el DatePicker
+        primary: Color(0xFF567DF4),
+        onPrimary: Colors.white,
+        surface: Colors.white,
+        onSurface: Colors.black,
       ),
-      dialogBackgroundColor: Colors.white, // Fondo del diálogo del DatePicker
+      dialogBackgroundColor: Colors.white,
     );
 
     final DateTime? picked = await showDatePicker(
@@ -27,6 +27,7 @@ class BookingScreenState extends State<BookingScreen> {
       initialDate: selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
+      locale: const Locale('es', 'ES'),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: datePickerTheme,
@@ -34,7 +35,7 @@ class BookingScreenState extends State<BookingScreen> {
         );
       },
     );
-    
+
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
@@ -63,7 +64,7 @@ class BookingScreenState extends State<BookingScreen> {
         elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
         children: <Widget>[
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 5.0),
@@ -74,7 +75,7 @@ class BookingScreenState extends State<BookingScreen> {
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center, // Corregido para estar en el widget Text
+              textAlign: TextAlign.center,
             ),
           ),
           const Padding(
@@ -116,21 +117,24 @@ class BookingScreenState extends State<BookingScreen> {
           TimeButtonGroup(times: const ['13:15', '14:00', '14:45', '15:30', '16:15', '17:00', '17:45', '18:30'], selectedTime: selectedTime, onTimeSelected: (time) => setState(() => selectedTime = time)),
           const Text('Noche', style: TextStyle(fontFamily: 'Inter', fontSize: 16, fontWeight: FontWeight.normal)),
           TimeButtonGroup(times: const ['19:15', '20:00', '20:45', '21:30', '22:15', '23:00', '23:45'], selectedTime: selectedTime, onTimeSelected: (time) => setState(() => selectedTime = time)),
-          const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  //Navigator.push(
-                    //context,
-                    //MaterialPageRoute(builder: (context) => const VehiculoAgregadoWidget()),
-                  //);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  foregroundColor: Colors.white,
-                  //minimumSize: , // Hace que el botón sea tan ancho como el 90% del ancho de la pantalla
-                ),
-                child: const Text('Reservar'),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const VehiculoAgregadoWidget()),
+                // );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF567DF4),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Reservar'),
             ),
+          ),
         ],
       ),
     );
@@ -161,14 +165,14 @@ class TimeButtonGroup extends StatelessWidget {
           onSelected: (bool selected) {
             onTimeSelected(time);
           },
-          backgroundColor: const Color(0xFFF3F8FF),  // Color predeterminado para no seleccionados
-          selectedColor: isSelected ? const Color(0xFF567DF4) : Colors.transparent,  // Color para seleccionados
+          backgroundColor: const Color(0xFFF3F8FF),
+          selectedColor: isSelected ? const Color(0xFF567DF4) : Colors.transparent,
           labelStyle: TextStyle(
-            color: isSelected ? Colors.white : const Color(0xFF677191),  // Cambia el color del texto según si está seleccionado o no
+            color: isSelected ? Colors.white : const Color(0xFF677191),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),  // Ajusta el padding para hacer los chips más grandes
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),  // Bordes redondeados para los chips
+            borderRadius: BorderRadius.circular(8),
           ),
         );
       }).toList(),
