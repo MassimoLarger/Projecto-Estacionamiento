@@ -6,19 +6,22 @@ class ResetPasswordScreen extends StatelessWidget {
   const ResetPasswordScreen({super.key});
 
 void _showConfirmationDialog(BuildContext context) {
+  double width = MediaQuery.of(context).size.width;
+
   showDialog(
     context: context,
     barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
     builder: (BuildContext context) {
       return AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
+        backgroundColor: Colors.white,
+        title: Text(
           "¿Estás seguro que deseas confirmar tu nueva contraseña?",
           style: TextStyle(
             fontFamily: 'Lato',
-            fontSize: 18,
+            fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
             fontWeight: FontWeight.bold,
-            color: Colors.black // Puedes elegir el color que desees
+            color: Colors.black
           ),
           textAlign: TextAlign.center,
         ),
@@ -35,8 +38,9 @@ void _showConfirmationDialog(BuildContext context) {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
                 ),
-                child: const Text("Si", style: TextStyle(color: Colors.white)),
+                child: const Text("Sí", style: TextStyle(color: Colors.white)),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -47,6 +51,7 @@ void _showConfirmationDialog(BuildContext context) {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
                 ),
                 child: const Text("No", style: TextStyle(color: Colors.white)),
               ),
@@ -57,6 +62,7 @@ void _showConfirmationDialog(BuildContext context) {
     },
   );
 }
+
 
 
   @override
