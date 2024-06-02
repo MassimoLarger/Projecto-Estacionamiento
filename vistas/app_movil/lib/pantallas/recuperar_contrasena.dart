@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'tipo_de_cuenta.dart';
+import 'verificaciones/verificacion2.dart';
 
 class RecuperarContraScreen extends StatelessWidget {
   const RecuperarContraScreen({super.key});
@@ -65,10 +65,10 @@ class RecuperarContraScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      //Navigator.push(
-                        //context,
-                        //MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
-                      //);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VerifyPhoneContraScreen()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),

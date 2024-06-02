@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'codigo_verificado.dart';
-import 'codigo_erroneo.dart';
+import 'codigo_verificado_contra.dart';
+import 'codigo_erroneo_contra.dart';
 
-class VerifyPhoneScreen extends StatefulWidget {
-  const VerifyPhoneScreen({super.key});
+class VerifyPhoneContraScreen extends StatefulWidget {
+  const VerifyPhoneContraScreen({super.key});
 
   @override
-  VerifyPhoneScreenState createState() => VerifyPhoneScreenState();
+  VerifyPhoneContraScreenState createState() => VerifyPhoneContraScreenState();
 }
 
-class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
+class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
   final TextEditingController _pinController = TextEditingController();
 
   void verificarCodigo(String codigo) {
@@ -18,12 +18,12 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
     if (codigo == codigoCorrecto) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const CodigoVerificadoWidget()),
+        MaterialPageRoute(builder: (context) => const CodigoVerificadoContraWidget()),
       );
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorWidget()),
+        MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorContraWidget()),
       );
     }
   }
@@ -54,8 +54,14 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               Image.asset('assets/images/logo2.png', width: screenWidth * 0.6), // Imagen escalada según ancho de pantalla
               SizedBox(height: screenHeight * 0.05),
               Text(
-                "Verificar número de teléfono",
+                "Recuperación de contraseña",
                 style: TextStyle(fontSize: screenWidth * 0.06, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
+              SizedBox(height: screenHeight * 0.01),
+              Text(
+                "Enviamos un SMS con un código de verificación a +569 ******35",
+                style: TextStyle(fontSize: screenWidth * 0.045, fontFamily: 'Lato', color: Colors.black),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.01),
               Text(
@@ -79,7 +85,7 @@ class VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: screenHeight * 0.28),
+              SizedBox(height: screenHeight * 0.21),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),

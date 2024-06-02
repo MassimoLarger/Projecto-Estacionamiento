@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../iniciar_sesion.dart';
 
 class ContrasenaVerificadaWidget extends StatefulWidget {
   const ContrasenaVerificadaWidget({super.key});
@@ -8,6 +9,15 @@ class ContrasenaVerificadaWidget extends StatefulWidget {
 }
 
 class ContrasenaVerificadaWidgetState extends State<ContrasenaVerificadaWidget> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
+      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const LoginScreen())); // Vuelve a la pantalla anterior.
+    });
+  }
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla

@@ -9,6 +9,16 @@ class CodigoVerificadoErrorContraWidget extends StatefulWidget {
 
 class CodigoVerificadoErrorContraWidgetState extends State<CodigoVerificadoErrorContraWidget> {
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
+      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
+      Navigator.of(context).pop(); // Vuelve a la pantalla anterior.
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla
     final screenHeight = MediaQuery.of(context).size.height;
