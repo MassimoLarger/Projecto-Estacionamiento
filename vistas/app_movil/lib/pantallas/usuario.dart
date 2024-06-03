@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/cerrar_sesion.dart';
+import 'editar_perfil.dart';
 
 class CustomUserDialog extends StatelessWidget {
   const CustomUserDialog({super.key});
@@ -87,7 +88,7 @@ void _showCerrarSesionDialog(BuildContext context) {
                   IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () {
-                      // Acción para editar perfil
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfilePage()));
                     },
                   ),
                   ListTile(
