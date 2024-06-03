@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'tipo_vehiculo.dart';
 import 'usuario.dart';
 
-class CarSelectionWidget extends StatelessWidget {
-  const CarSelectionWidget({super.key});
+class EspacioEstacionamientoWidget extends StatelessWidget {
+  const EspacioEstacionamientoWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class CarSelectionWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05), // 2% of total screen height
             child: const Text(
-              '¿En qué te movilizas hoy?',
+              'Selecciona los espacios de estacionamiento requeridos',
               style: TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 24,
@@ -53,7 +52,7 @@ class CarSelectionWidget extends StatelessWidget {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(1),
-              child: Image.asset('assets/images/imagen4.png', fit: BoxFit.contain),
+              child: Image.asset('assets/images/estacionamiento.png', fit: BoxFit.contain),
             ),
           ),
           Padding(
@@ -62,7 +61,7 @@ class CarSelectionWidget extends StatelessWidget {
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
                 onPressed: () {
-                  showVehicleTypeSelector(context);
+                  //showVehicleTypeSelector(context);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
@@ -72,7 +71,7 @@ class CarSelectionWidget extends StatelessWidget {
                   )
                 ),
                 child: const Text(
-                  'Seleccione su Vehículo',
+                  'Continuar',
                   style: TextStyle(fontSize: 16, fontFamily: 'Lato', color: Colors.white),
                 ),
               ),
@@ -83,16 +82,3 @@ class CarSelectionWidget extends StatelessWidget {
     );
   }
 }
-
-void showVehicleTypeSelector(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return const VehicleTypeSelector();
-    },
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-     isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
-  );
- }

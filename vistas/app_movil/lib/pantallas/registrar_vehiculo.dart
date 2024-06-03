@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'sede.dart';
 import 'patente_modelo.dart';
+import 'usuario.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
   const RegisterVehiclePage({super.key});
@@ -22,7 +23,13 @@ class RegisterVehiclePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              // Placeholder for functionality
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const CustomUserDialog();
+                },
+              );
             },
           ),
         ],

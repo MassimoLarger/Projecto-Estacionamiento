@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'chuyaca.dart';
 import 'meyer.dart';
+import 'usuario.dart';
 
 class SelectCampusPage extends StatelessWidget {
   const SelectCampusPage({super.key});
@@ -21,8 +22,13 @@ class SelectCampusPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle),
             onPressed: () {
-              // Navigator.of(context).push(MaterialPageRoute(builder: (context) => AccountScreen()));
-              // Uncomment the above line when Account Screen is created
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const CustomUserDialog();
+                },
+              );
             },
           ),
         ],

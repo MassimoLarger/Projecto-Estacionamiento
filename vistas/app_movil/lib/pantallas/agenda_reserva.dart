@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'usuario.dart';
+import 'espacios_estacionamiento.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -56,7 +58,13 @@ class BookingScreenState extends State<BookingScreen> {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              // Implement navigation to user profile
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const CustomUserDialog();
+                },
+              );
             },
           ),
         ],
@@ -122,10 +130,10 @@ class BookingScreenState extends State<BookingScreen> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const VehiculoAgregadoWidget()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EspacioEstacionamientoWidget()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF567DF4),

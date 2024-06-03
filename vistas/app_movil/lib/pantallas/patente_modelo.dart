@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/vehiculo_agregado.dart';
+import 'usuario.dart';
 
 class VehicleInfoPage extends StatelessWidget {
   const VehicleInfoPage({super.key});
@@ -19,7 +20,13 @@ class VehicleInfoPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              // Placeholder for functionality
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const CustomUserDialog();
+                },
+              );
             },
           ),
         ],
