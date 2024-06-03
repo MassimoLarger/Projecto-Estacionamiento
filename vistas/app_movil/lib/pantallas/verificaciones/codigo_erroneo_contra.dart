@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../recuperar_contrasena.dart';
 
 class CodigoVerificadoErrorContraWidget extends StatefulWidget {
   const CodigoVerificadoErrorContraWidget({super.key});
@@ -14,7 +15,7 @@ class CodigoVerificadoErrorContraWidgetState extends State<CodigoVerificadoError
     Future.delayed(const Duration(seconds: 2), () {
       // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
       // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pop(); // Vuelve a la pantalla anterior.
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => RecuperarContraScreen())); // Vuelve a la pantalla anterior.
     });
   }
 

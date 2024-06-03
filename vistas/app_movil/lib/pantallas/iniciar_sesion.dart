@@ -132,7 +132,7 @@ class LoginScreen extends StatelessWidget {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const RecuperarContraScreen()));
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => RecuperarContraScreen()));
                               },
                           ),
                         ],

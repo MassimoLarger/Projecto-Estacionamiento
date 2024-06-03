@@ -4,7 +4,8 @@ import 'codigo_verificado_contra.dart';
 import 'codigo_erroneo_contra.dart';
 
 class VerifyPhoneContraScreen extends StatefulWidget {
-  const VerifyPhoneContraScreen({super.key});
+  final String phoneNumber;  // Campo para almacenar el número de teléfono
+  const VerifyPhoneContraScreen({super.key, required this.phoneNumber});
 
   @override
   VerifyPhoneContraScreenState createState() => VerifyPhoneContraScreenState();
@@ -33,6 +34,11 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
+    // Procesar el número de teléfono para mostrar solo los últimos dos dígitos
+    String processedPhoneNumber = widget.phoneNumber.length > 8
+        ? "${widget.phoneNumber.substring(0, widget.phoneNumber.length - 8)}******${widget.phoneNumber.substring(widget.phoneNumber.length - 2)}"
+        : widget.phoneNumber;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -59,7 +65,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
               ),
               SizedBox(height: screenHeight * 0.01),
               Text(
-                "Enviamos un SMS con un código de verificación a +569 ******35",
+                "Enviamos un SMS con un código de verificación a +$processedPhoneNumber",
                 style: TextStyle(fontSize: screenWidth * 0.045, fontFamily: 'Lato', color: Colors.black),
                 textAlign: TextAlign.center,
               ),
