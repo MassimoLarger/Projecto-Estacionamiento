@@ -1,65 +1,92 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/cerrar_sesion.dart';
 import 'editar_perfil.dart';
+import 'dart:io';
 
-class CustomUserDialog extends StatelessWidget {
+class CustomUserDialog extends StatefulWidget {
   const CustomUserDialog({super.key});
 
-void _showCerrarSesionDialog(BuildContext context) {
-  double width = MediaQuery.of(context).size.width;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        title: Text(
-          "¿Estás seguro que deseas cerrar sesión?",
-          style: TextStyle(
-            fontFamily: 'Lato',
-            fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
-            fontWeight: FontWeight.bold,
-            color: Colors.black
-          ),
-          textAlign: TextAlign.center,
-        ),
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CerrarSesionWidget()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
-                ),
-                child: const Text("Sí", style: TextStyle(color: Colors.white)),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
-                ),
-                child: const Text("No", style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        ],
-      );
-    },
-  );
+  @override
+  CustomUserDialogState createState() => CustomUserDialogState();
 }
+class CustomUserDialogState extends State<CustomUserDialog> {
+  String userName = "Usuario123";  // Valor inicial, considera cambiarlo según tu lógica de negocio
+  File? userImage;
+
+  void _showCerrarSesionDialog(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: Colors.white,
+          title: Text(
+            "¿Estás seguro que deseas cerrar sesión?",
+            style: TextStyle(
+              fontFamily: 'Lato',
+              fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+              fontWeight: FontWeight.bold,
+              color: Colors.black
+            ),
+            textAlign: TextAlign.center,
+          ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CerrarSesionWidget()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                  ),
+                  child: const Text("Sí", style: TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                  ),
+                  child: const Text("No", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openEditProfile() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfilePage(
+          nombreInicial: userName,  // pasa el nombre actual
+          imagenInicial: userImage,  // pasa la imagen actual si la hay
+        ),
+      ),
+    );
+
+    if (result != null && result.containsKey('nombre') && result.containsKey('imagen')) {
+      setState(() {
+        userName = result['nombre'];
+        userImage = result['imagen'] as File?;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +105,17 @@ void _showCerrarSesionDialog(BuildContext context) {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  const CircleAvatar(
+                  CircleAvatar(
                     backgroundColor: Colors.grey,
                     radius: 40,
-                    child: Icon(Icons.person, size: 40),
+                    backgroundImage: userImage != null ? FileImage(userImage!) : null,
+                    child: userImage == null ? const Icon(Icons.person, size: 40) : null,
                   ),
                   const SizedBox(height: 10),
-                  const Text('Usuario123', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(userName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   IconButton(
                     icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfilePage()));
-                    },
+                    onPressed: _openEditProfile,
                   ),
                   ListTile(
                     leading: const Icon(Icons.person),

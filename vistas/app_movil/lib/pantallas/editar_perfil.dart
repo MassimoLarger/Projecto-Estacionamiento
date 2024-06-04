@@ -3,7 +3,15 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final String nombreInicial;
+  final File? imagenInicial;
+
+  const EditProfilePage({
+    super.key,  
+    required this.nombreInicial, 
+    this.imagenInicial
+  });
+
   @override
   EditProfilePageState createState() => EditProfilePageState();
 }
@@ -11,19 +19,82 @@ class EditProfilePage extends StatefulWidget {
 class EditProfilePageState extends State<EditProfilePage> {
   File? _image;
   final ImagePicker picker = ImagePicker();
-  final TextEditingController nameController = TextEditingController(text: "Claudio Uribe");
+  late TextEditingController nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _image = widget.imagenInicial;
+    nameController = TextEditingController(text: widget.nombreInicial);
+  }
 
   Future getImage() async {
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }
+
+void _showConfirmationDialog(BuildContext context) {
+  double width = MediaQuery.of(context).size.width;
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.white,
+        title: Text(
+          "¿Estás seguro que deseas confirmar los cambios?",
+          style: TextStyle(
+            fontFamily: 'Lato',
+            fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+            fontWeight: FontWeight.bold,
+            color: Colors.black
+          ),
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);  // Cierra el diálogo
+                  Navigator.pop(context, {'nombre': nameController.text, 'imagen': _image});  // Devuelve los datos actualizados
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                ),
+                child: const Text("Sí", style: TextStyle(color: Colors.white)),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                ),
+                child: const Text("No", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +112,7 @@ class EditProfilePageState extends State<EditProfilePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            onPressed: () => _showConfirmationDialog(context),
           ),
         ],
         backgroundColor: Colors.white,
