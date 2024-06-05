@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'verificaciones/cerrar_sesion.dart';
 import 'editar_perfil.dart';
 import 'dart:io';
+import 'datos_personales.dart';
+import 'contrasena_seguridad.dart';
 
 class CustomUserDialog extends StatefulWidget {
   const CustomUserDialog({super.key});
@@ -121,14 +123,18 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.person),
                     title: const Text('Detalles Personales'),
                     onTap: () {
-                      // Acción
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const PersonalDetailsPage()),
+                      );
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.lock),
                     title: const Text('Contraseña y seguridad'),
                     onTap: () {
-                      // Acción
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const PasswordAndSecurityPage()),
+                      );
                     },
                   ),
                   ListTile(
