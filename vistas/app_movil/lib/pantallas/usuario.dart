@@ -4,6 +4,8 @@ import 'editar_perfil.dart';
 import 'dart:io';
 import 'datos_personales.dart';
 import 'contrasena_seguridad.dart';
+import 'reservas.dart';
+import 'vehiculos.dart';
 
 class CustomUserDialog extends StatefulWidget {
   const CustomUserDialog({super.key});
@@ -141,14 +143,18 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.book),
                     title: const Text('Reservas'),
                     onTap: () {
-                      // Acción
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => ReservasScreen()),
+                      );
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.directions_car),
                     title: const Text('Tus vehículos'),
                     onTap: () {
-                      // Acción
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const MisVehiculosScreen()),
+                      );
                     },
                   ),
                   const Divider(),
