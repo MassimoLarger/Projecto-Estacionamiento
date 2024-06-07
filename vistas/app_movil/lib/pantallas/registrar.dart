@@ -1,21 +1,66 @@
 import 'package:flutter/material.dart';
-//import 'movilizacion.dart'; // Asegúrate de que este importe es correcto para tus rutas
+//import 'movilizacion.dart';
 import 'iniciar_sesion.dart';
 import 'verificaciones/verificacion1.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  final String tipoCuenta;
+  const RegisterScreen({required this.tipoCuenta, super.key});
+
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _telefonoController = TextEditingController();
+  final TextEditingController _contrasenaController = TextEditingController();
+  String _errorMessage = '';
+
+  Future<void> _registrarUsuario() async {
+    final response = await http.post(
+      Uri.parse('http://192.168.226.36:3500/api/register'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'nombre': _nombreController.text,
+        'telefono': _telefonoController.text,
+        'tipo': widget.tipoCuenta,
+        'contrasena': _contrasenaController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['success']) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VerifyPhoneScreen()),
+        );
+      } else {
+        setState(() {
+          _errorMessage = responseBody['message'];
+        });
+      }
+    } else {
+      setState(() {
+        _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Obtiene las dimensiones de la pantalla
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: screenSize.height * 0.05),  // Ajusta en función del tamaño de la pantalla
+            SizedBox(height: screenSize.height * 0.05),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
               child: const Text(
@@ -39,7 +84,7 @@ class RegisterScreen extends StatelessWidget {
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                     },
-                    child: const Text('Iniciar Sesión', style: TextStyle(color:Color.fromRGBO(41, 87, 194, 1))),
+                    child: const Text('Iniciar Sesión', style: TextStyle(color: Color.fromRGBO(41, 87, 194, 1))),
                   ),
                 ],
               ),
@@ -54,7 +99,7 @@ class RegisterScreen extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: const Color(0xFF192342),
-                  fontSize: screenSize.width * 0.05,  // Ajusta el tamaño de la fuente según el ancho de la pantalla
+                  fontSize: screenSize.width * 0.05,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -67,6 +112,7 @@ class RegisterScreen extends StatelessWidget {
                   const Text('Nombre', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
                   TextField(
+                    controller: _nombreController,
                     decoration: InputDecoration(
                       hintText: 'Ingresar Nombre completo',
                       border: OutlineInputBorder(
@@ -80,6 +126,7 @@ class RegisterScreen extends StatelessWidget {
                   const Text('Número de teléfono', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
                   TextField(
+                    controller: _telefonoController,
                     decoration: InputDecoration(
                       hintText: 'Ingresar Número de teléfono',
                       border: OutlineInputBorder(
@@ -94,6 +141,7 @@ class RegisterScreen extends StatelessWidget {
                   const Text('Contraseña', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
                   TextField(
+                    controller: _contrasenaController,
                     decoration: InputDecoration(
                       hintText: '********',
                       border: OutlineInputBorder(
@@ -107,16 +155,11 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(height: screenSize.height * 0.03),
                   Center(
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const VerifyPhoneScreen()),
-                        );
-                      },
+                      onPressed: _registrarUsuario,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF567DF4),
                         foregroundColor: Colors.white,
-                        minimumSize: Size(screenSize.width * 0.9, 50),  // Ajusta el botón al 80% del ancho de la pantalla
+                        minimumSize: Size(screenSize.width * 0.9, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -124,6 +167,14 @@ class RegisterScreen extends StatelessWidget {
                       child: const Text('Crear Cuenta'),
                     ),
                   ),
+                  if (_errorMessage.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Text(
+                        _errorMessage,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
                 ],
               ),
             ),

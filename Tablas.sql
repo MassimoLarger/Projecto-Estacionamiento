@@ -1,9 +1,9 @@
 create table Usuario(
-	ID_Usuario smallint primary key,
+	ID_Usuario Serial primary key,
 	Nombre varchar(50),
-	Descripcion varchar(30),
 	Telefono int,
-	Tipo varchar(30)
+	Tipo varchar(30),
+	Contrasena varchar(50)
 );
 
 create table Tipo_Vehiculo(
