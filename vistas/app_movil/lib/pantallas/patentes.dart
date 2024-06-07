@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
 import 'sede.dart';
+import 'vehiculos.dart';
+//import 'verificaciones/eliminar_patente.dart';
 
 class PatentesPage extends StatefulWidget {
   const PatentesPage({super.key});
@@ -11,6 +13,7 @@ class PatentesPage extends StatefulWidget {
 class PatentesPageState extends State<PatentesPage> {
   List<String> patentes = ['CJ CH 25', 'CU ML 69', 'CC CM 23'];
   int? selectedPatenteIndex;  // Guarda el índice de la patente seleccionada
+  Set<String> markedForDeletion = {};  // Uso de literal de conjunto
 
   void _removePatente(String patente) {
     double width = MediaQuery.of(context).size.width;
@@ -38,8 +41,9 @@ class PatentesPageState extends State<PatentesPage> {
                   onPressed: () {
                     setState(() {
                       patentes.remove(patente);
+                      markedForDeletion.remove(patente);  // Elimina la marca de eliminación
                     });
-                    Navigator.of(context).pop();
+                    Navigator.of(context). pop();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4),
@@ -49,7 +53,13 @@ class PatentesPageState extends State<PatentesPage> {
                   child: const Text("Sí", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    setState(() {
+                      markedForDeletion.remove(patente);  // Mantiene la patente y elimina la marca de eliminación
+                    //EliminarPatenteWidget
+                    });
+                    Navigator.of(context).pop();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -71,7 +81,7 @@ class PatentesPageState extends State<PatentesPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context). pop(),
         ),
         title: const Text(''),
         actions: <Widget>[
@@ -110,24 +120,35 @@ class PatentesPageState extends State<PatentesPage> {
             child: ListView.builder(
               itemCount: patentes.length,
               itemBuilder: (context, index) {
-                bool isSelected = index == selectedPatenteIndex;
+                String patente = patentes[index];
+                bool isMarkedForDeletion = markedForDeletion.contains(patente);
                 return Card(
-                  margin: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(10.0),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                  elevation: 5,
-                  color: isSelected ? const Color(0xFF2BDC3D) : const Color(0xFF567DF4),
+                  elevation: 0,
+                  color: isMarkedForDeletion ? Colors.red : (index == selectedPatenteIndex ? Colors.green : const Color(0xFF567DF4)),
                   child: ListTile(
                     title: Text(
-                      patentes[index],
-                      style: TextStyle(color: isSelected ? Colors.black : Colors.white),
+                      patente,
+                      style: const TextStyle(color: Colors.white),
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete, color: isSelected ? Colors.black : Colors.white),
-                      onPressed: () => _removePatente(patentes[index]),
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          if (!markedForDeletion.contains(patente)) {
+                            markedForDeletion.add(patente);
+                          }
+                        });
+                        _removePatente(patente);
+                      },
                     ),
                     onTap: () {
                       setState(() {
-                        selectedPatenteIndex = isSelected ? null : index;
+                        selectedPatenteIndex = index == selectedPatenteIndex ? null : index;
+                        if (isMarkedForDeletion) {  // Si está marcado para eliminación y se toca, se desmarca
+                          markedForDeletion.remove(patente);
+                        }
                       });
                     },
                   ),
@@ -136,7 +157,7 @@ class PatentesPageState extends State<PatentesPage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -147,28 +168,28 @@ class PatentesPageState extends State<PatentesPage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF567DF4),
                 foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),  // Hace el botón más grande
+                minimumSize: const Size(double.infinity, 50),
               ),
               child: const Text('Continuar', style: TextStyle(fontSize: 18)),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+                  MaterialPageRoute(builder: (context) => const MisVehiculosScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF567DF4),
                 foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),  // Hace el botón más grande
+                minimumSize: const Size(double.infinity, 50),
               ),
               child: const Text('Agregar Patente', style: TextStyle(fontSize: 18)),
             ),
-          ),          
+          ),
         ],
       ),
     );
