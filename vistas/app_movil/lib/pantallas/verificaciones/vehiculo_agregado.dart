@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../patentes.dart';
 
 class VehiculoAgregadoWidget extends StatefulWidget {
   const VehiculoAgregadoWidget({super.key});
@@ -8,6 +9,17 @@ class VehiculoAgregadoWidget extends StatefulWidget {
 }
 
 class VehiculoAgregadoWidgetState extends State<VehiculoAgregadoWidget> {
+  @override
+
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
+      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const PatentesPage())); // Vuelve a la pantalla anterior.
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla

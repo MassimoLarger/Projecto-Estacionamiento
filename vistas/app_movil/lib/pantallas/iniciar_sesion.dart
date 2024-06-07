@@ -19,7 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _iniciarSesion() async {
     final response = await http.post(
-      Uri.parse('http://192.168.226.36:3500/api/login'),
+      Uri.parse('http://192.168.0.105:3500/api/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
