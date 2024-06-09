@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'usuario.dart';
 import 'sede.dart';
 import 'vehiculos.dart';
-//import 'verificaciones/eliminar_patente.dart';
+import 'verificaciones/eliminar_patente.dart';
 
 class PatentesPage extends StatefulWidget {
   const PatentesPage({super.key});
@@ -41,9 +41,13 @@ class PatentesPageState extends State<PatentesPage> {
                   onPressed: () {
                     setState(() {
                       patentes.remove(patente);
-                      markedForDeletion.remove(patente);  // Elimina la marca de eliminación
                     });
-                    Navigator.of(context). pop();
+                    Navigator.of(context).pop(); // Cierra el diálogo
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => EliminarPatenteWidget(onCompleted: () {
+                        setState(() {}); // Fuerza la actualización de la pantalla de patentes
+                      }),
+                    ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4),
@@ -126,14 +130,14 @@ class PatentesPageState extends State<PatentesPage> {
                   margin: const EdgeInsets.all(10.0),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                   elevation: 0,
-                  color: isMarkedForDeletion ? Colors.red : (index == selectedPatenteIndex ? Colors.green : const Color(0xFF567DF4)),
+                  color: isMarkedForDeletion ? Colors.red : (index == selectedPatenteIndex ? Colors.green : const Color(0xFFC6D4FF)),
                   child: ListTile(
                     title: Text(
                       patente,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.white),
+                      icon: const Icon(Icons.delete, color: Colors.black),
                       onPressed: () {
                         setState(() {
                           if (!markedForDeletion.contains(patente)) {

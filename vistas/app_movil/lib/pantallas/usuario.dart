@@ -6,6 +6,7 @@ import 'datos_personales.dart';
 import 'contrasena_seguridad.dart';
 import 'reservas.dart';
 import 'vehiculos.dart';
+import 'comentarios.dart';
 
 class CustomUserDialog extends StatefulWidget {
   const CustomUserDialog({super.key});
@@ -169,7 +170,9 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.comment),
                     title: const Text('Comentarios'),
                     onTap: () {
-                      // Acción
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const CommentPage()),
+                      );
                     },
                   ),
                   const Divider(),

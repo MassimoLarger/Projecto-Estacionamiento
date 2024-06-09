@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+//import '../patentes.dart';
 
 class EliminarPatenteWidget extends StatefulWidget {
-  const EliminarPatenteWidget({super.key});
+  final VoidCallback onCompleted; // Callback para actualizar la lista
+  const EliminarPatenteWidget({super.key, required this.onCompleted});
 
   @override
   EliminarPatenteWidgetState createState() => EliminarPatenteWidgetState();
 }
 
 class EliminarPatenteWidgetState extends State<EliminarPatenteWidget> {
+   @override
+
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      widget.onCompleted(); // Llama al callback antes de volver a la pantalla de patentes
+      Navigator.of(context).pop(); // Cierra esta pantalla
+    });
+  } 
+
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla

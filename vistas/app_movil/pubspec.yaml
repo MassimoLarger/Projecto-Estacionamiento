@@ -75,6 +75,7 @@ flutter:
     - assets/images/logo2.png
     - assets/images/logo3.png
     - assets/images/estacionamiento.png
+    - assets/images/user.png
   
   fonts:
     - family: Luckiest Guy
