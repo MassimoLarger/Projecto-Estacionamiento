@@ -3,7 +3,9 @@ import 'tipo_vehiculo.dart';
 import 'usuario.dart';
 
 class CarSelectionWidget extends StatelessWidget {
-  const CarSelectionWidget({super.key});
+  final String userId; // Cambiar el tipo de userId a String
+
+  const CarSelectionWidget({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +64,14 @@ class CarSelectionWidget extends StatelessWidget {
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
                 onPressed: () {
-                  showVehicleTypeSelector(context);
+                  showVehicleTypeSelector(context, userId);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(27.5)
-                  )
+                    backgroundColor: const Color(0xFF567DF4),
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(27.5)
+                    )
                 ),
                 child: const Text(
                   'Seleccione su Vehículo',
@@ -84,15 +86,15 @@ class CarSelectionWidget extends StatelessWidget {
   }
 }
 
-void showVehicleTypeSelector(BuildContext context) {
+void showVehicleTypeSelector(BuildContext context, String userId) { // Cambiar el tipo de userId a String
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
-      return const VehicleTypeSelector();
+      return VehicleTypeSelector(userId: userId); // Pasar userId como un String
     },
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-     isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
+    isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
   );
- }
+}

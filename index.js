@@ -44,9 +44,10 @@ app.post('/api/login', async (req, res) => {
     );
 
     if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Usuario encontrado' });
+      const {nombre} = result.rows[0];
+      res.json({ success: true, userId: nombre, message: 'Usuario encontrado'});
     } else {
-      res.json({ success: false, message: 'Usuario no encontrado' });
+      res.json({ success: false, message: 'Usuario no encontrado, o algun campo incorrecto' });
     }
   } catch (err) {
     console.error(err);
@@ -67,6 +68,29 @@ app.post('/api/register', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: 'Error al registrar usuario.' });
+  }
+});
+
+app.post('/api/vehiculos', async (req, res) => {
+  const { patente, year, model, vehicleId, userId } = req.body;
+
+  try {
+    // Insertar el nuevo vehículo
+    const result = await pool.query(
+      'INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *',
+      [patente, year, model, vehicleId]
+    );
+
+    // Registrar la relación del vehículo con el usuario
+    const resultado = await pool.query(
+      'INSERT INTO Registra VALUES ($1, $2) RETURNING *',
+      [userId, patente]
+    );
+
+    res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
+  } catch (error) {
+    console.error('Error al registrar el vehículo:', error);
+    res.status(500).send('Error al registrar el vehículo');
   }
 });
 

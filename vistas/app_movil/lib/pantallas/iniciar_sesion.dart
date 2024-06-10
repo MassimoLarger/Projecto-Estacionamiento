@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'tipo_de_cuenta.dart';
 import 'recuperar_contrasena.dart';
+import 'movilizacion.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _iniciarSesion() async {
     final response = await http.post(
-      Uri.parse('http://192.168.0.105:3500/api/login'),
+      Uri.parse('http://192.168.226.36:3500/api/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -32,10 +33,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody['success']) {
-        // Usuario encontrado, redirige a la siguiente pantalla
+        // Usuario encontrado, redirige a la siguiente pantalla con userId y nombre
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const TipodecuentaWidget()),
+          MaterialPageRoute(
+            builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
+          ),
         );
       } else {
         // Usuario no encontrado, muestra mensaje de error

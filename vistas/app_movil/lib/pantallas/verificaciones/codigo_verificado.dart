@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../movilizacion.dart';
+import '../iniciar_sesion.dart';
 
 class CodigoVerificadoWidget extends StatefulWidget {
   const CodigoVerificadoWidget({super.key});
@@ -15,7 +15,7 @@ class CodigoVerificadoWidgetState extends State<CodigoVerificadoWidget> {
     Future.delayed(const Duration(seconds: 2), () {
       // Aquí puedes decidir a dónde quieres que el usuario vaya después de la verificación exitosa
       // Ejemplo: Navegar a la pantalla principal de la aplicación
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CarSelectionWidget()));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const LoginScreen()));
       //Navigator.of(context).pop();  // Cierra esta pantalla y vuelve a la anterior
     });
   }

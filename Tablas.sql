@@ -12,7 +12,7 @@ create table Tipo_Vehiculo(
 );
 
 create table Vehiculo(
-	ID_Vehiculo smallint primary key,
+	ID_Vehiculo varchar(10) primary key,
 	Año int,
 	Descripcion text,
 	ID_Tipo_V smallint,
@@ -21,9 +21,9 @@ create table Vehiculo(
 );
 
 create table Registra(
-	ID_Usuario smallint,
-	ID_Vehiculo smallint,
-	foreign key (ID_Usuario) references Usuario(ID_Usuario)
+	ID_Usuario varchar(50),
+	ID_Vehiculo varchar(10),
+	foreign key (ID_Usuario) references Usuario(Nombre)
 	on delete no action on update cascade,
 	foreign key (ID_Vehiculo) references Vehiculo(ID_Vehiculo)
 	on delete no action on update cascade,
