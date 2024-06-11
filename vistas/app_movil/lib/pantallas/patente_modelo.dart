@@ -5,7 +5,7 @@ import 'verificaciones/vehiculo_agregado.dart';
 import 'usuario.dart';
 
 class VehicleInfoPage extends StatefulWidget {
-  final String userId;
+  final int userId;
   final int vehicleId;
 
   const VehicleInfoPage({required this.userId, required this.vehicleId, super.key});

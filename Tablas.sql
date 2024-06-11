@@ -1,7 +1,6 @@
 create table Usuario(
-	ID_Usuario Serial primary key,
+	Telefono int primary key,
 	Nombre varchar(50),
-	Telefono int,
 	Tipo varchar(30),
 	Contrasena varchar(50)
 );
@@ -12,7 +11,7 @@ create table Tipo_Vehiculo(
 );
 
 create table Vehiculo(
-	ID_Vehiculo varchar(10) primary key,
+	Patente varchar(12) primary key,
 	Año int,
 	Descripcion text,
 	ID_Tipo_V smallint,
@@ -21,11 +20,11 @@ create table Vehiculo(
 );
 
 create table Registra(
-	ID_Usuario varchar(50),
-	ID_Vehiculo varchar(10),
-	foreign key (ID_Usuario) references Usuario(Nombre)
+	ID_Usuario int,
+	ID_Vehiculo varchar(12),
+	foreign key (ID_Usuario) references Usuario(Telefono)
 	on delete no action on update cascade,
-	foreign key (ID_Vehiculo) references Vehiculo(ID_Vehiculo)
+	foreign key (ID_Vehiculo) references Vehiculo(Patente)
 	on delete no action on update cascade,
 	primary key (ID_Usuario,ID_Vehiculo)
 );
@@ -54,9 +53,9 @@ create table Estacionamiento(
 );
 
 create table Reserva(
-	ID_Usuario smallint,
+	ID_Usuario int,
 	ID_Estacionamiento smallint,
-	foreign key (ID_Usuario) references Usuario(ID_Usuario)
+	foreign key (ID_Usuario) references Usuario(Telefono)
 	on delete no action on update cascade,
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
 	on delete no action on update cascade,
@@ -68,10 +67,10 @@ create table Ocupa(
 	Fecha_Salida date,
 	Estado Boolean,
 	ID_Estacionamiento smallint,
-	ID_Vehiculo smallint,
+	ID_Vehiculo int,
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
 	on delete no action on update cascade,
-	foreign key (ID_Vehiculo) references Vehiculo(ID_Vehiculo)
+	foreign key (ID_Vehiculo) references Vehiculo(Patente)
 	on delete no action on update cascade,
 	primary key (ID_Estacionamiento,ID_Vehiculo,Fecha_Entrada)
 );

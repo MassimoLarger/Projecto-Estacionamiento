@@ -3,7 +3,7 @@ import 'tipo_vehiculo.dart';
 import 'usuario.dart';
 
 class CarSelectionWidget extends StatelessWidget {
-  final String userId; // Cambiar el tipo de userId a String
+  final int userId; // El userId sigue siendo un int
 
   const CarSelectionWidget({Key? key, required this.userId}) : super(key: key);
 
@@ -41,7 +41,7 @@ class CarSelectionWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center, // Central alignment vertically
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05), // 2% of total screen height
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05), // 5% of total screen height
             child: const Text(
               '¿En qué te movilizas hoy?',
               style: TextStyle(
@@ -59,7 +59,7 @@ class CarSelectionWidget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(screenWidth * 0.1), // 5% of total screen width
+            padding: EdgeInsets.all(screenWidth * 0.1), // 10% of total screen width
             child: SizedBox(
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
@@ -68,7 +68,7 @@ class CarSelectionWidget extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4),
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 2% of total screen height
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(27.5)
                     )
@@ -86,11 +86,11 @@ class CarSelectionWidget extends StatelessWidget {
   }
 }
 
-void showVehicleTypeSelector(BuildContext context, String userId) { // Cambiar el tipo de userId a String
+void showVehicleTypeSelector(BuildContext context, int userId) { // El userId sigue siendo un int
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
-      return VehicleTypeSelector(userId: userId); // Pasar userId como un String
+      return VehicleTypeSelector(userId: userId); // Pasar userId como un int
     },
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

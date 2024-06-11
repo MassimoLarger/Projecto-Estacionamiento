@@ -23,9 +23,40 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // Ruta para realizar una consulta
-app.get('/api/consulta', async (req, res) => {
+app.get('/api/consultau', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM usuario');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+// Ruta para realizar una consulta
+app.get('/api/consultav', async (req, res) => {
+  try {
+    const result = await pool.query(`
+        SELECT v.patente, v.año, v.descripcion as modelo, tv.nombre as tipo
+        FROM vehiculo v
+        JOIN Tipo_Vehiculo tv ON v.ID_Tipo_V = tv.ID_Tipo_V;
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+// Ruta para realizar una consulta
+app.get('/api/consultar', async (req, res) => {
+  try {
+    const result = await pool.query(`
+        SELECT u.nombre as usuario, r.id_vehiculo as patente, v.descripcion as modelo
+        FROM registra r
+        JOIN usuario u ON r.ID_Usuario = u.Telefono
+        JOIN vehiculo v ON r.ID_Vehiculo = v.Patente;
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -44,8 +75,8 @@ app.post('/api/login', async (req, res) => {
     );
 
     if (result.rows.length > 0) {
-      const {nombre} = result.rows[0];
-      res.json({ success: true, userId: nombre, message: 'Usuario encontrado'});
+      const {telefono} = result.rows[0];
+      res.json({ success: true, userId: telefono, message: 'Usuario encontrado'});
     } else {
       res.json({ success: false, message: 'Usuario no encontrado, o algun campo incorrecto' });
     }
@@ -56,12 +87,12 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/register', async (req, res) => {
-  const { nombre, telefono, tipo, contrasena } = req.body;
+  const { telefono, nombre, tipo, contrasena } = req.body;
   
   try {
     const result = await pool.query(
-      'INSERT INTO usuario (Nombre, Telefono, Tipo, Contrasena) VALUES ($1, $2, $3, $4) RETURNING id_usuario',
-      [nombre, telefono, tipo, contrasena]
+      'INSERT INTO usuario VALUES ($1, $2, $3, $4) RETURNING *',
+      [telefono, nombre, tipo, contrasena]
     );
     
     res.status(200).json({ success: true, id: result.rows[0].id });

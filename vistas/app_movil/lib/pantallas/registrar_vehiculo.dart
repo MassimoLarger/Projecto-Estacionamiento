@@ -4,7 +4,7 @@ import 'patente_modelo.dart';  // Importa tu VehicleInfoPage
 import 'usuario.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
-  final String userId;
+  final int userId;
   final int vehicleId;
 
   const RegisterVehiclePage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);

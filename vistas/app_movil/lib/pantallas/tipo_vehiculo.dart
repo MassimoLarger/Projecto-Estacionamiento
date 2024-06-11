@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'registrar_vehiculo.dart'; // Importa tu RegisterVehiclePage
 
 class VehicleTypeSelector extends StatefulWidget {
-  final String userId; // Cambia el tipo de dato de int a String
+  final int userId;
 
   const VehicleTypeSelector({Key? key, required this.userId}) : super(key: key);
 
