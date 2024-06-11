@@ -77,3 +77,10 @@ create table Ocupa(
 	on delete no action on update cascade,
 	primary key (ID_Estacionamiento,ID_Vehiculo,Fecha_Entrada)
 );
+
+-----------------------------
+
+ALTER TABLE Reserva
+ADD fecha_reserva date;
+
+------------------------------------

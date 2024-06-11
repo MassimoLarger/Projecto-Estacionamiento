@@ -1,0 +1,34 @@
+Primero que nada instalar node.js, y postgres.
+
+Crear las tablas en orden, las seccciones estan separadas por guiones, esto para evitar un error al lanzar todo de golpe.
+Los datos que estan en el archivo sql insert test son datos de testeos nuestros, debido a que la conexion funciona bien
+si asi lo desea puede crear un usuario nuevo.
+
+Una vez instalado correr en la terminan en la carpeta donde este la app
+
+Instalar express usando el comando "npm install express"
+
+"npm install" --esto instalara todas las dependencias que usa la app, estas se encuentran en el archivo "package.json"
+
+luego lanzar el comando "npm run dev" para correr el servidor de la app de celular.
+
+-- errores --
+
+en caso de que no funcione la conexión seguir estos paso adicionales, crear un archivo (.env) que contenga estos datos
+
+DB_USER=postgres <- Reemplazar por su usuario postgres
+DB_HOST=127.0.0.1
+DB_DATABASE=Estacionamiento
+DB_PASSWORD= Tu contraseña <- Reemplazar por la del usuario postgres
+DB_PORT=5432
+
+son la puerta a la conexion con postgres
+
+Si despues de eso sigue sin funcion ir a:
+    -> Firewall de windows defender en el panel de control
+        -> Abrir configuracion avanzada
+        -> Crear una regla en reglas de entrada en la que se abra el puerto
+        -> El puerto debe ser TCP, el resto se rellana como bien, en el nombre llamarla BD - Grupo 5
+
+Si despues de esto no funciona consulte con el grupo, el problema podria tratarse de un error con los archivos
+o la configuracion de de la base de datos en express

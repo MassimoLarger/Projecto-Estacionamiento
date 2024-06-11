@@ -1,6 +1,3 @@
-ALTER TABLE Reserva
-ADD fecha_reserva date;
-
 insert into usuario values
 	(942415843,'Massimo Larger','Administrador','Digimon12'),
 	(958455250,'Claudio Uribe','Profesor','1234'),
