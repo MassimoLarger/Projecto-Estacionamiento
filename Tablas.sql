@@ -10,25 +10,6 @@ create table Tipo_Vehiculo(
 	Nombre varchar(50)
 );
 
-create table Vehiculo(
-	Patente varchar(12) primary key,
-	Año int,
-	Descripcion text,
-	ID_Tipo_V smallint,
-	foreign key (ID_Tipo_V) references Tipo_Vehiculo(ID_Tipo_V)
-	on delete no action on update cascade
-);
-
-create table Registra(
-	ID_Usuario int,
-	ID_Vehiculo varchar(12),
-	foreign key (ID_Usuario) references Usuario(Telefono)
-	on delete no action on update cascade,
-	foreign key (ID_Vehiculo) references Vehiculo(Patente)
-	on delete no action on update cascade,
-	primary key (ID_Usuario,ID_Vehiculo)
-);
-
 create table Campus_Sede(
 	ID_Campus smallint primary key,
 	Nombre varchar(50),
@@ -39,6 +20,28 @@ create table Campus_Sede(
 create table Lugar_Estacionamiento(
 	ID_Lugar smallint primary key,
 	Descripcion text
+);
+----------------------------
+
+create table Vehiculo(
+	Patente varchar(12) primary key,
+	Año int,
+	Descripcion text,
+	ID_Tipo_V smallint,
+	foreign key (ID_Tipo_V) references Tipo_Vehiculo(ID_Tipo_V)
+	on delete no action on update cascade
+);
+
+------------------------------
+
+create table Registra(
+	ID_Usuario int,
+	ID_Vehiculo varchar(12),
+	foreign key (ID_Usuario) references Usuario(Telefono)
+	on delete no action on update cascade,
+	foreign key (ID_Vehiculo) references Vehiculo(Patente)
+	on delete no action on update cascade,
+	primary key (ID_Usuario,ID_Vehiculo)
 );
 
 create table Estacionamiento(

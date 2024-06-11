@@ -21,7 +21,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
   String? _errorMessage;
 
   Future<void> _addVehicle() async {
-    final url = Uri.parse('http://192.168.226.36:3500/api/vehiculos');
+    final url = Uri.parse('http://localhost:3500/api/vehiculos');
 
     final response = await http.post(
       url,
