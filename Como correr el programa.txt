@@ -12,6 +12,17 @@ Instalar express usando el comando "npm install express"
 
 luego lanzar el comando "npm run dev" para correr el servidor de la app de celular.
 
+-- Para abrir la app movil --
+
+Abrir Visual Studio Code
+Debe dirigirse a la carpeta "vistas"
+Luego abrir la carpeta "app_movil"
+Luego la carpeta "lib"
+Click derecho en el archivo "main.dart"
+Seleccionamos la opcion "open in integrated terminal"
+Escribimos en la terminal abierta "flutter run"
+Esperar un poco y listo
+
 -- errores --
 
 en caso de que no funcione la conexión seguir estos paso adicionales, crear un archivo (.env) que contenga estos datos
