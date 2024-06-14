@@ -21,7 +21,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
   String? _errorMessage;
 
   Future<void> _addVehicle() async {
-    final url = Uri.parse('http://localhost:3500/api/vehiculos');
+    final url = Uri.parse('http://192.168.0.105:3500/api/vehiculos');
 
     final response = await http.post(
       url,
@@ -166,11 +166,11 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
                   fillColor: const Color(0xFFC6D4FF),
                 ),
               ),
-              SizedBox(height: screenSize.height * 0.38),
+              SizedBox(height: screenSize.height * 0.25),
               if (_errorMessage != null)
                 Text(
                   _errorMessage!,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ElevatedButton(
                 onPressed: _addVehicle,

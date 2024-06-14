@@ -70,7 +70,7 @@ create table Ocupa(
 	Fecha_Salida date,
 	Estado Boolean,
 	ID_Estacionamiento smallint,
-	ID_Vehiculo int,
+	ID_Vehiculo varchar(12),
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
 	on delete no action on update cascade,
 	foreign key (ID_Vehiculo) references Vehiculo(Patente)
