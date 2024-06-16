@@ -75,7 +75,7 @@ class CarSelectionWidget extends StatelessWidget {
                 ),
                 child: const Text(
                   'Seleccione su Vehículo',
-                  style: TextStyle(fontSize: 16, fontFamily: 'Lato', color: Colors.white),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, fontFamily: 'Lato', color: Colors.white),
                 ),
               ),
             ),

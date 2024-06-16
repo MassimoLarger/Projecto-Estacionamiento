@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
+import 'detalle_orden.dart';
 
 class EspacioEstacionamientoWidget extends StatelessWidget {
   const EspacioEstacionamientoWidget({super.key});
@@ -61,7 +62,10 @@ class EspacioEstacionamientoWidget extends StatelessWidget {
               width: screenWidth * 0.9, // Button width set to 90% of screen width
               child: ElevatedButton(
                 onPressed: () {
-                  //showVehicleTypeSelector(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DetailScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),

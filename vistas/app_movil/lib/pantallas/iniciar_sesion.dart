@@ -4,16 +4,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'tipo_de_cuenta.dart';
 import 'recuperar_contrasena.dart';
-import 'movilizacion.dart';
+import 'inicio.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _contrasenaController = TextEditingController();
   String? _errorMessage;
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
+            builder: (context) => VehicleInterface(userId: responseBody['userId']),
           ),
         );
       } else {

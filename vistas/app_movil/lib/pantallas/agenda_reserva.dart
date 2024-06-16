@@ -15,7 +15,6 @@ class BookingScreenState extends State<BookingScreen> {
   TimeOfDay? timeFrom;
   TimeOfDay? timeTo;
 
-  // Definir colores para cada período
   final Map<String, Color> periodColors = {
     'Mañana': const Color(0xFFF3F8FF),  
     'Tarde': const Color(0xFFF3F8FF),  
@@ -26,31 +25,30 @@ class BookingScreenState extends State<BookingScreen> {
     'Mañana': List.generate(36, (index) {
       int hours = (index * 10 / 60 + 6).toInt();
       int minutes = (index * 10 % 60);
-      if (hours == 24) hours = 0; // Cambia 24:00 a 00:00
+      if (hours == 24) hours = 0;
       return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
     }),
     'Tarde': List.generate(48, (index) {
       int hours = (index * 10 / 60 + 12).toInt();
       int minutes = (index * 10 % 60);
-      if (hours == 24) hours = 0; // Cambia 24:00 a 00:00
+      if (hours == 24) hours = 0;
       return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
     }),
     'Noche': List.generate(25, (index) {
       int hours = (index * 10 / 60 + 20).toInt();
       int minutes = (index * 10 % 60);
-      if (hours == 24) hours = 0; // Cambia 24:00 a 00:00
+      if (hours == 24) hours = 0;
       return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
     }),
   };
 
   final Map<String, Color> selectedPeriodColors = {
-    'Mañana': const Color(0xFFC6D4FF),  // Color azul oscuro cuando seleccionado
-    'Tarde': const Color(0xFFC6D4FF),  // Color naranja oscuro cuando seleccionado
-    'Noche': const Color(0xFFC6D4FF),  // Color púrpura oscuro cuando seleccionado
+    'Mañana': const Color(0xFFC6D4FF),
+    'Tarde': const Color(0xFFC6D4FF),
+    'Noche': const Color(0xFFC6D4FF),
   };
 
   void _selectDate(BuildContext context) async {
-
     final ThemeData datePickerTheme = ThemeData.light().copyWith(
       colorScheme: const ColorScheme.light(
         primary: Color(0xFF567DF4),
@@ -82,7 +80,7 @@ class BookingScreenState extends State<BookingScreen> {
   }
 
 void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
-  final times = timeSlots[selectedPeriod] ?? []; // Usa la lista basada en el período seleccionado
+  final times = timeSlots[selectedPeriod] ?? [];
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.white,
@@ -90,35 +88,36 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
     builder: (BuildContext context) {
+      double width = MediaQuery.of(context).size.width; // Uso de MediaQuery
       return Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(width * 0.04), // Padding basado en el ancho de pantalla
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              height: 4,
-              width: 40,
+              height: width * 0.01, // Altura basada en ancho de pantalla
+              width: width * 0.1, // Ancho basado en ancho de pantalla
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(width * 0.02), // Radio basado en ancho de pantalla
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: width * 0.05), // Espaciado basado en ancho de pantalla
             Text(
-              isStartTime ? "Seleccione hora de inicio" : "Seleccione hora de fin", // Cambia el título basado en el contexto
-              style: const TextStyle(
-                fontSize: 16,
+              isStartTime ? "Seleccione hora de inicio" : "Seleccione hora de fin",
+              style: TextStyle(
+                fontSize: width * 0.04, // Tamaño de fuente basado en ancho de pantalla
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: width * 0.05), // Espaciado basado en ancho de pantalla
             Expanded(
               child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 4,
                   childAspectRatio: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+                  crossAxisSpacing: width * 0.02, // Espaciado basado en ancho de pantalla
+                  mainAxisSpacing: width * 0.02, // Espaciado basado en ancho de pantalla
                 ),
                 itemCount: times.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -138,16 +137,16 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
                           timeTo = timeOfDay;
                         }
                       });
-                      Navigator.pop(context); // Cerrar el modal al seleccionar
+                      Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isSelected ? const Color(0xFFC6D4FF) : const Color(0xFFF3F8FF), // Cambia el color si está seleccionado
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      backgroundColor: isSelected ? const Color(0xFFC6D4FF) : const Color(0xFFF3F8FF),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(width * 0.02)), // Radio basado en ancho de pantalla
+                      padding: EdgeInsets.symmetric(vertical: width * 0.03), // Padding vertical basado en ancho de pantalla
                     ),
                     child: Text(
                       times[index],
-                      style: const TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.black, fontSize: width * 0.035), // Tamaño de fuente basado en ancho de pantalla
                     ),
                   );
                 },
@@ -160,10 +159,10 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
   );
 }
 
-
-
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width; // Uso de MediaQuery para obtener el ancho de pantalla
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
@@ -189,27 +188,27 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
         elevation: 0,
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(width * 0.04), // Padding basado en ancho de pantalla
         children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: width * 0.0125), // Espaciado vertical basado en ancho de pantalla
             child: Text(
               'Agendar Reserva',
               style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: 24,
+                fontSize: width * 0.06, // Tamaño de fuente basado en ancho de pantalla
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(bottom: 20.0),
+          Padding(
+            padding: EdgeInsets.only(bottom: width * 0.05), // Espaciado inferior basado en ancho de pantalla
             child: Text(
               'Selecciona la fecha y hora',
               style: TextStyle(
                 fontFamily: 'Inter',
-                fontSize: 18,
+                fontSize: width * 0.045, // Tamaño de fuente basado en ancho de pantalla
                 fontWeight: FontWeight.normal,
               ),
               textAlign: TextAlign.center,
@@ -218,24 +217,40 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
           GestureDetector(
             onTap: () => _selectDate(context),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              padding: EdgeInsets.symmetric(vertical: width * 0.03, horizontal: width * 0.04), // Padding basado en dimensiones de pantalla
               decoration: BoxDecoration(
                 color: const Color(0xFFF3F8FF),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(width * 0.03), // Radio de borde basado en ancho de pantalla
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(DateFormat('dd/MMM/yyyy').format(selectedDate), style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Icon(Icons.calendar_today, color: Color(0xFF567DF4)),
+                  Text(
+                    DateFormat('dd/MMM/yyyy').format(selectedDate),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: width * 0.04, // Tamaño de fuente basado en ancho de pantalla
+                    ),
+                  ),
+                  Icon(
+                    Icons.calendar_today,
+                    color: const Color(0xFF567DF4),
+                    size: width * 0.06, // Tamaño de ícono basado en ancho de pantalla
+                  ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 20),
-          const Text('Horario', style: TextStyle(fontWeight: FontWeight.bold)),
+          SizedBox(height: width * 0.05), // Espaciado basado en ancho de pantalla
+          Text(
+            'Horario',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: width * 0.045, // Tamaño de fuente basado en ancho de pantalla
+            ),
+          ),
           Wrap(
-            spacing: 39,
+            spacing: width * 0.13, // Espaciado horizontal basado en ancho de pantalla
             children: ['Mañana', 'Tarde', 'Noche'].map((period) {
               return ChoiceChip(
                 label: Text(period),
@@ -245,21 +260,27 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
                 },
                 backgroundColor: selectedPeriod == period ? selectedPeriodColors[period] : periodColors[period],
                 selectedColor: selectedPeriodColors[period],
-                labelStyle: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                labelStyle: TextStyle(
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                  fontSize: width * 0.035, // Tamaño de fuente basado en ancho de pantalla
+                ),
               );
             }).toList(),
           ),
           // Elemento 'Desde'
           Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025), // Márgenes verticales basados en ancho de pantalla
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                   flex: 1,
                   child: Text(
-                    'Desde',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    'Desde:',
+                    style: TextStyle(
+                      fontSize: width * 0.04, // Tamaño de fuente basado en ancho de pantalla
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -269,16 +290,19 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF3F8FF),
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.symmetric(vertical: width * 0.03), // Padding vertical basado en ancho de pantalla
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(width * 0.02), // Radio de borde basado en ancho de pantalla
                         side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                       elevation: 0,
                     ),
                     child: Text(
                       timeFrom?.format(context) ?? 'Elige hora',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: width * 0.035, // Tamaño de fuente basado en ancho de pantalla
+                      ),
                     ),
                   ),
                 ),
@@ -288,15 +312,18 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
 
           // Elemento 'Hasta'
           Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
+            margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025), // Márgenes verticales basados en ancho de pantalla
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const Expanded(
+                Expanded(
                   flex: 1,
                   child: Text(
-                    'Hasta',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    'Hasta:',
+                    style: TextStyle(
+                      fontSize: width * 0.04, // Tamaño de fuente basado en ancho de pantalla
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -306,16 +333,19 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFF3F8FF),
                       foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: EdgeInsets.symmetric(vertical: width * 0.03), // Padding vertical basado en ancho de pantalla
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(width * 0.02), // Radio de borde basado en ancho de pantalla
                         side: const BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                       elevation: 0,
                     ),
                     child: Text(
                       timeTo?.format(context) ?? 'Elige hora',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: width * 0.035, // Tamaño de fuente basado en ancho de pantalla
+                      ),
                     ),
                   ),
                 ),
@@ -323,31 +353,33 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
             ),
           ),
 
-          const SizedBox(height: 210),
+          SizedBox(height: width * 0.63), // Espacio al final basado en ancho de pantalla
           ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const EspacioEstacionamientoWidget()),
-                );
-              },
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const EspacioEstacionamientoWidget()),
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF567DF4), // Botón azul
               foregroundColor: Colors.white,
-              textStyle: const TextStyle(fontSize: 16),
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(27.5)),
+              textStyle: TextStyle(
+                fontSize: width * 0.04, // Tamaño de texto basado en ancho de pantalla
+              ),
+              padding: EdgeInsets.symmetric(vertical: width * 0.05), // Padding vertical basado en ancho de pantalla
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(width * 0.06)), // Radio de borde basado en ancho de pantalla
             ),
             child: const Text(
               'Reservar',
               style: TextStyle(
-                fontFamily: 'Lato', 
-                color: Color.fromARGB(255, 255, 255, 255), // Color del texto
+                fontFamily: 'Lato',
+                color: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          )   
+          )
         ],
       ),
     );
@@ -368,6 +400,7 @@ class TimeButtonGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width; // Uso de MediaQuery para obtener el ancho de pantalla
     return Wrap(
       spacing: 8,
       runSpacing: 8,
@@ -381,10 +414,13 @@ class TimeButtonGroup extends StatelessWidget {
           },
           backgroundColor: Colors.white,
           selectedColor: const Color(0xFF567DF4), // Azul seleccionado
-          labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
-          padding: const EdgeInsets.all(8.0),
+          labelStyle: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+            fontSize: width * 0.035, // Tamaño de fuente basado en ancho de pantalla
+          ),
+          padding: EdgeInsets.all(width * 0.02), // Padding basado en ancho de pantalla
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(width * 0.02), // Radio de borde basado en ancho de pantalla
           ),
         );
       }).toList(),
