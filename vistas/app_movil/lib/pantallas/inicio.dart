@@ -43,7 +43,7 @@ class VehicleInterface extends StatelessWidget {
               child: Image.asset('assets/images/camioneta.png', fit: BoxFit.contain),
             ),
             Container(
-              color: Color.fromARGB(255, 255, 255, 255), // Ajuste de color para la franja detrás del botón
+              color: const Color.fromARGB(255, 255, 255, 255), // Ajuste de color para la franja detrás del botón
               child: Column(
                 children: [
                   Container(
