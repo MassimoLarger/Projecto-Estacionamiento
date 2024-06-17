@@ -1,0 +1,24 @@
+{
+    "MAX_LENGTH":6,
+    "validLetters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+    "motoNewFormat": {
+      "name": "motoNewFormat",
+      "type": "LLL.NNN"
+    },
+    "motoOldFormat": {
+      "name": "motoOldFormat",
+      "type": "LL.NNNN"
+    },
+    "autoNewFormat": {
+      "name": "autoNewFormat",
+      "type": "LLLL.NN"
+    },
+    "autoOldFormat": {
+      "name": "autoOldFormat",
+      "type": "LL.NNNN"
+    },
+    "carroArrastreFormat": {
+      "name": "carroArrastreFormat",
+      "type": "LLL.NNN"
+    }
+  }
