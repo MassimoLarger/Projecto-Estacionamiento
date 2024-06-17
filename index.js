@@ -85,43 +85,43 @@ app.post('/api/login', async (req, res) => {
     }
   });
 
-  app.post('/api/register', async (req, res) => {
-    const { telefono, nombre, tipo, contrasena } = req.body;
+app.post('/api/register', async (req, res) => {
+  const { telefono, nombre, tipo, contrasena } = req.body;
     
-    try {
+  try {
+  const result = await pool.query(
+    'INSERT INTO usuario VALUES ($1, $2, $3, $4) RETURNING *',
+     [telefono, nombre, tipo, contrasena]
+  );
+  res.status(200).json({ success: true, id: result.rows[0].id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Error al registrar usuario.' });
+  }
+});
+
+app.post('/api/vehiculos', async (req, res) => {
+  const { patente, year, model, vehicleId, userId } = req.body;
+
+  try {
+    // Insertar el nuevo vehículo
     const result = await pool.query(
-      'INSERT INTO usuario VALUES ($1, $2, $3, $4) RETURNING *',
-      [telefono, nombre, tipo, contrasena]
+      'INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *',
+      [patente, year, model, vehicleId]
     );
-    res.status(200).json({ success: true, id: result.rows[0].id });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Error al registrar usuario.' });
-      }
-    });
 
-  app.post('/api/vehiculos', async (req, res) => {
-    const { patente, year, model, vehicleId, userId } = req.body;
+    // Registrar la relación del vehículo con el usuario
+    const resultado = await pool.query(
+      'INSERT INTO Registra VALUES ($1, $2) RETURNING *',
+      [userId, patente]
+    );
 
-    try {
-      // Insertar el nuevo vehículo
-      const result = await pool.query(
-        'INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *',
-        [patente, year, model, vehicleId]
-      );
-
-      // Registrar la relación del vehículo con el usuario
-      const resultado = await pool.query(
-        'INSERT INTO Registra VALUES ($1, $2) RETURNING *',
-        [userId, patente]
-      );
-
-      res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
-    } catch (error) {
-      console.error('Error al registrar el vehículo:', error);
-      res.status(500).send('Error al registrar el vehículo');
-      }
-    });
+    res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
+  } catch (error) {
+    console.error('Error al registrar el vehículo:', error);
+    res.status(500).send('Error al registrar el vehículo');
+  }
+});
 
 // New route for PPU verification
 app.post('/api/verify-ppu', (req, res) => {
@@ -131,8 +131,8 @@ app.post('/api/verify-ppu', (req, res) => {
     const ppuInstance = new Ppu(ppu);
     res.status(200).json({ success: true, ppu: ppuInstance });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ success: false, message: error.message });
+    console.error('Error al verificar la patente:', error);
+    res.status(500).send('Error al verificar la patente');
   }
 });
 
