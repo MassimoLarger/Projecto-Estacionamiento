@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'iniciar_sesion.dart';
+import 'iniciar_sesion.dart';
 
 class InicioWidget extends StatefulWidget {
   const InicioWidget({super.key});
@@ -40,7 +40,7 @@ class InicioWidgetState extends State<InicioWidget> {
             ),
             Positioned(
               top: screenHeight * 0.57,  // Posición relativa
-              left: screenWidth * 0.12,  // Posición relativa
+              left: screenWidth * 0.11,  // Posición relativa
               child: const Text(
                 'ADMIN ULAGOS',
                 textAlign: TextAlign.center,
@@ -58,10 +58,10 @@ class InicioWidgetState extends State<InicioWidget> {
               right: screenWidth * 0.15,  // Centrar el botón
               child: ElevatedButton(
                 onPressed: () {
-                  //Navigator.push(
-                    //context,
-                    //MaterialPageRoute(builder: (context) => const BookingScreen()),
-                  //);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromRGBO(86, 125, 244, 1),

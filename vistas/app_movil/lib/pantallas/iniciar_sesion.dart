@@ -60,6 +60,7 @@ class LoginScreenState extends State<LoginScreen> {
     var screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
