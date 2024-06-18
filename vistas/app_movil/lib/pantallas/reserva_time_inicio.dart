@@ -161,11 +161,11 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                 ),
               ),
             ),
-            SizedBox(height: size.height * 0.03), // Ajustar el espacio entre el cuadro y la barra de tiempo
+            SizedBox(height: size.height * 0.05),
             Container(
               width: size.width,
-              color: const Color(0xFF677191),  // Fondo para la barra de tiempo
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20), 
+              color: const Color(0xFF677191),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
               child: Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -174,7 +174,7 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                       _formatDuration(_seconds),
                       style: TextStyle(fontSize: size.width * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
                     ),
-                    const SizedBox(width: 10),  // Espacio entre el texto y el icono
+                    const SizedBox(width: 10),
                     IconButton(
                       icon: Icon(Icons.pause, color: Colors.white, size: size.width * 0.08),
                       onPressed: () => _showCancelarReservaDialog(context),
@@ -183,46 +183,9 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                 ),
               ),
             ),
-            SizedBox(height: size.height * 0.02), // Ajustar el espacio entre la barra de tiempo y los botones flotantes
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 5,
-        color: Colors.transparent,
-        elevation: 0,
-        child: Container(height: 0),  // Remove any visible bottom bar but keep the structure
-      ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(top: size.height * 0.1),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const VehicleInterface()),
-                );
-              },
-              backgroundColor: const Color(0xFF456EFF),
-              child: const Icon(Icons.home, size: 30, color: Colors.white),
-            ),
-            FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PatentesPage()),
-                );
-              },
-              backgroundColor: const Color(0xFF456EFF),
-              child: const Icon(Icons.add, size: 30, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

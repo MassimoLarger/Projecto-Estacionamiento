@@ -160,15 +160,8 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                   ),
                   const Divider(),
                   ListTile(
-                    leading: const Icon(Icons.help),
-                    title: const Text('Ayuda'),
-                    onTap: () {
-                      // Acción
-                    },
-                  ),
-                  ListTile(
                     leading: const Icon(Icons.comment),
-                    title: const Text('Comentarios'),
+                    title: const Text('Ayuda y Comentarios'),
                     onTap: () {
                       Navigator.push(
                         context, MaterialPageRoute(builder: (context) => const CommentPage()),

@@ -46,7 +46,7 @@ class CommentPageState extends State<CommentPage> {
               child: Padding(
                 padding: EdgeInsets.all(padding),
                 child: const Text(
-                  'Comentarios',
+                  'Ayuda y Comentarios',
                   style: TextStyle(
                     fontFamily: 'Lato',
                     fontSize: 20,
@@ -61,7 +61,7 @@ class CommentPageState extends State<CommentPage> {
               child: const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Escribe un comentario',
+                  'Escribe una sugerencia o reclamo',
                   style: TextStyle(
                     fontFamily: 'Lato',
                     fontSize: 16,

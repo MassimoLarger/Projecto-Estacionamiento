@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'patentes.dart';
+import 'sede.dart';
 import 'usuario.dart'; // Asegúrate de que esta página está definida correctamente
 
 class VehicleInterface extends StatelessWidget {
@@ -89,7 +89,7 @@ class VehicleInterface extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const PatentesPage()),
+              MaterialPageRoute(builder: (context) => const SelectCampusPage()),
             );
           },
           backgroundColor: const Color(0xFF456EFF),
