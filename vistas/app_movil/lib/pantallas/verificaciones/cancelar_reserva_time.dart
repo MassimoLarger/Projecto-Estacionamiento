@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import '../inicio.dart';
 
-class CancelarReservaWidget extends StatefulWidget {
-  const CancelarReservaWidget({super.key});
+class CancelarReservatimeWidget extends StatefulWidget {
+  const CancelarReservatimeWidget({super.key});
 
   @override
-  CancelarReservaWidgetState createState() => CancelarReservaWidgetState();
+  CancelarReservatimeWidgetState createState() => CancelarReservatimeWidgetState();
 }
 
-class CancelarReservaWidgetState extends State<CancelarReservaWidget> {
+class CancelarReservatimeWidgetState extends State<CancelarReservatimeWidget> {
 
   @override
   void initState() {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../reserva_time_inicio.dart';
 
 class ReservaEspacioWidget extends StatefulWidget {
   const ReservaEspacioWidget({super.key});
@@ -15,7 +16,7 @@ class ReservaEspacioWidgetState extends State<ReservaEspacioWidget> {
     Future.delayed(const Duration(seconds: 2), () {
       // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
       // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const SplashScreen())); // Vuelve a la pantalla anterior.
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const VehicleTimeReserva())); // Vuelve a la pantalla anterior.
     });
   }  
 

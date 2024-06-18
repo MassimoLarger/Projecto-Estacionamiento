@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'tipo_de_cuenta.dart';
 import 'recuperar_contrasena.dart';
-import 'inicio.dart';
+import 'movilizacion.dart';
+//import 'inicio.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -37,7 +38,7 @@ class LoginScreenState extends State<LoginScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VehicleInterface(userId: responseBody['userId']),
+            builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
           ),
         );
       } else {
