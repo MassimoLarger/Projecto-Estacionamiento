@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'verificaciones/cancelar_reserva_time.dart';
 import 'usuario.dart';
-import 'patentes.dart';
-import 'inicio.dart';
 
 class VehicleTimeReserva extends StatefulWidget {
   const VehicleTimeReserva({super.key});
