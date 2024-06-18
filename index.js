@@ -57,7 +57,7 @@ app.get('/api/consultar', async (req, res) => {
     const result = await pool.query(`
         SELECT u.nombre as usuario, r.id_vehiculo as patente, v.descripcion as modelo
         FROM registra r
-        JOIN usuario u ON u.rut = r.rut
+        JOIN usuario u ON u.telefono = r.ID_Usuario
         JOIN vehiculo v ON r.id_vehiculo = v.patente;
     `);
     res.json(result.rows);
@@ -127,13 +127,18 @@ app.post('/api/vehiculos', async (req, res) => {
   }
 });
 
-// New route for PPU verification
 app.post('/api/verify-ppu', (req, res) => {
-  const { ppu } = req.body;
+  const { patente, verificador } = req.body;
 
   try {
-    const ppuInstance = new Ppu(ppu);
-    res.status(200).json({ success: true, ppu: ppuInstance });
+    const ppuInstance = new Ppu(patente);
+
+    if (ppuInstance.dv === verificador) {
+      res.status(200).json({ success: true, ppu: ppuInstance });
+    } else {
+      console.error('Error en el digito verificador');
+      res.status(500).send('Error en el digito verificador');
+    }
   } catch (error) {
     console.error('Error al verificar la patente:', error);
     res.status(500).send('Error al verificar la patente');
