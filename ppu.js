@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const _variables = require('./variables.json');
-const _letterDvDb = require('./letterDvDB.json');
+import _ from 'lodash';
+import _variables from './variables.json' assert { type: 'json' };
+import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 
 class Ppu {
   constructor (ppu) {
@@ -143,4 +143,4 @@ class Ppu {
   }
 }
 
-module.exports = Ppu;
+export { Ppu };
