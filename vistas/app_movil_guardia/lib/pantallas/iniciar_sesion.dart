@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sedes.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -97,7 +98,10 @@ class LoginScreenState extends State<LoginScreen> {
               SizedBox(height: screenSize.height * 0.35), // Espacio ajustable
               ElevatedButton(
                 onPressed: () {
-                  // Aquí manejas la lógica de inicio de sesión
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const GuardiaScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4), // Fondo del botón

@@ -81,6 +81,7 @@ flutter:
     - assets/images/moto.png
     - assets/images/auto.png
     - assets/images/furgon.png
+    - assets/images/guardia.png
 
   fonts:
     - family: Luckiest Guy
