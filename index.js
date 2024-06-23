@@ -105,8 +105,14 @@ app.post('/api/send-verification-code', async (req, res) => {
   const { email } = req.body;
   const code = Math.floor(100000 + Math.random() * 900000).toString();
   try {
-    await sendVerificationEmail(email, code);
-    res.status(200).send('Correo enviado');
+    const result = await pool.query('SELECT * FROM usuario WHERE Correo = $1', [email]);
+    if (result.rows[0] != null) {
+      const { correo } = result.rows[0];
+      await sendVerificationEmail(correo, code);
+      res.json({ success: true, userId: correo, codigo_verificacion: code, message: 'Correo Enviado' });
+    } else {
+      res.json({ success: false, message: 'Usuario no encontrado' });
+    } 
   } catch (error) {
     console.error('Error al enviar el correo:', error);
     res.status(500).send('Error al enviar el correo');
@@ -114,21 +120,35 @@ app.post('/api/send-verification-code', async (req, res) => {
 });
 
 app.post('/api/verify-code', async (req, res) => {
-  const { email, code } = req.body;
-
+  const {code, codigo_verificacion } = req.body;
   try {
-    const storedCode = await getCodeFromDatabase(email);
-    console.log('Código almacenado:', storedCode);
-    console.log('Código recibido:', code);
-
-    if (storedCode === code) {
-      res.json({ success: true });
+    if (codigo_verificacion === code) {
+      res.json({ success: true, message: 'Codigo Verificado Correctamente'  });
     } else {
       res.json({ success: false, message: 'Código incorrecto' });
     }
   } catch (error) {
     console.error('Error al verificar el código:', error);
     res.status(500).send('Error al verificar el código');
+  }
+});
+
+app.post('/api/actualizar_contraseña', async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    // Ejecutar la consulta para actualizar la contraseña
+    const result = await pool.query('UPDATE usuario SET contraseña = $1 WHERE correo = $2 RETURNING *', [newPassword, email]);
+
+    // Verificar si se encontró y actualizó el usuario
+    if (result.rows.length > 0) {
+      res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+    } else {
+      res.json({ success: false, message: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar contraseña:', error);
+    res.status(500).send('Error al actualizar contraseña');
   }
 });
 

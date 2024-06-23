@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-//import 'movilizacion.dart';
 import 'iniciar_sesion.dart';
-import 'verificaciones/verificacion1.dart';
+import 'verificaciones/verificacion1.dart'; // Asegúrate de que esta importación sea correcta
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -10,10 +9,10 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({required this.tipoCuenta, super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _correoController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
@@ -38,10 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody['success']) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const VerifyPhoneScreen()),
-        );
+        _sendemail();
       } else {
         setState(() {
           _errorMessage = responseBody['message'];
@@ -50,6 +46,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       setState(() {
         _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+      });
+    }
+  }
+
+  Future<void> _sendemail() async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3500/api/send-verification-code'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': _correoController.text,
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+      if (responseBody['success']) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => VerifyPhoneScreen(
+              code: responseBody['codigo_verificacion'],
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage = responseBody['message'];
+        });
+      }
+    } else {
+      setState(() {
+        _errorMessage = 'Error al enviar el correo.';
       });
     }
   }

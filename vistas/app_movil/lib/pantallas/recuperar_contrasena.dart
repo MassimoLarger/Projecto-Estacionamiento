@@ -3,103 +3,54 @@ import 'verificaciones/verificacion2.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class RecuperarContraScreen extends StatelessWidget {
-  RecuperarContraScreen({super.key});
+class RecuperarContraScreen extends StatefulWidget {
+  const RecuperarContraScreen({super.key});
 
-  // Controller for the email input field.
-  final TextEditingController emailController = TextEditingController();
+  @override
+  RecuperarContraScreenState createState() => RecuperarContraScreenState();
+}
 
-  Future<void> sendVerificationEmail(String email) async {
-    final response = await http.post(
-      Uri.parse('http://localhost:3500/api/send-verification-code'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': email,
-      }),
-    );
+class RecuperarContraScreenState extends State<RecuperarContraScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  String? _errorMessage;
 
-    if (response.statusCode == 200) {
-      print('Correo enviado');
-    } else {
-      print('Error al enviar el correo');
-    }
-  }
-
-  void _showConfirmationDialog(BuildContext context, String email) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
-    // Process the email to display partially masked.
-    String processedEmail = email.replaceRange(3, email.indexOf('@'), '****');
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          backgroundColor: Colors.white,
-          title: Column(
-            children: [
-              Container(
-                width: width * 0.2,
-                height: width * 0.2,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color.fromRGBO(43, 220, 61, 1),
-                ),
-                child: const Center(
-                  child: Icon(Icons.check, size: 60, color: Colors.white),
-                ),
+  Future<void> _sendVerificationEmail(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/send-verification-code'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': _emailController.text, // Usar el parámetro 'email' pasado a la función
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => VerifyPhoneContraScreen(
+                email: responseBody['userId'],
+                code: responseBody['codigo_verificacion'],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: height * 0.02),
-                child: Text(
-                  "Enviamos un correo a $processedEmail.\nRevisa tu bandeja de entrada y sigue las instrucciones para continuar con la recuperación de la contraseña.",
-                  style: TextStyle(
-                      fontFamily: 'Lato',
-                      fontSize: width * 0.045,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Cerrar el diálogo primero
-                    Navigator.of(context).pop();
-
-                    // Navegar a la pantalla de verificación
-                    Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => VerifyPhoneContraScreen(email: email) // Pasa el email aquí
-                        )
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
-                  ),
-                  child: const Text("OK", style: TextStyle(color: Colors.white)),
-                ),
-              ],
             ),
-          ],
-        );
-      },
-    );
+          );
+        } else {
+          setState(() {
+            _errorMessage = responseBody['message'];
+          });
+        }
+      } else {
+        setState(() {
+          _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error al enviar el correo.';
+      });
+    }
   }
 
   @override
@@ -147,7 +98,7 @@ class RecuperarContraScreen extends StatelessWidget {
                   const Text('Correo Electrónico', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: emailController,
+                    controller: _emailController,
                     decoration: InputDecoration(
                       hintText: 'Ej: example@gmail.com',
                       prefixIcon: const Icon(Icons.email),
@@ -163,8 +114,7 @@ class RecuperarContraScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      await sendVerificationEmail(emailController.text);
-                      _showConfirmationDialog(context, emailController.text);
+                      await _sendVerificationEmail(_emailController.text);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
@@ -173,6 +123,14 @@ class RecuperarContraScreen extends StatelessWidget {
                     ),
                     child: const Text('Enviar Correo'),
                   ),
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
                 ],
               ),
             ),

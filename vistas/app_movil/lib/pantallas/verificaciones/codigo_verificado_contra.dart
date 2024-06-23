@@ -1,23 +1,115 @@
 import 'package:flutter/material.dart';
-import '../restablecer_contra.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../iniciar_sesion.dart';
 
 class CodigoVerificadoContraWidget extends StatefulWidget {
-  const CodigoVerificadoContraWidget({super.key});
+  final String email;
+  final String code;
+
+  const CodigoVerificadoContraWidget({Key? key, required this.email, required this.code}) : super(key: key);
 
   @override
   CodigoVerificadoContraWidgetState createState() => CodigoVerificadoContraWidgetState();
 }
 
 class CodigoVerificadoContraWidgetState extends State<CodigoVerificadoContraWidget> {
+
   @override
   void initState() {
     super.initState();
+    // Llamar a la función para actualizar la contraseña después de 2 segundos
     Future.delayed(const Duration(seconds: 2), () {
-      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
-      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const ResetPasswordScreen())); // Vuelve a la pantalla anterior.
+      // Aquí enviamos la solicitud para actualizar la contraseña
+      updatePassword(widget.email, 'nueva_contraseña');
     });
   }
+
+  Future<void> updatePassword(String email, String newPassword) async {
+    final String apiUrl = 'http://localhost:3500/api/actualizar_contraseña'; // URL de tu servidor Express
+
+    // Datos para enviar al servidor
+    final Map<String, dynamic> requestBody = {
+      'email': email,
+      'newPassword': newPassword,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          // Contraseña actualizada exitosamente
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Éxito'),
+                content: Text(responseBody['message']),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const LoginScreen()));
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        } else {
+          // Usuario no encontrado u otro error
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Error'),
+                content: Text(responseBody['message']),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      } else {
+        throw Exception('Error al actualizar la contraseña');
+      }
+    } catch (e) {
+      print('Error: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Error al conectar con el servidor'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Usamos MediaQuery para obtener el tamaño de la pantalla
@@ -66,12 +158,12 @@ class CodigoVerificadoContraWidgetState extends State<CodigoVerificadoContraWidg
                 padding: EdgeInsets.only(top: 250),
                 child: Text(
                   'Código verificado.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Lato',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                  ),
                 ),
-                ),  
               ),
             ],
           ),

@@ -1,12 +1,24 @@
 import nodemailer from 'nodemailer';
 
 export async function sendVerificationEmail(email, code) {
+  // Verifica que las variables de entorno estén definidas
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    console.error('Las variables de entorno EMAIL_USER y EMAIL_APP_PASSWORD deben estar definidas.');
+    throw new Error('Configuración de correo electrónico no encontrada.');
+  }
+
+  // Verifica que el destinatario no esté vacío
+  if (!email) {
+    console.error('No se ha proporcionado un destinatario.');
+    throw new Error('Destinatario no definido.');
+  }
+
   // Configura el transporter
   let transporter = nodemailer.createTransport({
-    service: 'Gmail',  // Puedes usar otros servicios
+    service: 'Gmail',
     auth: {
-      user: process.env.EMAIL_USER, // Tu correo electrónico completo
-      pass: process.env.EMAIL_APP_PASSWORD, // Contraseña específica de la aplicación generada
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_APP_PASSWORD,
     },
   });
 
@@ -19,5 +31,10 @@ export async function sendVerificationEmail(email, code) {
   };
 
   // Envía el correo
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+    throw new Error('Error al enviar el correo.');
+  }
 }

@@ -6,8 +6,10 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class VerifyPhoneContraScreen extends StatefulWidget {
-  final String email;  // Campo para almacenar el correo electrónico
-  const VerifyPhoneContraScreen({super.key, required this.email});
+  final String email;
+  final String code;
+
+  const VerifyPhoneContraScreen({Key? key, required this.email, required this.code}) : super(key: key);
 
   @override
   VerifyPhoneContraScreenState createState() => VerifyPhoneContraScreenState();
@@ -15,44 +17,40 @@ class VerifyPhoneContraScreen extends StatefulWidget {
 
 class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
   final TextEditingController _pinController = TextEditingController();
+  String _errorMessage = '';
 
-  Future<void> verificarCodigo(String codigo) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://localhost:3500/api/verify-code'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'email': widget.email,
-          'code': codigo,
-        }),
-      );
+  Future<void> verificarCodigo() async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3500/api/verify-code'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'code': widget.code,
+        'codigo_verificacion': _pinController.text,
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseBody = json.decode(response.body);
-        if (responseBody['success']) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CodigoVerificadoContraWidget()),
-          );
-        } else {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorContraWidget()),
-          );
-        }
+    final Map<String, dynamic> responseBody = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      if (responseBody['success']) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CodigoVerificadoContraWidget(email: widget.email, code: widget.code)),
+        );
       } else {
-        throw Exception('Failed to verify code');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CodigoVerificadoErrorContraWidget()),
+        );
       }
-    } catch (error) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorContraWidget()),
-      );
+    } else {
+      setState(() {
+        _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+      });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     // Procesar el correo electrónico para mostrar solo una parte
-    String processedEmail = widget.email.replaceAll(RegExp(r'(?<=.{2}).(?=[^@]*?.@)'), '*');
+    String processedEmail = widget.email.replaceAllMapped(RegExp(r'(?<=.{2}).(?=[^@]*?.@)'), (match) => '*');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -75,7 +73,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.05),  // Padding relativo al ancho de la pantalla
+          padding: EdgeInsets.all(screenWidth * 0.05), // Padding relativo al ancho de la pantalla
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -106,15 +104,15 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
                 pinTheme: PinTheme(
                   shape: PinCodeFieldShape.box,
                   borderRadius: BorderRadius.circular(5),
-                  fieldHeight: screenWidth * 0.12, // Altura de los campos proporcional al ancho
-                  fieldWidth: screenWidth * 0.1, // Ancho de los campos proporcional al ancho
+                  fieldHeight: screenWidth * 0.12,
+                  fieldWidth: screenWidth * 0.1,
                   activeFillColor: Colors.blue[50],
                   selectedFillColor: Colors.white,
                   inactiveFillColor: Colors.white,
                 ),
                 keyboardType: TextInputType.number,
               ),
-              SizedBox(height: screenHeight * 0.21),
+              SizedBox(height: screenHeight * 0.28),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
@@ -124,9 +122,17 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
                   ),
                   padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.3, vertical: screenHeight * 0.02),
                 ),
-                onPressed: () => verificarCodigo(_pinController.text),
+                onPressed: verificarCodigo,
                 child: const Text("Verificar Ahora"),
-              )
+              ),
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Text(
+                    _errorMessage,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
             ],
           ),
         ),
