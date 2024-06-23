@@ -1,89 +1,106 @@
 import 'package:flutter/material.dart';
-import 'verificaciones/verificacion2.dart';  // Ensure this path is correct based on your project structure.
+import 'verificaciones/verificacion2.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class RecuperarContraScreen extends StatelessWidget {
   RecuperarContraScreen({super.key});
 
-  // Controller for the phone number input field.
-  final TextEditingController phoneController = TextEditingController();
+  // Controller for the email input field.
+  final TextEditingController emailController = TextEditingController();
 
-void _showConfirmationDialog(BuildContext context, String phoneNumber) {
-  double width = MediaQuery.of(context).size.width;
-  double height = MediaQuery.of(context).size.height;
+  Future<void> sendVerificationEmail(String email) async {
+    final response = await http.post(
+      Uri.parse('http://localhost:3500/api/send-verification-code'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+      }),
+    );
 
-  // Process the phone number to display only the last two digits.
-  String processedPhoneNumber = phoneNumber.length > 8
-      ? "${phoneNumber.substring(0, phoneNumber.length - 8)}******${phoneNumber.substring(phoneNumber.length - 2)}"
-      : phoneNumber;
+    if (response.statusCode == 200) {
+      print('Correo enviado');
+    } else {
+      print('Error al enviar el correo');
+    }
+  }
 
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        title: Column(
-          children: [
-            Container(
-              width: width * 0.2,
-              height: width * 0.2,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Color.fromRGBO(43, 220, 61, 1),
-              ),
-              child: const Center(
-                child: Icon(Icons.check, size: 60, color: Colors.white),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: height * 0.02),
-              child: Text(
-                "Enviamos un SMS a +$processedPhoneNumber.\nIngresa a tu casilla de mensajes y sigue las instrucciones para continuar con la recuperación de la contraseña.",
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  void _showConfirmationDialog(BuildContext context, String email) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    // Process the email to display partially masked.
+    String processedEmail = email.replaceRange(3, email.indexOf('@'), '****');
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          backgroundColor: Colors.white,
+          title: Column(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Cerrar el diálogo primero
-                  Navigator.of(context).pop();
-
-                  // Navegar a la pantalla de verificación
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => VerifyPhoneContraScreen(phoneNumber: phoneNumber)
-                    )
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
+              Container(
+                width: width * 0.2,
+                height: width * 0.2,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color.fromRGBO(43, 220, 61, 1),
                 ),
-                child: const Text("OK", style: TextStyle(color: Colors.white)),
+                child: const Center(
+                  child: Icon(Icons.check, size: 60, color: Colors.white),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: height * 0.02),
+                child: Text(
+                  "Enviamos un correo a $processedEmail.\nRevisa tu bandeja de entrada y sigue las instrucciones para continuar con la recuperación de la contraseña.",
+                  style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontSize: width * 0.045,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
           ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    // Cerrar el diálogo primero
+                    Navigator.of(context).pop();
 
+                    // Navegar a la pantalla de verificación
+                    Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => VerifyPhoneContraScreen(email: email) // Pasa el email aquí
+                        )
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF567DF4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
+                  ),
+                  child: const Text("OK", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +129,7 @@ void _showConfirmationDialog(BuildContext context, String phoneNumber) {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
               child: Text(
-                'Ingresa tu número de teléfono para recuperar tu contraseña',
+                'Ingresa tu correo electrónico para recuperar tu contraseña',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -127,13 +144,13 @@ void _showConfirmationDialog(BuildContext context, String phoneNumber) {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Número de Teléfono', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const Text('Correo Electrónico', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: phoneController,
+                    controller: emailController,
                     decoration: InputDecoration(
-                      hintText: 'Ej: 569########',
-                      prefixIcon: const Icon(Icons.phone_android),
+                      hintText: 'Ej: example@gmail.com',
+                      prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: const BorderSide(color: Color.fromRGBO(198, 212, 255, 1), width: 1.0),
@@ -141,17 +158,20 @@ void _showConfirmationDialog(BuildContext context, String phoneNumber) {
                       filled: true,
                       fillColor: const Color.fromRGBO(198, 212, 255, 1),
                     ),
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _showConfirmationDialog(context, phoneController.text),
+                    onPressed: () async {
+                      await sendVerificationEmail(emailController.text);
+                      _showConfirmationDialog(context, emailController.text);
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
                       foregroundColor: Colors.white,
                       minimumSize: Size(screenSize.width * 0.90, 50),
                     ),
-                    child: const Text('Enviar SMS'),
+                    child: const Text('Enviar Correo'),
                   ),
                 ],
               ),

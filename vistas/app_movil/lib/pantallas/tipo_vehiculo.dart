@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'registrar_vehiculo.dart'; // Importa tu RegisterVehiclePage
 
 class VehicleTypeSelector extends StatefulWidget {
-  final int userId;
+  final String userId; // Cambiado a String
 
   const VehicleTypeSelector({Key? key, required this.userId}) : super(key: key);
 
@@ -18,7 +18,7 @@ class VehicleTypeSelectorState extends State<VehicleTypeSelector> {
     {'name': 'Camión', 'icon': Icons.local_shipping, 'id': 2},
     {'name': 'Moto', 'icon': Icons.motorcycle, 'id': 3},
     {'name': 'Camioneta', 'icon': Icons.airport_shuttle, 'id': 4},
-    {'name': 'Furgon', 'icon': Icons.airport_shuttle, 'id': 5},
+    {'name': 'Furgón', 'icon': Icons.airport_shuttle, 'id': 5},
   ];
 
   @override

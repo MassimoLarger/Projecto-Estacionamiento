@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'codigo_verificado_contra.dart';
 import 'codigo_erroneo_contra.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class VerifyPhoneContraScreen extends StatefulWidget {
-  final String phoneNumber;  // Campo para almacenar el número de teléfono
-  const VerifyPhoneContraScreen({super.key, required this.phoneNumber});
+  final String email;  // Campo para almacenar el correo electrónico
+  const VerifyPhoneContraScreen({super.key, required this.email});
 
   @override
   VerifyPhoneContraScreenState createState() => VerifyPhoneContraScreenState();
@@ -14,14 +16,36 @@ class VerifyPhoneContraScreen extends StatefulWidget {
 class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
   final TextEditingController _pinController = TextEditingController();
 
-  void verificarCodigo(String codigo) {
-    const codigoCorrecto = "1234";  // Define el código correcto aquí
-    if (codigo == codigoCorrecto) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const CodigoVerificadoContraWidget()),
+  Future<void> verificarCodigo(String codigo) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://localhost:3500/api/verify-code'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': widget.email,
+          'code': codigo,
+        }),
       );
-    } else {
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CodigoVerificadoContraWidget()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorContraWidget()),
+          );
+        }
+      } else {
+        throw Exception('Failed to verify code');
+      }
+    } catch (error) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const CodigoVerificadoErrorContraWidget()),
@@ -29,15 +53,14 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    // Procesar el número de teléfono para mostrar solo los últimos dos dígitos
-    String processedPhoneNumber = widget.phoneNumber.length > 8
-        ? "${widget.phoneNumber.substring(0, widget.phoneNumber.length - 8)}******${widget.phoneNumber.substring(widget.phoneNumber.length - 2)}"
-        : widget.phoneNumber;
+    // Procesar el correo electrónico para mostrar solo una parte
+    String processedEmail = widget.email.replaceAll(RegExp(r'(?<=.{2}).(?=[^@]*?.@)'), '*');
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -65,7 +88,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
               ),
               SizedBox(height: screenHeight * 0.01),
               Text(
-                "Enviamos un SMS con un código de verificación a +$processedPhoneNumber",
+                "Enviamos un código de verificación a $processedEmail",
                 style: TextStyle(fontSize: screenWidth * 0.045, fontFamily: 'Lato', color: Colors.black),
                 textAlign: TextAlign.center,
               ),
@@ -77,7 +100,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
               SizedBox(height: screenHeight * 0.03),
               PinCodeTextField(
                 appContext: context,
-                length: 4,
+                length: 6,
                 controller: _pinController,
                 onChanged: (String value) {},
                 pinTheme: PinTheme(

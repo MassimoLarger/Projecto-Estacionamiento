@@ -1,6 +1,7 @@
 create table Usuario(
-	Telefono int primary key,
+	Correo text primary key,
 	Nombre varchar(50),
+	Telefono int,
 	Tipo varchar(30),
 	Contrasena varchar(50)
 );
@@ -35,9 +36,9 @@ create table Vehiculo(
 ------------------------------
 
 create table Registra(
-	ID_Usuario int,
+	ID_Usuario text,
 	ID_Vehiculo varchar(12),
-	foreign key (ID_Usuario) references Usuario(Telefono)
+	foreign key (ID_Usuario) references Usuario(Correo)
 	on delete no action on update cascade,
 	foreign key (ID_Vehiculo) references Vehiculo(Patente)
 	on delete no action on update cascade,
@@ -56,9 +57,10 @@ create table Estacionamiento(
 );
 
 create table Reserva(
-	ID_Usuario int,
+	ID_Usuario text,
 	ID_Estacionamiento smallint,
-	foreign key (ID_Usuario) references Usuario(Telefono)
+	fecha_reserva date,
+	foreign key (ID_Usuario) references Usuario(Correo)
 	on delete no action on update cascade,
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
 	on delete no action on update cascade,
@@ -77,10 +79,3 @@ create table Ocupa(
 	on delete no action on update cascade,
 	primary key (ID_Estacionamiento,ID_Vehiculo,Fecha_Entrada)
 );
-
------------------------------
-
-ALTER TABLE Reserva
-ADD fecha_reserva date;
-
-------------------------------------

@@ -5,10 +5,10 @@ import 'verificaciones/vehiculo_agregado.dart';
 import 'usuario.dart';
 
 class VehicleInfoPage extends StatefulWidget {
-  final int userId;
+  final String userId;
   final int vehicleId;
 
-  const VehicleInfoPage({required this.userId, required this.vehicleId, super.key});
+  const VehicleInfoPage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);
 
   @override
   _VehicleInfoPageState createState() => _VehicleInfoPageState();
@@ -72,9 +72,9 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody['success']) {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const VehiculoAgregadoWidget()),
+          MaterialPageRoute(builder: (context) => VehiculoAgregadoWidget(userId: widget.userId)),
         );
       } else {
         setState(() {

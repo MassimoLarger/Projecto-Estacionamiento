@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'sede.dart';  // Importa tu SelectCampusPage
-import 'patente_modelo.dart';  // Importa tu VehicleInfoPage
+import 'sede.dart';
+import 'patente_modelo.dart';
 import 'usuario.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
-  final int userId;
+  final String userId; // Cambiado a String
   final int vehicleId;
 
   const RegisterVehiclePage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Obtener las dimensiones de la pantalla para un diseño responsivo
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
@@ -90,7 +89,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SelectCampusPage(), //SelectCampusPage(userId: userId) - Pasa userId
+                      builder: (context) => SelectCampusPage(), //SelectCampusPage(userId: userId) - Pasa userId si es necesario
                     ),
                   );
                 },

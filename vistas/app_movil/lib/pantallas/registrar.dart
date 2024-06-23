@@ -14,6 +14,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final TextEditingController _correoController = TextEditingController();
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _telefonoController = TextEditingController();
   final TextEditingController _contrasenaController = TextEditingController();
@@ -26,6 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
+        'correo': _correoController.text,
         'nombre': _nombreController.text,
         'telefono': _telefonoController.text,
         'tipo': widget.tipoCuenta,
@@ -109,6 +111,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text('Correo', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 5),
+                  TextField(
+                    controller: _correoController,
+                    decoration: InputDecoration(
+                      hintText: 'Ingrese su correo',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      filled: true,
+                      fillColor: const Color.fromRGBO(198, 212, 255, 1),
+                    ),
+                  ),
+                  SizedBox(height: screenSize.height * 0.012),
                   const Text('Nombre', style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 5),
                   TextField(

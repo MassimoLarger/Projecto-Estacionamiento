@@ -3,13 +3,12 @@ import 'tipo_vehiculo.dart';
 import 'usuario.dart';
 
 class CarSelectionWidget extends StatelessWidget {
-  final int userId; // El userId sigue siendo un int
+  final String userId; // Cambiado a String
 
   const CarSelectionWidget({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Obtener las dimensiones de la pantalla para un diseño responsivo
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
@@ -38,10 +37,10 @@ class CarSelectionWidget extends StatelessWidget {
         elevation: 0,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Central alignment vertically
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05), // 5% of total screen height
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
             child: const Text(
               '¿En qué te movilizas hoy?',
               style: TextStyle(
@@ -59,19 +58,19 @@ class CarSelectionWidget extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(screenWidth * 0.1), // 10% of total screen width
+            padding: EdgeInsets.all(screenWidth * 0.1),
             child: SizedBox(
-              width: screenWidth * 0.9, // Button width set to 90% of screen width
+              width: screenWidth * 0.9,
               child: ElevatedButton(
                 onPressed: () {
                   showVehicleTypeSelector(context, userId);
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4),
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 2% of total screen height
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(27.5)
-                    )
+                  backgroundColor: const Color(0xFF567DF4),
+                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(27.5),
+                  ),
                 ),
                 child: const Text(
                   'Seleccione su Vehículo',
@@ -86,15 +85,15 @@ class CarSelectionWidget extends StatelessWidget {
   }
 }
 
-void showVehicleTypeSelector(BuildContext context, int userId) { // El userId sigue siendo un int
+void showVehicleTypeSelector(BuildContext context, String userId) { // Cambiado a String
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {
-      return VehicleTypeSelector(userId: userId); // Pasar userId como un int
+      return VehicleTypeSelector(userId: userId); // Pasar userId como String
     },
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    isScrollControlled: true, // Esto permite que el BottomSheet ocupe la altura necesaria
+    isScrollControlled: true,
   );
 }

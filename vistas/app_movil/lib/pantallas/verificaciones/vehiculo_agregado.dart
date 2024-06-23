@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../patentes.dart';
 
 class VehiculoAgregadoWidget extends StatefulWidget {
-  const VehiculoAgregadoWidget({super.key});
+  final String userId;
+  const VehiculoAgregadoWidget({Key? key, required this.userId}) : super(key: key);
 
   @override
   VehiculoAgregadoWidgetState createState() => VehiculoAgregadoWidgetState();
@@ -10,37 +11,35 @@ class VehiculoAgregadoWidget extends StatefulWidget {
 
 class VehiculoAgregadoWidgetState extends State<VehiculoAgregadoWidget> {
   @override
-
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
-      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const PatentesPage())); // Vuelve a la pantalla anterior.
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => PatentesPage(userId: widget.userId)),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Usamos MediaQuery para obtener el tamaño de la pantalla
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Container(
-        width: screenWidth, // Se ajusta al ancho de la pantalla
-        height: screenHeight, // Se ajusta a la altura de la pantalla
+        width: screenWidth,
+        height: screenHeight,
         decoration: const BoxDecoration(
           color: Color.fromRGBO(86, 125, 244, 1),
         ),
         child: Padding(
-          padding: EdgeInsets.only(top: screenHeight * 0.1), // 10% de la altura de la pantalla
+          padding: EdgeInsets.only(top: screenHeight * 0.1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: screenWidth * 0.4, // 40% del ancho de la pantalla
-                height: screenWidth * 0.4, // Hace el círculo siempre proporcional al ancho
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(43, 220, 61, 1),
@@ -53,7 +52,7 @@ class VehiculoAgregadoWidgetState extends State<VehiculoAgregadoWidget> {
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.05), // 5% de la altura de la pantalla
+              SizedBox(height: screenHeight * 0.05),
               const Text(
                 'Operación\nExitosa!',
                 textAlign: TextAlign.center,
@@ -68,12 +67,12 @@ class VehiculoAgregadoWidgetState extends State<VehiculoAgregadoWidget> {
                 padding: EdgeInsets.only(top: 250),
                 child: Text(
                   'Tu vehículo ha sido agregado.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Lato',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                  ),
                 ),
-                ),  
               ),
             ],
           ),

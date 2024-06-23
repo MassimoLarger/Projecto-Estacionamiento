@@ -5,15 +5,17 @@ import 'vehiculos.dart';
 import 'verificaciones/eliminar_patente.dart';
 
 class PatentesPage extends StatefulWidget {
-  const PatentesPage({super.key});
+  final String userId; // Cambiado a String
+  const PatentesPage({Key? key, required this.userId}) : super(key: key);
+
   @override
   PatentesPageState createState() => PatentesPageState();
 }
 
 class PatentesPageState extends State<PatentesPage> {
   List<String> patentes = ['CJ CH 25', 'CU ML 69', 'CC CM 23'];
-  int? selectedPatenteIndex;  // Guarda el índice de la patente seleccionada
-  Set<String> markedForDeletion = {};  // Uso de literal de conjunto
+  int? selectedPatenteIndex;
+  Set<String> markedForDeletion = {};
 
   void _removePatente(String patente) {
     double width = MediaQuery.of(context).size.width;
@@ -29,7 +31,7 @@ class PatentesPageState extends State<PatentesPage> {
             style: TextStyle(
               fontSize: width * 0.045,
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -42,10 +44,10 @@ class PatentesPageState extends State<PatentesPage> {
                     setState(() {
                       patentes.remove(patente);
                     });
-                    Navigator.of(context).pop(); // Cierra el diálogo
+                    Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => EliminarPatenteWidget(onCompleted: () {
-                        setState(() {}); // Fuerza la actualización de la pantalla de patentes
+                        setState(() {});
                       }),
                     ));
                   },
@@ -59,8 +61,7 @@ class PatentesPageState extends State<PatentesPage> {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      markedForDeletion.remove(patente);  // Mantiene la patente y elimina la marca de eliminación
-                    //EliminarPatenteWidget
+                      markedForDeletion.remove(patente);
                     });
                     Navigator.of(context).pop();
                   },
@@ -85,7 +86,7 @@ class PatentesPageState extends State<PatentesPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context). pop(),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(''),
         actions: <Widget>[
@@ -130,7 +131,11 @@ class PatentesPageState extends State<PatentesPage> {
                   margin: const EdgeInsets.all(10.0),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                   elevation: 0,
-                  color: isMarkedForDeletion ? Colors.red : (index == selectedPatenteIndex ? Colors.green : const Color(0xFFC6D4FF)),
+                  color: isMarkedForDeletion
+                      ? Colors.red
+                      : (index == selectedPatenteIndex
+                      ? Colors.green
+                      : const Color(0xFFC6D4FF)),
                   child: ListTile(
                     title: Text(
                       patente,
@@ -149,8 +154,9 @@ class PatentesPageState extends State<PatentesPage> {
                     ),
                     onTap: () {
                       setState(() {
-                        selectedPatenteIndex = index == selectedPatenteIndex ? null : index;
-                        if (isMarkedForDeletion) {  // Si está marcado para eliminación y se toca, se desmarca
+                        selectedPatenteIndex =
+                        index == selectedPatenteIndex ? null : index;
+                        if (isMarkedForDeletion) {
                           markedForDeletion.remove(patente);
                         }
                       });
@@ -166,7 +172,8 @@ class PatentesPageState extends State<PatentesPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const SelectCampusPage()),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -183,7 +190,8 @@ class PatentesPageState extends State<PatentesPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MisVehiculosScreen()),
+                  MaterialPageRoute(
+                      builder: (context) => const MisVehiculosScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(

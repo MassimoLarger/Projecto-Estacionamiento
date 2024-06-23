@@ -1,14 +1,16 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import { sendVerificationEmail } from './emailService.js';
 import pkg from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { Ppu } from './ppu.js';
-import _ from 'lodash'; // Use import instead of require
+import _ from 'lodash';
 import _variables from './variables.json' assert { type: 'json' };
 import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 
-
+// Configuraciones iniciales
 dotenv.config();
 
 const { Pool } = pkg;
@@ -21,65 +23,36 @@ const pool = new Pool({
 });
 
 const app = express();
-const PORT = process.env.PORT || 3500;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(bodyParser.json());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Existing routes
-app.get('/api/consultau', async (req, res) => {
+// Rutas existentes
+app.post('/api/consultar', async (req, res) => {
+  const { correo } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM usuario');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
-  }
-});
-
-app.get('/api/consultav', async (req, res) => {
-  try {
-    const result = await pool.query(`
-        SELECT v.patente, v.año, v.descripcion as modelo, tv.nombre as tipo
-        FROM vehiculo v
-        JOIN Tipo_Vehiculo tv ON v.ID_Tipo_V = tv.ID_Tipo_V;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
-  }
-});
-
-app.get('/api/consultar', async (req, res) => {
-  try {
-    const result = await pool.query(`
-        SELECT u.nombre as usuario, r.id_vehiculo as patente, v.descripcion as modelo
-        FROM registra r
-        JOIN usuario u ON u.telefono = r.ID_Usuario
-        JOIN vehiculo v ON r.id_vehiculo = v.patente;
-    `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
-  }
-});
-
-// Nueva ruta para verificar credenciales
-app.post('/api/login', async (req, res) => {
-  const { telefono, contrasena } = req.body;
-  
-  try {
-    const result = await pool.query(
-      'SELECT * FROM usuario WHERE telefono = $1 AND contrasena = $2',
-      [telefono, contrasena]
-    );
-  
+    const result = await pool.query('SELECT * FROM registra WHERE ID_Usuario = $1', [correo]);
     if (result.rows.length > 0) {
-      const { telefono } = result.rows[0];
-      res.json({ success: true, userId: telefono, message: 'Usuario encontrado' });
+      res.json({ success: true, message: 'Vehículos encontrados' });
+    } else {
+      res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  const { correo, contrasena } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2', [correo, contrasena]);
+    if (result.rows.length > 0) {
+      const { correo } = result.rows[0];
+      res.json({ success: true, userId: correo, message: 'Usuario encontrado' });
     } else {
       res.json({ success: false, message: 'Usuario no encontrado, o algun campo incorrecto' });
     }
@@ -90,13 +63,9 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/register', async (req, res) => {
-  const { telefono, nombre, tipo, contrasena } = req.body;
-    
+  const { correo, nombre, telefono, tipo, contrasena } = req.body;
   try {
-    const result = await pool.query(
-      'INSERT INTO usuario VALUES ($1, $2, $3, $4) RETURNING *',
-      [telefono, nombre, tipo, contrasena]
-    );
+    const result = await pool.query('INSERT INTO usuario VALUES ($1, $2, $3, $4, $5) RETURNING *', [correo, nombre, telefono, tipo, contrasena]);
     res.status(200).json({ success: true, id: result.rows[0].id });
   } catch (error) {
     console.error(error);
@@ -106,20 +75,9 @@ app.post('/api/register', async (req, res) => {
 
 app.post('/api/vehiculos', async (req, res) => {
   const { patente, year, model, vehicleId, userId } = req.body;
-
   try {
-    // Insertar el nuevo vehículo
-    const result = await pool.query(
-      'INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *',
-      [patente, year, model, vehicleId]
-    );
-
-    // Registrar la relación del vehículo con el usuario
-    const resultado = await pool.query(
-      'INSERT INTO Registra VALUES ($1, $2) RETURNING *',
-      [userId, patente]
-    );
-
+    const result = await pool.query('INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *', [patente, year, model, vehicleId]);
+    const resultado = await pool.query('INSERT INTO Registra VALUES ($1, $2) RETURNING *', [userId, patente]);
     res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
   } catch (error) {
     console.error('Error al registrar el vehículo:', error);
@@ -129,10 +87,8 @@ app.post('/api/vehiculos', async (req, res) => {
 
 app.post('/api/verify-ppu', (req, res) => {
   const { patente, verificador } = req.body;
-
   try {
     const ppuInstance = new Ppu(patente);
-
     if (ppuInstance.dv === verificador) {
       res.status(200).json({ success: true, ppu: ppuInstance });
     } else {
@@ -145,10 +101,39 @@ app.post('/api/verify-ppu', (req, res) => {
   }
 });
 
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.post('/api/send-verification-code', async (req, res) => {
+  const { email } = req.body;
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+  try {
+    await sendVerificationEmail(email, code);
+    res.status(200).send('Correo enviado');
+  } catch (error) {
+    console.error('Error al enviar el correo:', error);
+    res.status(500).send('Error al enviar el correo');
+  }
+});
+
+app.post('/api/verify-code', async (req, res) => {
+  const { email, code } = req.body;
+
+  try {
+    const storedCode = await getCodeFromDatabase(email);
+    console.log('Código almacenado:', storedCode);
+    console.log('Código recibido:', code);
+
+    if (storedCode === code) {
+      res.json({ success: true });
+    } else {
+      res.json({ success: false, message: 'Código incorrecto' });
+    }
+  } catch (error) {
+    console.error('Error al verificar el código:', error);
+    res.status(500).send('Error al verificar el código');
+  }
+});
 
 // Start the server
+const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
   console.log(`Servidor activo en el puerto ${PORT}`);
 });

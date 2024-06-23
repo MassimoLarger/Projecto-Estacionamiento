@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'tipo_de_cuenta.dart';
 import 'recuperar_contrasena.dart';
 import 'movilizacion.dart';
+import 'patentes.dart';
 //import 'inicio.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _telefonoController = TextEditingController();
+  final TextEditingController _correoController = TextEditingController();
   final TextEditingController _contrasenaController = TextEditingController();
   String? _errorMessage;
 
@@ -26,7 +27,7 @@ class LoginScreenState extends State<LoginScreen> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'telefono': _telefonoController.text,
+        'correo': _correoController.text,
         'contrasena': _contrasenaController.text,
       }),
     );
@@ -34,13 +35,35 @@ class LoginScreenState extends State<LoginScreen> {
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseBody = json.decode(response.body);
       if (responseBody['success']) {
-        // Usuario encontrado, redirige a la siguiente pantalla con userId y nombre
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
-          ),
+        // Usuario encontrado, realizar la consulta de vehículo
+        final vehiculoResponse = await http.post(
+          Uri.parse('http://localhost:3500/api/consultar'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'correo': _correoController.text,
+          }),
         );
+
+        final Map<String, dynamic> vehiculoResponseBody = json.decode(vehiculoResponse.body);
+        if (vehiculoResponseBody['success']) {
+          // Usuario tiene vehículos registrados, redirige a la pantalla de selección de vehículo
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PatentesPage(userId: responseBody['userId']),
+            ),
+          );
+        } else {
+          // Usuario no tiene vehículos registrados, redirige a otra pantalla
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
+            ),
+          );
+        }
       } else {
         // Usuario no encontrado, muestra mensaje de error
         setState(() {
@@ -98,12 +121,12 @@ class LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Número de Teléfono', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const Text('Correo Electronico', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: _telefonoController,
+                    controller: _correoController,
                     decoration: InputDecoration(
-                      hintText: 'Introduce tu número de teléfono',
+                      hintText: 'Introduzca su correo electronico',
                       prefixIcon: const Icon(Icons.phone_android),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -120,7 +143,7 @@ class LoginScreenState extends State<LoginScreen> {
                   TextField(
                     controller: _contrasenaController,
                     decoration: InputDecoration(
-                      hintText: 'Introduce tu contraseña',
+                      hintText: 'Introduzca su contraseña',
                       prefixIcon: const Icon(Icons.lock),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
