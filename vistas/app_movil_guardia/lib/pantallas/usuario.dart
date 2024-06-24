@@ -4,7 +4,7 @@ import 'editar_perfil.dart';
 import 'dart:io';
 import 'datos_personales.dart';
 import 'contrasena_seguridad.dart';
-//import 'reservas.dart';
+import 'estacionamientos.dart';
 //import 'vehiculos.dart';
 //import 'comentarios.dart';
 
@@ -153,9 +153,9 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.directions_car),
                     title: const Text('Estacionamientos'),
                     onTap: () {
-                      //Navigator.push(
-                        //context, MaterialPageRoute(builder: (context) => const MisVehiculosScreen()),
-                      //);
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const ParkingScreen()),
+                      );
                     },
                   ),
                   ListTile(

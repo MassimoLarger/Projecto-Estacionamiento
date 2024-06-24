@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import '../contrasena_seguridad.dart';
+import '../sedes.dart';
 
 class EliminarReservaExitoWidget extends StatefulWidget {
   const EliminarReservaExitoWidget({super.key});
@@ -15,7 +15,7 @@ class EliminarReservaExitoWidgetState extends State<EliminarReservaExitoWidget> 
     Future.delayed(const Duration(seconds: 2), () {
       // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
       // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const PasswordAndSecurityPage())); // Vuelve a la pantalla anterior.
+      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const GuardiaScreen())); // Vuelve a la pantalla anterior.
     });
   }
   @override

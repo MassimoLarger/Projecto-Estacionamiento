@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'espacios_estacionamiento.dart';
 
 class SedeMeyerSelector extends StatefulWidget {
   const SedeMeyerSelector({super.key});
@@ -10,7 +11,7 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
   int _selectedIndex = -1;
 
   final List<Map<String, dynamic>> places = [
-    {'name': 'Entrada'},
+    {'name': 'Entrada'},  // Ejemplo con una sola entrada
   ];
 
   @override
@@ -40,23 +41,23 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
               ),
             ),
           ),
-          SizedBox(height: scaleText(20)), // Dynamically scaled vertical space
+          SizedBox(height: scaleText(20)), // Espacio vertical escalado dinámicamente
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // Padding horizontal
             child: Text(
               "SELECCIONA EL LUGAR",
               style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: scaleText(16), // Dynamically scaled font size
+                fontSize: scaleText(16), // Tamaño de fuente escalado dinámicamente
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: scaleText(18)), // More dynamically scaled vertical space
-          Padding(  // Added padding to align with the text above
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+          SizedBox(height: scaleText(18)), // Más espacio vertical escalado dinámicamente
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: SizedBox(
-              height: 170, // Specifies the height of the horizontal list
+              height: 170, // Altura especificada para la lista
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: places.length,
@@ -67,20 +68,25 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
                       setState(() {
                         _selectedIndex = index;
                       });
-                      //Navigator.push(
-                        //context,
-                        //MaterialPageRoute(builder: (context) => const BookingScreen()),
-                      //);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EspacioEstacionamientoWidget(
+                            sectionName: places[index]['name'],  // Pasar 'Entrada' como ejemplo
+                            sedeName: 'Meyer',  // Pasar 'Meyer' como sede
+                          ),
+                        ),
+                      );
                     },
                     child: SizedBox(
-                      width: width * 0.9, // 40% of the screen width
+                      width: width * 0.9, // 90% del ancho de la pantalla
                       child: Card(
                         color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
                         child: ListTile(
                             title: Text(
                               places[index]['name'],
                               style: TextStyle(
-                                fontSize: scaleText(20), // Dynamically scaled font size
+                                fontSize: scaleText(20),
                                 color: isSelected ? Colors.white : Colors.black,
                               ),
                             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-//import 'usuario.dart';
-//import 'espacios_estacionamiento.dart';
+import 'modificar_reserva_2.dart';
+import 'usuario.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -174,13 +174,13 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              //showDialog(
-                //context: context,
-                //barrierDismissible: false,
-                //builder: (BuildContext context) {
-                  //return const CustomUserDialog();
-                //},
-              //);
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return const CustomUserDialog();
+                },
+              );
             },
           ),
         ],
@@ -356,10 +356,10 @@ void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
           SizedBox(height: width * 0.63), // Espacio al final basado en ancho de pantalla
           ElevatedButton(
             onPressed: () {
-              //Navigator.push(
-                //context,
-                //MaterialPageRoute(builder: (context) => const EspacioEstacionamientoWidget()),
-              //);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const DetailScreen2()),
+              );
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF567DF4), // Botón azul

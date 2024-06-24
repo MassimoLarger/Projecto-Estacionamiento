@@ -15,7 +15,7 @@ class ModificarReservaErrorWidgetState extends State<ModificarReservaErrorWidget
     Future.delayed(const Duration(seconds: 2), () {
       // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
       // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const PasswordAndSecurityPage())); // Vuelve a la pantalla anterior.
+      Navigator.pop(context); // Vuelve a la pantalla anterior.
     });
   }
   @override

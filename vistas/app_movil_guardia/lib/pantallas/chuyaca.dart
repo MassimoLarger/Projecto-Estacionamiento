@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'espacios_estacionamiento.dart'; // Asegúrate de tener el import correcto
 
 class SedeChuyacaSelector extends StatefulWidget {
   const SedeChuyacaSelector({super.key});
@@ -56,7 +57,7 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
             ),
           ),
           SizedBox(height: scaleText(18)), // More dynamically scaled vertical space
-          Padding(  // Added padding to align with the text above
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
             child: SizedBox(
               height: 170, // Specifies the height of the horizontal list
@@ -70,10 +71,15 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
                       setState(() {
                         _selectedIndex = index;
                       });
-                      //Navigator.push(
-                        //context,
-                        //MaterialPageRoute(builder: (context) => const BookingScreen()),
-                      //);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EspacioEstacionamientoWidget(
+                            sectionName: places[index]['name'],
+                            sedeName: 'Chuyaca',  // Asegúrate de pasar el nombre correcto de la sede
+                          ),
+                        ),
+                      );
                     },
                     child: SizedBox(
                       width: width * 0.9, // 40% of the screen width
@@ -83,11 +89,11 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
                           title: Text(
                             places[index]['name'],
                             style: TextStyle(
-                            fontSize: scaleText(20), // Dynamically scaled font size
-                            color: isSelected ? Colors.white : Colors.black,
-                              ),
+                              fontSize: scaleText(20), // Dynamically scaled font size
+                              color: isSelected ? Colors.white : Colors.black,
                             ),
-                            trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
+                          ),
+                          trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
                         ),
                       ),
                     ),
