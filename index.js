@@ -133,18 +133,21 @@ app.post('/api/verify-code', async (req, res) => {
   }
 });
 
-app.post('/api/actualizar_contraseña', async (req, res) => {
-  const { email, newPassword } = req.body;
+app.post('/api/actualizar_contrasena', async (req, res) => {
+  const { email, newPassword, newPassword_verify} = req.body;
 
   try {
     // Ejecutar la consulta para actualizar la contraseña
-    const result = await pool.query('UPDATE usuario SET contraseña = $1 WHERE correo = $2 RETURNING *', [newPassword, email]);
-
-    // Verificar si se encontró y actualizó el usuario
-    if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+    if (newPassword === newPassword_verify){
+      const result = await pool.query('UPDATE usuario SET Contrasena = $1 WHERE correo = $2 RETURNING *', [newPassword, email]);
+      // Verificar si se encontró y actualizó el usuario
+      if (result.rows.length > 0) {
+        res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+      } else {
+        res.json({ success: false, message: 'Usuario no encontrado' });
+      }
     } else {
-      res.json({ success: false, message: 'Usuario no encontrado' });
+      res.json({ success: false, message: 'Contraseña incorrecta' });
     }
   } catch (error) {
     console.error('Error al actualizar contraseña:', error);

@@ -37,7 +37,7 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
       if (responseBody['success']) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CodigoVerificadoContraWidget(email: widget.email, code: widget.code)),
+          MaterialPageRoute(builder: (context) => CodigoVerificadoContraWidget(email: widget.email)),
         );
       } else {
         Navigator.push(

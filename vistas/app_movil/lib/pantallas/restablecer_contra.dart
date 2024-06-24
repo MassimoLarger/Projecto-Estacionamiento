@@ -1,69 +1,62 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/contrasena_erronea.dart';
 import 'verificaciones/contrasena_verificada.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class ResetPasswordScreen extends StatelessWidget {
-  const ResetPasswordScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  final String email;
+  const ResetPasswordScreen({Key? key, required this.email}) : super(key: key);
 
-void _showConfirmationDialog(BuildContext context) {
-  double width = MediaQuery.of(context).size.width;
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: Colors.white,
-        title: Text(
-          "¿Estás seguro que deseas confirmar tu nueva contraseña?",
-          style: TextStyle(
-            fontFamily: 'Lato',
-            fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
-            fontWeight: FontWeight.bold,
-            color: Colors.black
-          ),
-          textAlign: TextAlign.center,
-        ),
-        actions: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const ContrasenaVerificadaWidget()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
-                ),
-                child: const Text("Sí", style: TextStyle(color: Colors.white)),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const ContrasenaErrorWidget()));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
-                ),
-                child: const Text("No", style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        ],
-      );
-    },
-  );
+  @override
+  ResetPasswordScreenState createState() => ResetPasswordScreenState();
 }
 
+class ResetPasswordScreenState extends State<ResetPasswordScreen> {
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _verifyPasswordController = TextEditingController();
+  String _errorMessage = '';
 
+  Future<void> _showConfirmationDialog(BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/actualizar_contrasena'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'email': widget.email,
+          'newPassword': _newPasswordController.text,
+          'newPassword_verify': _verifyPasswordController.text,
+        }),
+      );
+
+      final Map<String, dynamic> responseBody = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        if (responseBody['success']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ContrasenaVerificadaWidget()),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const ContrasenaErrorWidget()),
+          );
+        }
+      } else {
+        setState(() {
+          _errorMessage = responseBody['message'] ?? 'Error desconocido';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error al conectar con el servidor.';
+      });
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +104,7 @@ void _showConfirmationDialog(BuildContext context) {
             ),
             SizedBox(height: screenHeight * 0.01),
             TextField(
+              controller: _newPasswordController,
               obscureText: true,
               decoration: InputDecoration(
                 hintText: 'Ingresa tu nueva contraseña',
@@ -132,7 +126,7 @@ void _showConfirmationDialog(BuildContext context) {
             ),
             SizedBox(height: screenHeight * 0.01),
             TextField(
-              obscureText: true,
+              controller: _verifyPasswordController,
               decoration: InputDecoration(
                 hintText: 'Confirma tu nueva contraseña',
                 border: OutlineInputBorder(
@@ -142,8 +136,17 @@ void _showConfirmationDialog(BuildContext context) {
                 filled: true,
                 fillColor: const Color.fromRGBO(198, 212, 255, 1),
               ),
+              obscureText: true,
             ),
-            SizedBox(height: screenHeight * 0.14),
+            SizedBox(height: screenHeight * 0.02),
+            if (_errorMessage.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  _errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
             Center(
               child: ElevatedButton(
                 onPressed: () => _showConfirmationDialog(context),
