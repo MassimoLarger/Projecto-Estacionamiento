@@ -5,8 +5,8 @@ import 'dart:io';
 import 'datos_personales.dart';
 import 'contrasena_seguridad.dart';
 import 'estacionamientos.dart';
-//import 'vehiculos.dart';
-//import 'comentarios.dart';
+import 'historial_de_reservas.dart';
+import 'comentarios_guardia.dart';
 
 class CustomUserDialog extends StatefulWidget {
   const CustomUserDialog({super.key});
@@ -144,9 +144,9 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.book),
                     title: const Text('Historial Reservas'),
                     onTap: () {
-                      //Navigator.push(
-                        //context, MaterialPageRoute(builder: (context) => ReservasScreen()),
-                      //);
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const ReservasScreen()),
+                      );
                     },
                   ),
                   ListTile(
@@ -162,9 +162,9 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.comment),
                     title: const Text('Comentarios'),
                     onTap: () {
-                      //Navigator.push(
-                        //context, MaterialPageRoute(builder: (context) => const CommentPage()),
-                      //);
+                      Navigator.push(
+                        context, MaterialPageRoute(builder: (context) => const AdminCommentResponsePage()),
+                      );
                     },
                   ),
                   const Divider(),

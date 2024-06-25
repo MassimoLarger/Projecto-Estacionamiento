@@ -23,9 +23,10 @@ class GuardiaScreen extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CustomUserDialog()),
+                  showDialog(
+                    context: context,
+                    builder: (context) => const CustomUserDialog(),
+                    barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.6),  // Ajusta esto para cambiar el color y la opacidad
                   );
                 },
                 child: const Icon(Icons.account_circle, color: Colors.white, size: 40),
