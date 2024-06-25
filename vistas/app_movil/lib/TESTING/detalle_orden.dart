@@ -3,16 +3,17 @@ import 'verificaciones/reserva_espacio.dart';
 import 'verificaciones/cancelar_reserva.dart';
 import 'usuario.dart';
 
-
 class DetailScreen extends StatelessWidget {
-  const DetailScreen({super.key});
- 
+  final String userId;
+
+  const DetailScreen({Key? key, required this.userId}) : super(key: key);
+
   void _showConfirmarReservaDialog(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
     showDialog(
       context: context,
-      barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -21,37 +22,39 @@ class DetailScreen extends StatelessWidget {
             "¿Estás seguro que deseas reservar?",
             style: TextStyle(
               fontFamily: 'Lato',
-              fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+              fontSize: width * 0.045,
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const ReservaEspacioWidget()));
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => ReservaEspacioWidget(userId: userId)),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
+                    backgroundColor: const Color(0xFF567DF4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
                   ),
                   child: const Text("Sí", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
+                    backgroundColor: const Color(0xFF567DF4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
                   ),
                   child: const Text("No", style: TextStyle(color: Colors.white)),
                 ),
@@ -68,7 +71,7 @@ class DetailScreen extends StatelessWidget {
 
     showDialog(
       context: context,
-      barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -77,37 +80,39 @@ class DetailScreen extends StatelessWidget {
             "¿Estás seguro que deseas cancelar tu reserva?",
             style: TextStyle(
               fontFamily: 'Lato',
-              fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+              fontSize: width * 0.045,
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Centra los botones en el diálogo
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CancelarReservaWidget()));
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (_) => CancelarReservaWidget(userId: userId)),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
+                    backgroundColor: const Color(0xFF567DF4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
                   ),
                   child: const Text("Sí", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4), // Mismo color para ambos botones
+                    backgroundColor: const Color(0xFF567DF4),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),
                   ),
                   child: const Text("No", style: TextStyle(color: Colors.white)),
                 ),
@@ -117,7 +122,7 @@ class DetailScreen extends StatelessWidget {
         );
       },
     );
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +145,7 @@ class DetailScreen extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: userId);
                 },
               );
             },
@@ -161,30 +166,15 @@ class DetailScreen extends StatelessWidget {
               padding: EdgeInsets.all(width * 0.07),
               decoration: BoxDecoration(
                 color: const Color(0xFFF3F6FF),
-                borderRadius: BorderRadius.circular(0),
+                borderRadius: BorderRadius.circular(30),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DetailItem(title: 'VEHÍCULO', value: 'Toyota Tacoma • CJ CH 25'),
-                  DetailItem(title: 'ESTACIONAMIENTO', value: 'Campus Chuyaca • Espacio AV01'),
-                  DetailItem(title: 'HORA/FECHA', value: '16:00 - 17:00 PM • 25 Sep. 2024'),
+                children: const [
+                  DetailItem(title: 'Espacio:', value: 'A1'),
+                  DetailItem(title: 'Fecha:', value: '24/06/2023'),
+                  DetailItem(title: 'Hora:', value: '10:00 AM - 11:00 AM'),
                 ],
-              ),
-            ),
-            const SizedBox(height: 210),
-            ButtonTheme(
-              minWidth: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  minimumSize: Size(width, 55),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(27.5),
-                  ),
-                ),
-                child: const Text('Confirmar Reserva', style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Colors.white)),
-                onPressed: () => _showConfirmarReservaDialog(context),
               ),
             ),
             const SizedBox(height: 20),
@@ -198,8 +188,29 @@ class DetailScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(27.5),
                   ),
                 ),
-                child: const Text('Cancelar Reserva', style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Colors.white)),
+                onPressed: () => _showConfirmarReservaDialog(context),
+                child: const Text(
+                  'Confirmar Reserva',
+                  style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ButtonTheme(
+              minWidth: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF567DF4),
+                  minimumSize: Size(width, 55),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(27.5),
+                  ),
+                ),
                 onPressed: () => _showCancelarReservaDialog(context),
+                child: const Text(
+                  'Cancelar Reserva',
+                  style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -214,10 +225,10 @@ class DetailItem extends StatelessWidget {
   final String value;
 
   const DetailItem({
-    super.key,
+    Key? key,
     required this.title,
     required this.value,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -31,6 +31,22 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Rutas existentes
+app.post('/api/consultau', async (req, res) => {
+  const { correo } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM Usuario WHERE Correo = $1', [correo]);
+    if (result.rows.length > 0) {
+      const { nombre, telefono, tipo, contrasena } = result.rows[0];
+      res.json({ success: true, message: 'Usuario encontrado', usuario: { nombre, telefono, tipo, contrasena } });
+    } else {
+      res.json({ success: false, message: 'No se encuentra el usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
 app.post('/api/consultar', async (req, res) => {
   const { correo } = req.body;
   try {
@@ -45,6 +61,24 @@ app.post('/api/consultar', async (req, res) => {
     res.status(500).json({ error: 'Error en la consulta a la base de datos' });
   }
 });
+
+app.post('/api/updateProfile', async (req, res) => {
+  const { correo, nombre } = req.body;
+
+  try {
+    const result = await pool.query('UPDATE usuario SET nombre = $1 WHERE correo = $2 RETURNING *', [nombre, correo]);
+    // Verificar si se encontró y actualizó el usuario
+    if (result.rows.length > 0) {
+      res.json({ success: true, message: 'Perfil actualizado correctamente' });
+    } else {
+      res.json({ success: false, message: 'Usuario no encontrado' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar perfil:', error);
+    res.status(500).send('Error al actualizar perfil');
+  }
+});
+
 
 app.post('/api/login', async (req, res) => {
   const { correo, contrasena } = req.body;
@@ -133,18 +167,21 @@ app.post('/api/verify-code', async (req, res) => {
   }
 });
 
-app.post('/api/actualizar_contraseña', async (req, res) => {
-  const { email, newPassword } = req.body;
+app.post('/api/actualizar_contrasena', async (req, res) => {
+  const { email, newPassword, newPassword_verify} = req.body;
 
   try {
     // Ejecutar la consulta para actualizar la contraseña
-    const result = await pool.query('UPDATE usuario SET contraseña = $1 WHERE correo = $2 RETURNING *', [newPassword, email]);
-
-    // Verificar si se encontró y actualizó el usuario
-    if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+    if (newPassword === newPassword_verify){
+      const result = await pool.query('UPDATE usuario SET Contrasena = $1 WHERE correo = $2 RETURNING *', [newPassword, email]);
+      // Verificar si se encontró y actualizó el usuario
+      if (result.rows.length > 0) {
+        res.json({ success: true, message: 'Contraseña actualizada exitosamente' });
+      } else {
+        res.json({ success: false, message: 'Usuario no encontrado' });
+      }
     } else {
-      res.json({ success: false, message: 'Usuario no encontrado' });
+      res.json({ success: false, message: 'Contraseña incorrecta' });
     }
   } catch (error) {
     console.error('Error al actualizar contraseña:', error);

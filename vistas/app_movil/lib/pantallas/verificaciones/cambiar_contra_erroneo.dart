@@ -1,44 +1,47 @@
 import 'package:flutter/material.dart';
-import '../contrasena_seguridad.dart';
+import '../usuario.dart'; // Ajusta la ruta según la estructura de tu proyecto
 
 class ContrasenaCambiadaErrorWidget extends StatefulWidget {
-  const ContrasenaCambiadaErrorWidget({super.key});
+  final String userId;
+  final String userPassword;
+
+  const ContrasenaCambiadaErrorWidget({Key? key, required this.userId, required this.userPassword}) : super(key: key);
 
   @override
-  ContrasenaCambiadaErrorWidgetState createState() => ContrasenaCambiadaErrorWidgetState();
+  _ContrasenaCambiadaErrorWidgetState createState() => _ContrasenaCambiadaErrorWidgetState();
 }
 
-class ContrasenaCambiadaErrorWidgetState extends State<ContrasenaCambiadaErrorWidget> {
+class _ContrasenaCambiadaErrorWidgetState extends State<ContrasenaCambiadaErrorWidget> {
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
-      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const PasswordAndSecurityPage())); // Vuelve a la pantalla anterior.
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => CustomUserDialog(userId: widget.userId)),
+      );
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    // Usamos MediaQuery para obtener el tamaño de la pantalla
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: Container(
-        width: screenWidth, // Se ajusta al ancho de la pantalla
-        height: screenHeight, // Se ajusta a la altura de la pantalla
+        width: screenWidth,
+        height: screenHeight,
         decoration: const BoxDecoration(
           color: Color.fromRGBO(255, 236, 239, 1),
         ),
         child: Padding(
-          padding: EdgeInsets.only(top: screenHeight * 0.1), // 10% de la altura de la pantalla
+          padding: EdgeInsets.only(top: screenHeight * 0.1),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                width: screenWidth * 0.4, // 40% del ancho de la pantalla
-                height: screenWidth * 0.4, // Hace el círculo siempre proporcional al ancho
+                width: screenWidth * 0.4,
+                height: screenWidth * 0.4,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Color.fromRGBO(255, 255, 255, 1),
@@ -51,27 +54,27 @@ class ContrasenaCambiadaErrorWidgetState extends State<ContrasenaCambiadaErrorWi
                   ),
                 ),
               ),
-              SizedBox(height: screenHeight * 0.05), // 5% de la altura de la pantalla
+              SizedBox(height: screenHeight * 0.05),
               const Text(
                 'Operación\nFallida!',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
+                  color: Colors.black,
                   fontFamily: 'Lato',
                   fontSize: 48,
                   fontWeight: FontWeight.normal,
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 250),
+                padding: EdgeInsets.only(top: 20),
                 child: Text(
                   'No se ha cambiado la contraseña',
-                style: TextStyle(
-                  color: Color.fromARGB(255, 0, 0, 0),
-                  fontSize: 20,
-                  fontFamily: 'Lato',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                  ),
                 ),
-                ),  
               ),
             ],
           ),

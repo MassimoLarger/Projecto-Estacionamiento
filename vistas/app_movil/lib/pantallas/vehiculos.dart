@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MisVehiculosScreen extends StatefulWidget {
-  const MisVehiculosScreen({super.key});
+  final String userId;
+
+  const MisVehiculosScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   MisVehiculosScreenState createState() => MisVehiculosScreenState();
