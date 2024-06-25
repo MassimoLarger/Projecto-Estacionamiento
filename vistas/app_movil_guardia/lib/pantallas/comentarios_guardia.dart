@@ -94,7 +94,7 @@ class AdminCommentResponsePageState extends State<AdminCommentResponsePage> {
                               const Divider(),
                               ListTile(
                                 leading: const CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/admin.png'),
+                                  backgroundImage: AssetImage('assets/images/user.png'),
                                 ),
                                 title: const Text('Administrador'),
                                 subtitle: Text(response.response),
