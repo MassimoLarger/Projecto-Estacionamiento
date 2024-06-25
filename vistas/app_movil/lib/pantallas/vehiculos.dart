@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MisVehiculosScreen extends StatefulWidget {
   final String userId;
@@ -10,18 +12,102 @@ class MisVehiculosScreen extends StatefulWidget {
 }
 
 class MisVehiculosScreenState extends State<MisVehiculosScreen> {
-  
-  List<Map<String, String>> vehiculos = [
-    {
-      'modelo': 'Toyota Tacoma',
-      'patente': 'CJ CH 25',
-    },
-    {
-      'modelo': 'Nissan Sentra',
-      'patente': 'AB CD 12',
-    },
-    // Añadir más vehículos si es necesario
-  ];
+  List<Map<String, dynamic>> vehiculos = [];
+  bool isLoading = true;
+  bool hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPatentes();
+  }
+
+  Future<void> _fetchPatentes() async {
+    final url = Uri.parse('http://localhost:3500/api/consultar');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'correo': widget.userId}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          final List<dynamic> patentes = responseBody['patentes'];
+
+          // Retrieve details of each vehicle
+          final List<Future<void>> vehiculosPromises = patentes.map((patente) async {
+            await _fetchVehiculo(patente);
+          }).toList();
+
+          await Future.wait(vehiculosPromises);
+        } else {
+          setState(() {
+            hasError = true;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseBody['message'])),
+          );
+        }
+      } else {
+        setState(() {
+          hasError = true;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        hasError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchVehiculo(String patente) async {
+    final url = Uri.parse('http://localhost:3500/api/vehiculoR');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({'patente': patente}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          final vehiculo = responseBody['patentes'];
+
+          setState(() {
+            vehiculos.add({
+              'modelo': vehiculo['descripcion'],
+              'patente': vehiculo['patente'],
+            });
+          });
+        } else {
+          setState(() {
+            hasError = true;
+          });
+        }
+      } else {
+        setState(() {
+          hasError = true;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        hasError = true;
+      });
+    }
+  }
 
   void _showConfirmationDialog(int index) {
     double width = MediaQuery.of(context).size.width;
@@ -39,7 +125,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
               fontFamily: 'Lato',
               fontSize: width * 0.045,
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -84,7 +170,6 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
     );
   }
 
-  // Método para abrir el diálogo de agregar vehículo
   void _agregarVehiculoDialog() {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -111,7 +196,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
           ),
           content: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start, // Alineación del contenido a la izquierda
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   'Modelo del Vehículo',
@@ -124,9 +209,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
                 ),
                 TextFormField(
                   controller: modeloController,
-                  decoration: const InputDecoration(
-                    //hintText: 'Ingrese el modelo del vehículo',
-                  ),
+                  decoration: const InputDecoration(),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -140,9 +223,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
                 ),
                 TextFormField(
                   controller: patenteController,
-                  decoration: const InputDecoration(
-                    //hintText: 'Ingrese la patente del vehículo',
-                  ),
+                  decoration: const InputDecoration(),
                 ),
               ],
             ),
@@ -187,7 +268,11 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
         ),
         backgroundColor: Colors.white,
       ),
-      body: Column(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : hasError
+          ? Center(child: Text('Error al cargar los vehículos'))
+          : Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -203,10 +288,9 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: vehiculos.length + 1, // +1 para incluir el botón de agregar
+              itemCount: vehiculos.length + 1,
               itemBuilder: (context, index) {
                 if (index == vehiculos.length) {
-                  // Agregar botón al final de la lista
                   return ListTile(
                     title: Center(
                       child: CircleAvatar(

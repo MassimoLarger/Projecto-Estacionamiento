@@ -6,9 +6,8 @@ import 'usuario.dart';
 
 class VehicleInfoPage extends StatefulWidget {
   final String userId;
-  final int vehicleId;
 
-  const VehicleInfoPage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);
+  const VehicleInfoPage({Key? key, required this.userId}) : super(key: key);
 
   @override
   _VehicleInfoPageState createState() => _VehicleInfoPageState();
@@ -64,7 +63,6 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
         'verificador': _verificadorController.text,
         'year': _yearController.text,
         'model': _modelController.text,
-        'vehicleId': widget.vehicleId,
         'userId': widget.userId,
       }),
     );
@@ -191,7 +189,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
               TextField(
                 controller: _yearController,
                 decoration: InputDecoration(
-                  hintText: '2012',
+                  hintText: '2021',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25),
                     borderSide: const BorderSide(color: Color.fromRGBO(198, 212, 255, 1), width: 1.0),
@@ -213,29 +211,36 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
               TextField(
                 controller: _modelController,
                 decoration: InputDecoration(
-                  hintText: 'Toyota Tacoma',
+                  hintText: 'Corolla',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25),
                     borderSide: const BorderSide(color: Color.fromRGBO(198, 212, 255, 1), width: 1.0),
                   ),
                   filled: true,
-                  fillColor: const Color(0xFFC6D4FF),
+                  fillColor: const Color.fromRGBO(198, 212, 255, 1),
                 ),
               ),
-              SizedBox(height: screenSize.height * 0.25),
+              const SizedBox(height: 20),
               if (_errorMessage != null)
                 Text(
                   _errorMessage!,
                   style: const TextStyle(color: Colors.red),
                 ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _verifyVehicle,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF567DF4),
-                  foregroundColor: Colors.white,
-                  minimumSize: Size(screenSize.width * 0.9, 50),
+                  padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.01),
+                  minimumSize: Size(screenSize.width * 0.8, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(27.5),
+                  ),
                 ),
-                child: const Text('Continuar'),
+                child: const Text(
+                  'Verificar',
+                  style: TextStyle(fontSize: 16, fontFamily: 'Lato', color: Colors.white),
+                ),
               ),
             ],
           ),

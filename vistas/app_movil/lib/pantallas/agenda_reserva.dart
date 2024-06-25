@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'usuario.dart';
+//import 'espacios_estacionamiento.dart';
 
 class BookingScreen extends StatefulWidget {
   final String userId;
@@ -12,30 +14,30 @@ class BookingScreen extends StatefulWidget {
 
 class BookingScreenState extends State<BookingScreen> {
   DateTime selectedDate = DateTime.now();
-  String? selectedPeriod; // Morning, Afternoon, Night
+  String? selectedPeriod; // Mañana, Tarde, Noche
   TimeOfDay? timeFrom;
   TimeOfDay? timeTo;
 
   final Map<String, Color> periodColors = {
-    'Morning': const Color(0xFFF3F8FF),
-    'Afternoon': const Color(0xFFF3F8FF),
-    'Night': const Color(0xFFF3F8FF),
+    'Mañana': const Color(0xFFF3F8FF),
+    'Tarde': const Color(0xFFF3F8FF),
+    'Noche': const Color(0xFFF3F8FF),
   };
 
   final Map<String, List<String>> timeSlots = {
-    'Morning': List.generate(36, (index) {
+    'Mañana': List.generate(36, (index) {
       int hours = (index * 10 / 60 + 6).toInt();
       int minutes = (index * 10 % 60);
       if (hours == 24) hours = 0;
       return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
     }),
-    'Afternoon': List.generate(48, (index) {
+    'Tarde': List.generate(48, (index) {
       int hours = (index * 10 / 60 + 12).toInt();
       int minutes = (index * 10 % 60);
       if (hours == 24) hours = 0;
       return "${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
     }),
-    'Night': List.generate(25, (index) {
+    'Noche': List.generate(25, (index) {
       int hours = (index * 10 / 60 + 20).toInt();
       int minutes = (index * 10 % 60);
       if (hours == 24) hours = 0;
@@ -44,9 +46,9 @@ class BookingScreenState extends State<BookingScreen> {
   };
 
   final Map<String, Color> selectedPeriodColors = {
-    'Morning': const Color(0xFFC6D4FF),
-    'Afternoon': const Color(0xFFC6D4FF),
-    'Night': const Color(0xFFC6D4FF),
+    'Mañana': const Color(0xFFC6D4FF),
+    'Tarde': const Color(0xFFC6D4FF),
+    'Noche': const Color(0xFFC6D4FF),
   };
 
   void _selectDate(BuildContext context) async {
@@ -81,7 +83,7 @@ class BookingScreenState extends State<BookingScreen> {
   }
 
   void _showTimeSelection(BuildContext context, {required bool isStartTime}) {
-    final times = timeSlots[selectedPeriod!] ?? [];
+    final times = timeSlots[selectedPeriod] ?? [];
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.white,
@@ -105,7 +107,7 @@ class BookingScreenState extends State<BookingScreen> {
               ),
               SizedBox(height: width * 0.05),
               Text(
-                isStartTime ? "Select start time" : "Select end time",
+                isStartTime ? "Seleccione hora de inicio" : "Seleccione hora de fin",
                 style: TextStyle(
                   fontSize: width * 0.04,
                   fontWeight: FontWeight.bold,
@@ -160,98 +162,116 @@ class BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  void _navigateToParkingSpaceSelection(BuildContext context) {
-    if (selectedDate == null || selectedPeriod == null || timeFrom == null || timeTo == null) {
-      // Mostrar un diálogo o mensaje de error indicando que todos los campos son obligatorios
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Please select all fields before proceeding.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Close'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // Aquí se navegaría a la siguiente pantalla (EspacioEstacionamientoWidget)
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EspacioEstacionamientoWidget(),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+
+    bool canReserve = selectedDate != null && selectedPeriod != null && timeFrom != null && timeTo != null;
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Booking'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle, color: Colors.black),
+            onPressed: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (BuildContext context) {
+                  return CustomUserDialog(userId: widget.userId);
+                },
+              );
+            },
+          ),
+        ],
+        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        elevation: 0,
       ),
       body: ListView(
-        padding: EdgeInsets.all(width * 0.05),
+        padding: EdgeInsets.all(width * 0.04),
         children: <Widget>[
-          // Date Selector
-          Container(
-            margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Date:',
-                  style: TextStyle(
-                    fontSize: width * 0.04,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => _selectDate(context),
-                  child: Text(
-                    DateFormat('dd-MM-yyyy').format(selectedDate),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: width * 0.0125),
+            child: Text(
+              'Agendar Reserva',
+              style: TextStyle(
+                fontFamily: 'Lato',
+                fontSize: width * 0.06,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: width * 0.05),
+            child: Text(
+              'Selecciona la fecha y hora',
+              style: TextStyle(
+                fontFamily: 'Inter',
+                fontSize: width * 0.045,
+                fontWeight: FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _selectDate(context),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: width * 0.03, horizontal: width * 0.04),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF3F8FF),
+                borderRadius: BorderRadius.circular(width * 0.03),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    DateFormat('dd/MMM/yyyy').format(selectedDate),
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: width * 0.035,
+                      fontSize: width * 0.04,
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
-
-          // Period Selector
-          Container(
-            margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
-            child: Wrap(
-              spacing: width * 0.13,
-              children: ['Morning', 'Afternoon', 'Night'].map((period) {
-                return ChoiceChip(
-                  label: Text(period),
-                  selected: selectedPeriod == period,
-                  onSelected: (selected) {
-                    setState(() => selectedPeriod = period);
-                  },
-                  backgroundColor: selectedPeriod == period ? selectedPeriodColors[period] : periodColors[period],
-                  selectedColor: selectedPeriodColors[period],
-                  labelStyle: TextStyle(
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    fontSize: width * 0.035,
+                  Icon(
+                    Icons.calendar_today,
+                    color: const Color(0xFF567DF4),
+                    size: width * 0.06,
                   ),
-                );
-              }).toList(),
+                ],
+              ),
             ),
           ),
-
-          // From Element
+          SizedBox(height: width * 0.05),
+          Text(
+            'Horario',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: width * 0.045,
+            ),
+          ),
+          Wrap(
+            spacing: width * 0.13,
+            children: ['Mañana', 'Tarde', 'Noche'].map((period) {
+              return ChoiceChip(
+                label: Text(period),
+                selected: selectedPeriod == period,
+                onSelected: (selected) {
+                  setState(() => selectedPeriod = period);
+                },
+                backgroundColor: selectedPeriod == period ? selectedPeriodColors[period] : periodColors[period],
+                selectedColor: selectedPeriodColors[period],
+                labelStyle: TextStyle(
+                  color: const Color.fromARGB(255, 0, 0, 0),
+                  fontSize: width * 0.035,
+                ),
+              );
+            }).toList(),
+          ),
           Container(
             margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
             child: Row(
@@ -260,7 +280,7 @@ class BookingScreenState extends State<BookingScreen> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'From:',
+                    'Desde:',
                     style: TextStyle(
                       fontSize: width * 0.04,
                       fontWeight: FontWeight.bold,
@@ -282,7 +302,7 @@ class BookingScreenState extends State<BookingScreen> {
                       elevation: 0,
                     ),
                     child: Text(
-                      timeFrom?.format(context) ?? 'Select time',
+                      timeFrom?.format(context) ?? 'Elige hora',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: width * 0.035,
@@ -293,8 +313,6 @@ class BookingScreenState extends State<BookingScreen> {
               ],
             ),
           ),
-
-          // To Element
           Container(
             margin: EdgeInsets.only(top: width * 0.025, bottom: width * 0.025),
             child: Row(
@@ -303,7 +321,7 @@ class BookingScreenState extends State<BookingScreen> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    'To:',
+                    'Hasta:',
                     style: TextStyle(
                       fontSize: width * 0.04,
                       fontWeight: FontWeight.bold,
@@ -325,7 +343,7 @@ class BookingScreenState extends State<BookingScreen> {
                       elevation: 0,
                     ),
                     child: Text(
-                      timeTo?.format(context) ?? 'Select time',
+                      timeTo?.format(context) ?? 'Elige hora',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: width * 0.035,
@@ -336,12 +354,15 @@ class BookingScreenState extends State<BookingScreen> {
               ],
             ),
           ),
-
           SizedBox(height: width * 0.63),
           ElevatedButton(
-            onPressed: () => _navigateToParkingSpaceSelection(context),
+            onPressed: canReserve
+                ? () {
+              // Agregar lógica para reservar aquí
+            }
+                : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF567DF4),
+              backgroundColor: canReserve ? const Color(0xFF567DF4) : Colors.grey,
               foregroundColor: Colors.white,
               textStyle: TextStyle(
                 fontSize: width * 0.04,
@@ -350,7 +371,7 @@ class BookingScreenState extends State<BookingScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(width * 0.06)),
             ),
             child: const Text(
-              'Reserve',
+              'Reservar',
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color.fromARGB(255, 255, 255, 255),
@@ -360,25 +381,6 @@ class BookingScreenState extends State<BookingScreen> {
             ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class EspacioEstacionamientoWidget extends StatelessWidget {
-  const EspacioEstacionamientoWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Parking Space Selection'),
-      ),
-      body: Center(
-        child: Text(
-          'Choose your parking space here!',
-          style: TextStyle(fontSize: 20),
-        ),
       ),
     );
   }

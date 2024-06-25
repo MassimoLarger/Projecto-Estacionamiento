@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
-import 'agenda_reserva.dart'; // Asumiendo que aquí se define BookingScreen
+import 'agenda_reserva.dart';
 
-class SedeChuyacaSelector extends StatefulWidget {
+class SedeMeyerSelector extends StatefulWidget {
   final String userId;
 
-  const SedeChuyacaSelector({Key? key, required this.userId}) : super(key: key);
+  const SedeMeyerSelector({Key? key, required this.userId}) : super(key: key);
 
   @override
-  SedeChuyacaSelectorState createState() => SedeChuyacaSelectorState();
+  SedeMeyerSelectorState createState() => SedeMeyerSelectorState();
 }
 
-class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
+class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
   int _selectedIndex = -1;
 
   final List<Map<String, dynamic>> places = [
-    {'name': 'Entrada'},
-    {'name': 'Gym'},
-    {'name': 'Aulas Virtuales'},
-    {'name': 'Casino'},
-    // Agregar más lugares según sea necesario
+    {'name': 'Entrada'},  // Ejemplo con una sola entrada
   ];
 
   @override
@@ -48,23 +44,23 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
               ),
             ),
           ),
-          SizedBox(height: scaleText(20)),
+          SizedBox(height: scaleText(20)), // Espacio vertical escalado dinámicamente
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: Text(
               "SELECCIONA EL LUGAR",
               style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: scaleText(16),
+                fontSize: scaleText(16), // Tamaño de fuente escalado dinámicamente
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: scaleText(18)),
+          SizedBox(height: scaleText(18)), // Más espacio vertical escalado dinámicamente
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: SizedBox(
-              height: 170,
+              height: 170, // Altura especificada para la lista
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: places.length,
@@ -76,24 +72,26 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
                         _selectedIndex = index;
                       });
                       if (isSelected) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => BookingScreen(userId: widget.userId)), // Acceso a widget.userId
-                        );
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(
+                             builder: (context) => BookingScreen(userId: widget.userId),
+                           ),
+                         );
                       }
                     },
                     child: SizedBox(
-                      width: width * 0.9,
+                      width: width * 0.9, // 90% del ancho de la pantalla
                       child: Card(
                         color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
                         child: ListTile(
-                          title: Text(
-                            places[index]['name'],
-                            style: TextStyle(
-                              fontSize: scaleText(20),
-                              color: isSelected ? Colors.white : Colors.black,
+                            title: Text(
+                              places[index]['name'],
+                              style: TextStyle(
+                                fontSize: scaleText(20),
+                                color: isSelected ? Colors.white : Colors.black,
+                              ),
                             ),
-                          ),
                           trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
                         ),
                       ),

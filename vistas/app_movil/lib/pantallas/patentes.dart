@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'usuario.dart';
 import 'sede.dart';
-import 'vehiculos.dart';
+import 'patente_modelo.dart';
 import 'verificaciones/eliminar_patente.dart';
 
 class PatentesPage extends StatefulWidget {
-  final String userId; // Cambiado a String
+  final String userId;
+
   const PatentesPage({Key? key, required this.userId}) : super(key: key);
 
   @override
@@ -13,9 +16,74 @@ class PatentesPage extends StatefulWidget {
 }
 
 class PatentesPageState extends State<PatentesPage> {
-  List<String> patentes = ['CJ CH 25', 'CU ML 69', 'CC CM 23'];
+  List<String> patentes = [];
   int? selectedPatenteIndex;
   Set<String> markedForDeletion = {};
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPatentes();
+  }
+
+  Future<void> _fetchPatentes() async {
+    final url = Uri.parse('http://localhost:3500/api/consultar');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode({'correo': widget.userId}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+
+        if (responseBody['success']) {
+          final dynamic patentesData = responseBody['patentes'];
+
+          if (patentesData is List) {
+            setState(() {
+              patentes = List<String>.from(patentesData); // Convertir a List<String>
+              isLoading = false;
+            });
+          } else {
+            setState(() {
+              isLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('El campo "patentes" no es una lista válida.')),
+            );
+          }
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseBody['message'])),
+          );
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error en la solicitud. Inténtalo de nuevo.')),
+        );
+      }
+    } catch (e) {
+      print('Error fetching patentes: $e');
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error en la solicitud. Inténtalo de nuevo.')),
+      );
+    }
+  }
 
   void _removePatente(String patente) {
     double width = MediaQuery.of(context).size.width;
@@ -107,7 +175,9 @@ class PatentesPageState extends State<PatentesPage> {
           ),
         ],
       ),
-      body: Column(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: <Widget>[
           const Padding(
             padding: EdgeInsets.only(top: 20.0, left: 16.0, bottom: 6.0),
@@ -195,7 +265,7 @@ class PatentesPageState extends State<PatentesPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MisVehiculosScreen(userId: widget.userId),
+                    builder: (context) => VehicleInfoPage(userId: widget.userId),
                   ),
                 );
               },

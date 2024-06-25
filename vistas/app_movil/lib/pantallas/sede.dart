@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
-//import 'chuyaca.dart';
-//import 'meyer.dart';
+import 'chuyaca.dart';
+import 'meyer.dart';
 
 class SelectCampusPage extends StatelessWidget {
   final String userId;
@@ -51,16 +51,16 @@ class SelectCampusPage extends StatelessWidget {
             ),
           ),
           campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth, () {
-            //Navigator.push(
-              //context,
-              //MaterialPageRoute(builder: (context) => SedeChuyacaSelector(userId: userId)),
-            //);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SedeChuyacaSelector(userId: userId)),
+            );
           }),
           campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth, () {
-            //Navigator.push(
-              //context,
-              //MaterialPageRoute(builder: (context) => SedeMeyerSelector(userId: userId)),
-            //);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SedeMeyerSelector(userId: userId)),
+            );
           }),
         ],
       ),

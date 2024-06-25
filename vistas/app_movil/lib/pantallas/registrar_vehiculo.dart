@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
 import 'patente_modelo.dart';
-import 'sede.dart';
+import 'patentes.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
   final String userId;
-  final int vehicleId;
 
-  const RegisterVehiclePage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);
+  const RegisterVehiclePage({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +65,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VehicleInfoPage(userId: userId, vehicleId: vehicleId),
+                      builder: (context) => VehicleInfoPage(userId: userId),
                     ),
                   );
                 },
@@ -89,7 +88,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SelectCampusPage(userId: userId), // Pasando userId a SelectCampusPage
+                      builder: (context) => PatentesPage(userId: userId),
                     ),
                   );
                 },

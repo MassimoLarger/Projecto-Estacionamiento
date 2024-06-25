@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'agenda_reserva.dart'; // Asumiendo que aquí se define BookingScreen
+import 'agenda_reserva.dart';
 
-class SedeMeyerSelector extends StatefulWidget {
+class SedeChuyacaSelector extends StatefulWidget {
   final String userId;
 
-  const SedeMeyerSelector({Key? key, required this.userId}) : super(key: key);
+  const SedeChuyacaSelector({Key? key, required this.userId}) : super(key: key);
 
   @override
-  SedeMeyerSelectorState createState() => SedeMeyerSelectorState();
+  SedeChuyacaSelectorState createState() => SedeChuyacaSelectorState();
 }
 
-class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
+class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
   int _selectedIndex = -1;
 
   final List<Map<String, dynamic>> places = [
     {'name': 'Entrada'},
-    {'name': 'Otro Lugar'}, // Ejemplo de otro lugar
+    {'name': 'Gym'},
+    {'name': 'Aulas Virtuales'},
+    {'name': 'Casino'},
+    // Agregar más lugares según sea necesario
   ];
 
   @override
@@ -75,23 +78,29 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
                       if (isSelected) {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => BookingScreen(userId: widget.userId)), // Acceso a widget.userId
+                          MaterialPageRoute(
+                            builder: (context) => BookingScreen(userId: widget.userId),
+                          ),
                         );
                       }
                     },
-                    child: SizedBox(
-                      width: width * 0.9,
-                      child: Card(
-                        color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
-                        child: ListTile(
-                          title: Text(
-                            places[index]['name'],
-                            style: TextStyle(
-                              fontSize: scaleText(20),
-                              color: isSelected ? Colors.white : Colors.black,
+                    child: Card(
+                      color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              places[index]['name'],
+                              style: TextStyle(
+                                fontSize: scaleText(20),
+                                color: isSelected ? Colors.white : Colors.black,
+                              ),
                             ),
-                          ),
-                          trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
+                            if (isSelected)
+                              Icon(Icons.check_box, color: Colors.white),
+                          ],
                         ),
                       ),
                     ),
