@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'usuario.dart';
-//import 'espacios_estacionamiento.dart';
+import 'espacios_estacionamiento.dart';
 
 class BookingScreen extends StatefulWidget {
   final String userId;
@@ -358,8 +358,8 @@ class BookingScreenState extends State<BookingScreen> {
           ElevatedButton(
             onPressed: canReserve
                 ? () {
-              // Agregar lógica para reservar aquí
-            }
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => EspacioEstacionamientoWidget(userId: widget.userId)));
+                }
                 : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: canReserve ? const Color(0xFF567DF4) : Colors.grey,

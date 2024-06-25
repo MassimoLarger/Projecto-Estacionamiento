@@ -16,7 +16,9 @@ class CancelarReservaWidgetState extends State<CancelarReservaWidget> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       // Navegar de regreso a la pantalla inicial después de 2 segundos
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const VehicleInterface(userID: widget.userID))); // Ajusta el nombre de la pantalla inicial según tu proyecto
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId)),
+      ); // Ajusta el nombre de la pantalla inicial según tu proyecto
     });
   }
 

@@ -15,7 +15,9 @@ class CancelarReservatimeWidgetState extends State<CancelarReservatimeWidget> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => VehicleInterface(userID)));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId)),
+      );
     });
   }
 
