@@ -46,9 +46,12 @@ class PatentesPageState extends State<PatentesPage> {
                     });
                     Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => EliminarPatenteWidget(onCompleted: () {
-                        setState(() {});
-                      }),
+                      builder: (context) => EliminarPatenteWidget(
+                        userId: widget.userId,
+                        onCompleted: () {
+                          setState(() {});
+                        },
+                      ),
                     ));
                   },
                   style: ElevatedButton.styleFrom(
@@ -91,13 +94,13 @@ class PatentesPageState extends State<PatentesPage> {
         title: const Text(''),
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
               showDialog(
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: widget.userId);
                 },
               );
             },
@@ -173,7 +176,8 @@ class PatentesPageState extends State<PatentesPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const SelectCampusPage()),
+                    builder: (context) => SelectCampusPage(userId: widget.userId),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -191,7 +195,8 @@ class PatentesPageState extends State<PatentesPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const MisVehiculosScreen()),
+                    builder: (context) => MisVehiculosScreen(userId: widget.userId),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(

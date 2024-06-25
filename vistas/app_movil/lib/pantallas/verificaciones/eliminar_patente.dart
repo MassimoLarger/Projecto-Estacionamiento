@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 //import '../patentes.dart';
 
 class EliminarPatenteWidget extends StatefulWidget {
-  final VoidCallback onCompleted; // Callback para actualizar la lista
-  const EliminarPatenteWidget({super.key, required this.onCompleted});
+  final String userId;
+  final VoidCallback onCompleted;
+
+  const EliminarPatenteWidget({Key? key, required this.userId, required this.onCompleted}) : super(key: key);
 
   @override
   EliminarPatenteWidgetState createState() => EliminarPatenteWidgetState();

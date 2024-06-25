@@ -3,7 +3,9 @@ import 'usuario.dart';
 import 'detalle_orden.dart';
 
 class EspacioEstacionamientoWidget extends StatelessWidget {
-  const EspacioEstacionamientoWidget({super.key});
+  final String userId;
+
+  const EspacioEstacionamientoWidget({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class EspacioEstacionamientoWidget extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: userId);
                 },
               );
             },
@@ -64,15 +66,15 @@ class EspacioEstacionamientoWidget extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DetailScreen()),
+                    MaterialPageRoute(builder: (context) => DetailScreen(userId: userId)),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(27.5)
-                  )
+                    backgroundColor: const Color(0xFF567DF4),
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(27.5)
+                    )
                 ),
                 child: const Text(
                   'Continuar',

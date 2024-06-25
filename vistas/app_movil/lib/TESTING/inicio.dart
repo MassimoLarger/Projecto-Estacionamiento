@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'sede.dart';
-import 'usuario.dart'; // Asegúrate de que esta página está definida correctamente
+import 'usuario.dart';
 
 class VehicleInterface extends StatelessWidget {
-  const VehicleInterface({super.key});
+  final String userId;
+
+  const VehicleInterface({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     // MediaQuery para obtener el tamaño de la pantalla
     final size = MediaQuery.of(context).size;
-    
+
     return Scaffold(
       backgroundColor: const Color(0xFFF3F6FF),
       body: SafeArea(
@@ -23,9 +25,12 @@ class VehicleInterface extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CustomUserDialog()),
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomUserDialog(userId: userId);
+                        },
                       );
                     },
                     child: const Icon(Icons.account_circle, color: Colors.white, size: 40),
@@ -89,7 +94,7 @@ class VehicleInterface extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const SelectCampusPage()),
+              MaterialPageRoute(builder: (context) => SelectCampusPage(userId: userId)),
             );
           },
           backgroundColor: const Color(0xFF456EFF),

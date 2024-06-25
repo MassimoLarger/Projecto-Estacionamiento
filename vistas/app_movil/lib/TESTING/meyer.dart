@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'agenda_reserva.dart';
+import 'agenda_reserva.dart'; // Asumiendo que aquí se define BookingScreen
 
 class SedeMeyerSelector extends StatefulWidget {
-  const SedeMeyerSelector({super.key});
+  final String userId;
+
+  const SedeMeyerSelector({Key? key, required this.userId}) : super(key: key);
+
   @override
   SedeMeyerSelectorState createState() => SedeMeyerSelectorState();
 }
@@ -12,6 +15,7 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
 
   final List<Map<String, dynamic>> places = [
     {'name': 'Entrada'},
+    {'name': 'Otro Lugar'}, // Ejemplo de otro lugar
   ];
 
   @override
@@ -41,23 +45,23 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
               ),
             ),
           ),
-          SizedBox(height: scaleText(20)), // Dynamically scaled vertical space
+          SizedBox(height: scaleText(20)),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: Text(
               "SELECCIONA EL LUGAR",
               style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: scaleText(16), // Dynamically scaled font size
+                fontSize: scaleText(16),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: scaleText(18)), // More dynamically scaled vertical space
-          Padding(  // Added padding to align with the text above
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+          SizedBox(height: scaleText(18)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: SizedBox(
-              height: 170, // Specifies the height of the horizontal list
+              height: 170,
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: places.length,
@@ -68,23 +72,25 @@ class SedeMeyerSelectorState extends State<SedeMeyerSelector> {
                       setState(() {
                         _selectedIndex = index;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const BookingScreen()),
-                      );
+                      if (isSelected) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingScreen(userId: widget.userId)), // Acceso a widget.userId
+                        );
+                      }
                     },
                     child: SizedBox(
-                      width: width * 0.9, // 40% of the screen width
+                      width: width * 0.9,
                       child: Card(
                         color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
                         child: ListTile(
-                            title: Text(
-                              places[index]['name'],
-                              style: TextStyle(
-                                fontSize: scaleText(20), // Dynamically scaled font size
-                                color: isSelected ? Colors.white : Colors.black,
-                              ),
+                          title: Text(
+                            places[index]['name'],
+                            style: TextStyle(
+                              fontSize: scaleText(20),
+                              color: isSelected ? Colors.white : Colors.black,
                             ),
+                          ),
                           trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
                         ),
                       ),

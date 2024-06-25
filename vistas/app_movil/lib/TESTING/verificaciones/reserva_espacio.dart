@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
-import '../inicio.dart';
+import '../reserva_time_inicio.dart';
 
-class CancelarReservaWidget extends StatefulWidget {
-  const CancelarReservaWidget({super.key});
+class ReservaEspacioWidget extends StatefulWidget {
+  final String userId;
+
+  const ReservaEspacioWidget({Key? key, required this.userId}) : super(key: key);
 
   @override
-  CancelarReservaWidgetState createState() => CancelarReservaWidgetState();
+  ReservaEspacioWidgetState createState() => ReservaEspacioWidgetState();
 }
 
-class CancelarReservaWidgetState extends State<CancelarReservaWidget> {
+class ReservaEspacioWidgetState extends State<ReservaEspacioWidget> {
 
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
-      // Aquí puedes decidir si el usuario debe regresar a la pantalla de ingreso de código
-      // o a otra pantalla relevante. Aquí simplemente cerramos esta pantalla de error.
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const VehicleInterface())); // Vuelve a la pantalla anterior.
+      // Navega a la pantalla de reserva de tiempo pasando el userId
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => VehicleTimeReserva(userId: widget.userId),
+        ),
+      );
     });
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +72,13 @@ class CancelarReservaWidgetState extends State<CancelarReservaWidget> {
               const Padding(
                 padding: EdgeInsets.only(top: 250),
                 child: Text(
-                  'Se ha cancelado tu reserva.',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontFamily: 'Lato',
+                  '1 espacio de estacionamiento ha sido reservado para ti.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontFamily: 'Lato',
+                  ),
                 ),
-                ),  
               ),
             ],
           ),

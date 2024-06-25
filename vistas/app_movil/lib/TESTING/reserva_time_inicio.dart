@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'verificaciones/cancelar_reserva_time.dart';
 import 'usuario.dart';
+import 'verificaciones/cancelar_reserva_time.dart';
 
 class VehicleTimeReserva extends StatefulWidget {
-  const VehicleTimeReserva({super.key});
+  final String userId;
+
+  const VehicleTimeReserva({Key? key, required this.userId}) : super(key: key);
 
   @override
   VehicleTimeReservaState createState() => VehicleTimeReservaState();
@@ -45,7 +47,7 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
 
     showDialog(
       context: context,
-      barrierDismissible: false,  // Esto evita que el diálogo se cierre al tocar fuera del cuadro
+      barrierDismissible: false, // Esto evita que el diálogo se cierre al tocar fuera del cuadro
       builder: (BuildContext context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -54,9 +56,9 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
             "¿Estás seguro que deseas cancelar tu reserva?",
             style: TextStyle(
               fontFamily: 'Lato',
-              fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+              fontSize: width * 0.045, // Escala el tamaño de la fuente basado en el ancho de la pantalla
               fontWeight: FontWeight.bold,
-              color: Colors.black
+              color: Colors.black,
             ),
             textAlign: TextAlign.center,
           ),
@@ -66,16 +68,16 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CancelarReservatimeWidget()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => CancelarReservatimeWidget(userId: widget.userId)));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15), // Padding relativo al ancho
                   ),
-                  child: const Text("Sí", style: TextStyle(color: Colors.white)),
+                  child: Text("Sí", style: TextStyle(color: Colors.white)), // Removed const
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -84,9 +86,9 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15), // Padding relativo al ancho
                   ),
-                  child: const Text("No", style: TextStyle(color: Colors.white)),
+                  child: Text("No", style: TextStyle(color: Colors.white)), // Removed const
                 ),
               ],
             ),
@@ -112,16 +114,19 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                 children: [
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CustomUserDialog()),
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return CustomUserDialog(userId: widget.userId); // Pasando userId al diálogo de usuario
+                        },
                       );
                     },
-                    child: const Icon(Icons.account_circle, color: Colors.white, size: 40),
+                    child: Icon(Icons.account_circle, color: Colors.white, size: 40), // Removed const
                   ),
                   const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text("Usuario123", style: TextStyle(color: Colors.white, fontSize: 20)),
+                  Expanded(
+                    child: Text("Usuario123", style: TextStyle(color: Colors.white, fontSize: 20)), // Removed const
                   ),
                 ],
               ),
@@ -147,7 +152,7 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("Vehículo", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 25)),

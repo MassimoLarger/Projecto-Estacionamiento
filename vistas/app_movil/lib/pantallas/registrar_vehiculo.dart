@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'sede.dart';
-import 'patente_modelo.dart';
 import 'usuario.dart';
+import 'patente_modelo.dart';
+import 'sede.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
-  final String userId; // Cambiado a String
+  final String userId;
   final int vehicleId;
 
   const RegisterVehiclePage({Key? key, required this.userId, required this.vehicleId}) : super(key: key);
@@ -29,13 +29,13 @@ class RegisterVehiclePage extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: userId);
                 },
               );
             },
           ),
         ],
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -89,7 +89,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SelectCampusPage(), //SelectCampusPage(userId: userId) - Pasa userId si es necesario
+                      builder: (context) => SelectCampusPage(userId: userId), // Pasando userId a SelectCampusPage
                     ),
                   );
                 },

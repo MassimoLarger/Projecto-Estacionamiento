@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../splash_screen.dart';
+import '../../pantallas/splash_screen.dart';
 
 class CerrarSesionWidget extends StatefulWidget {
   const CerrarSesionWidget({super.key});

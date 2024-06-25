@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'agenda_reserva.dart';
+import 'agenda_reserva.dart'; // Asumiendo que aquí se define BookingScreen
 
 class SedeChuyacaSelector extends StatefulWidget {
-  const SedeChuyacaSelector({super.key});
+  final String userId;
+
+  const SedeChuyacaSelector({Key? key, required this.userId}) : super(key: key);
+
   @override
   SedeChuyacaSelectorState createState() => SedeChuyacaSelectorState();
 }
@@ -15,6 +18,7 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
     {'name': 'Gym'},
     {'name': 'Aulas Virtuales'},
     {'name': 'Casino'},
+    // Agregar más lugares según sea necesario
   ];
 
   @override
@@ -44,23 +48,23 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
               ),
             ),
           ),
-          SizedBox(height: scaleText(20)), // Dynamically scaled vertical space
+          SizedBox(height: scaleText(20)),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: Text(
               "SELECCIONA EL LUGAR",
               style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: scaleText(16), // Dynamically scaled font size
+                fontSize: scaleText(16),
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          SizedBox(height: scaleText(18)), // More dynamically scaled vertical space
-          Padding(  // Added padding to align with the text above
-            padding: EdgeInsets.symmetric(horizontal: width * 0.05), // 5% of total width
+          SizedBox(height: scaleText(18)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: SizedBox(
-              height: 170, // Specifies the height of the horizontal list
+              height: 170,
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: places.length,
@@ -71,24 +75,26 @@ class SedeChuyacaSelectorState extends State<SedeChuyacaSelector> {
                       setState(() {
                         _selectedIndex = index;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const BookingScreen()),
-                      );
+                      if (isSelected) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingScreen(userId: widget.userId)), // Acceso a widget.userId
+                        );
+                      }
                     },
                     child: SizedBox(
-                      width: width * 0.9, // 40% of the screen width
+                      width: width * 0.9,
                       child: Card(
                         color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
                         child: ListTile(
                           title: Text(
                             places[index]['name'],
                             style: TextStyle(
-                            fontSize: scaleText(20), // Dynamically scaled font size
-                            color: isSelected ? Colors.white : Colors.black,
-                              ),
+                              fontSize: scaleText(20),
+                              color: isSelected ? Colors.white : Colors.black,
                             ),
-                            trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
+                          ),
+                          trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
                         ),
                       ),
                     ),

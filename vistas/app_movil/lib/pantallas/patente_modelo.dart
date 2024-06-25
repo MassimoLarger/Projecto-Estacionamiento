@@ -107,7 +107,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: widget.userId);
                 },
               );
             },

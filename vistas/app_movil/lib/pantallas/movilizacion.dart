@@ -27,7 +27,7 @@ class CarSelectionWidget extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: userId);
                 },
               );
             },
