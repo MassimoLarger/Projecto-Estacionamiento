@@ -34,20 +34,6 @@ class LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = json.decode(response.body);
         if (responseBody['success']) {
-          // Usuario encontrado, realizar la consulta de vehículo
-          final vehiculoResponse = await http.post(
-            Uri.parse('http://localhost:3500/api/consultar'),
-            headers: <String, String>{
-              'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: jsonEncode(<String, String>{
-              'correo': _correoController.text,
-            }),
-          );
-
-          final Map<String, dynamic> vehiculoResponseBody = json.decode(vehiculoResponse.body);
-          if (vehiculoResponseBody['success']) {
-            // Usuario tiene vehículos registrados, redirige a la pantalla de selección de vehículos
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -55,12 +41,6 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             );
           } else {
-            // Usuario no tiene vehículos registrados, muestra mensaje de error
-            setState(() {
-              _errorMessage = vehiculoResponseBody['message'];
-            });
-          }
-        } else {
           // Usuario no encontrado, muestra mensaje de error
           setState(() {
             _errorMessage = responseBody['message'];
