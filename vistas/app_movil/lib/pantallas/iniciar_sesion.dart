@@ -5,8 +5,6 @@ import 'dart:convert';
 import 'tipo_de_cuenta.dart';
 import 'recuperar_contrasena.dart';
 import 'movilizacion.dart';
-import 'patentes.dart';
-//import 'inicio.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -21,56 +19,39 @@ class LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _iniciarSesion() async {
-    final response = await http.post(
-      Uri.parse('http://localhost:3500/api/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'correo': _correoController.text,
-        'contrasena': _contrasenaController.text,
-      }),
-    );
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'correo': _correoController.text,
+          'contrasena': _contrasenaController.text,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = json.decode(response.body);
-      if (responseBody['success']) {
-        // Usuario encontrado, realizar la consulta de vehículo
-        final vehiculoResponse = await http.post(
-          Uri.parse('http://localhost:3500/api/consultar'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, String>{
-            'correo': _correoController.text,
-          }),
-        );
-
-        final Map<String, dynamic> vehiculoResponseBody = json.decode(vehiculoResponse.body);
-        if (vehiculoResponseBody['success']) {
-          // Usuario tiene vehículos registrados, redirige a la pantalla de selección de vehículo
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PatentesPage(userId: responseBody['userId']),
-            ),
-          );
-        } else {
-          // Usuario no tiene vehículos registrados, redirige a otra pantalla
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
-            ),
-          );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
+              ),
+            );
+          } else {
+          // Usuario no encontrado, muestra mensaje de error
+          setState(() {
+            _errorMessage = responseBody['message'];
+          });
         }
       } else {
-        // Usuario no encontrado, muestra mensaje de error
         setState(() {
-          _errorMessage = responseBody['message'];
+          _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
         });
       }
-    } else {
+    } catch (e) {
       setState(() {
         _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
       });
@@ -127,7 +108,7 @@ class LoginScreenState extends State<LoginScreen> {
                     controller: _correoController,
                     decoration: InputDecoration(
                       hintText: 'Introduzca su correo electronico',
-                      prefixIcon: const Icon(Icons.phone_android),
+                      prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
                         borderSide: const BorderSide(color: Color.fromRGBO(198, 212, 255, 1), width: 1.0),
@@ -135,7 +116,7 @@ class LoginScreenState extends State<LoginScreen> {
                       filled: true,
                       fillColor: const Color.fromRGBO(198, 212, 255, 1),
                     ),
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.emailAddress,
                   ),
                   const SizedBox(height: 20),
                   const Text('Contraseña', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
@@ -160,7 +141,7 @@ class LoginScreenState extends State<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
                       foregroundColor: Colors.white,
-                      minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 85% del ancho de la pantalla
+                      minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 90% del ancho de la pantalla
                     ),
                     child: const Text('Iniciar Sesión'),
                   ),

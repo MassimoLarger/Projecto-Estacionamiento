@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'registrar_vehiculo.dart'; // Importa tu RegisterVehiclePage
+import 'registrar_vehiculo.dart';
 
 class VehicleTypeSelector extends StatefulWidget {
-  final String userId; // Cambiado a String
+  final String userId;
 
   const VehicleTypeSelector({Key? key, required this.userId}) : super(key: key);
 
@@ -63,6 +63,20 @@ class VehicleTypeSelectorState extends State<VehicleTypeSelector> {
           SizedBox(height: scaleText(18)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+            child: Text(
+              "Antes de continuar, les recomendamos tener su permiso de circulación vigente, ya que necesitaremos la patente junto al dígito verificador de la forma 'FFFF11-1'.",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                fontSize: scaleText(14),
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: scaleText(18)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: width * 0.05),
             child: SizedBox(
               height: 170,
               child: ListView.builder(
@@ -79,8 +93,7 @@ class VehicleTypeSelectorState extends State<VehicleTypeSelector> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => RegisterVehiclePage(
-                            userId: widget.userId, // Pasa userId
-                            vehicleId: vehicles[index]['id'], // Pasa vehicleId
+                            userId: widget.userId,
                           ),
                         ),
                       );

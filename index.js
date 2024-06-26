@@ -50,9 +50,27 @@ app.post('/api/consultau', async (req, res) => {
 app.post('/api/consultar', async (req, res) => {
   const { correo } = req.body;
   try {
-    const result = await pool.query('SELECT * FROM registra WHERE ID_Usuario = $1', [correo]);
+    const result = await pool.query('SELECT id_vehiculo FROM registra WHERE ID_Usuario = $1', [correo]);
     if (result.rows.length > 0) {
-      res.json({ success: true, message: 'Vehículos encontrados' });
+      // Extraer todos los id_vehiculo en una lista
+      const patentes = result.rows.map(row => row.id_vehiculo);
+      res.json({ success: true, patentes: patentes, message: 'Vehículos encontrados' });
+    } else {
+      res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+app.post('/api/vehiculoR', async (req, res) => {
+  const { patente } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM Vehiculo WHERE Patente = $1', [patente]);
+    if (result.rows.length > 0) {
+      const { patente, descripcion } = result.rows[0];
+      res.json({ success: true, patentes:{ patente, descripcion } , message: 'Vehículos encontrados' });
     } else {
       res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
     }

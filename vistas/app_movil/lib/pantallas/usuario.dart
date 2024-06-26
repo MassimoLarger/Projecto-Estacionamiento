@@ -3,6 +3,7 @@ import 'verificaciones/cerrar_sesion.dart';
 import 'editar_perfil.dart';
 import 'dart:io';
 import 'datos_personales.dart';
+import 'vehiculos.dart';
 import 'contrasena_seguridad.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -233,8 +234,11 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     leading: const Icon(Icons.directions_car),
                     title: const Text('Tus vehículos'),
                     onTap: () {
-                      // Add navigation to MisVehiculosScreen if implemented
-                    },
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MisVehiculosScreen(userId: widget.userId)),
+                      );
+                      },
                   ),
                   const Divider(),
                   ListTile(
