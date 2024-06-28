@@ -1,0 +1,83 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
+.container {
+    width: 100%; /* Ajuste para que el contenedor use todo el ancho en pantallas pequeñas */
+    max-width: 400px; /* Limita el ancho máximo en pantallas más grandes */
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    background-color: #f3f6ff;
+    margin: 20px; /* Añade margen para evitar que se pegue a los bordes de la ventana */
+}
+
+h1, p {
+    margin: 0 0 20px 0;
+    color: #333;
+}
+
+label {
+    text-align: left;
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    color: white;
+    background-color: #567df4;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #405db5;
+}
+
+/* Media Queries para diferentes tamaños de pantalla */
+@media (min-width: 768px) {
+    .container {
+        padding: 40px; /* Aumenta el padding para mejor visualización en pantallas grandes */
+    }
+
+    h1, p {
+        font-size: 1.25em; /* Aumenta el tamaño de fuente para mejorar la legibilidad */
+    }
+
+    input[type="text"], input[type="password"], button {
+        font-size: 1em; /* Aumenta el tamaño de fuente en los elementos de formulario */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px; /* Reduce el padding para pantallas más pequeñas */
+    }
+
+    h1 {
+        font-size: 1em; /* Reduce el tamaño de la fuente para ahorrar espacio */
+    }
+
+    label, input[type="text"], input[type="password"], button {
+        font-size: 0.85em; /* Reduce el tamaño de fuente para adaptarse a pantallas pequeñas */
+    }
+}

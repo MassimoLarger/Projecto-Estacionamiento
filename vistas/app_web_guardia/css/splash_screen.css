@@ -1,0 +1,83 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    background-color: #f3f6ff;
+    overflow: hidden; /* Evita desbordamientos accidentales */
+}
+
+.splash-screen {
+    width: 100%; /* Ocupa el ancho completo */
+    max-width: 600px; /* Limita el ancho máximo */
+    padding: 20px; /* Agrega un poco de padding para separación */
+    text-align: center;
+    border-radius: 25px;
+    background-color: #f3f6ff;
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Añade una sombra ligera para mejor estética */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    max-width: 100%; /* Asegura que la imagen nunca sobrepase el ancho del contenedor */
+    width: 90%; /* Reduce el tamaño en pantallas más grandes */
+    height: auto;
+}
+
+.loading-indicator {
+    border: 6px solid #f3f6ff; /* Color de fondo */
+    border-top: 6px solid #3498db; /* Color del indicador */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin-top: 20px; /* Añade espacio entre la imagen y el indicador */
+}
+
+.loading-text {
+    color: #3498db;
+    font-size: 16px;
+    margin-top: 10px;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Media Queries para ajustar la visualización en diferentes tamaños de pantalla */
+@media (max-width: 768px) {
+    .logo img {
+        width: 80%; /* Aumenta un poco el tamaño de la imagen en pantallas más pequeñas */
+    }
+
+    .loading-text {
+        font-size: 14px; /* Disminuye el tamaño de la fuente para pantallas más pequeñas */
+    }
+}
+
+@media (max-width: 480px) {
+    .splash-screen {
+        max-width: 90%; /* Aumenta el ancho máximo para llenar más espacio en pantallas pequeñas */
+        padding: 10px; /* Reduce el padding para economizar espacio */
+    }
+
+    .loading-indicator {
+        width: 40px; /* Reduce el tamaño del indicador en pantallas pequeñas */
+        height: 40px;
+    }
+
+    .loading-text {
+        font-size: 12px; /* Más pequeño aún para ajustarse a dispositivos muy pequeños */
+    }
+}
