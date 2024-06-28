@@ -45,7 +45,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+        _errorMessage = 'Ingrese un correo valido.';
       });
     }
   }
@@ -78,7 +78,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       }
     } else {
       setState(() {
-        _errorMessage = 'Error al enviar el correo.';
+        _errorMessage = 'Error al enviar el correo, ingrese un correo valido.';
       });
     }
   }
