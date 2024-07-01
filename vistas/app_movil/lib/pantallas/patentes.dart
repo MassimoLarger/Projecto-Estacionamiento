@@ -242,14 +242,14 @@ class PatentesPageState extends State<PatentesPage> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: selectedPatenteIndex != null ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SelectCampusPage(userId: widget.userId),
+                    builder: (context) => SelectCampusPage(userId: widget.userId, vehicleid: patentes[selectedPatenteIndex!]),
                   ),
                 );
-              },
+              } : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF567DF4),
                 foregroundColor: Colors.white,

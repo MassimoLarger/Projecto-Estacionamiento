@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../inicio.dart'; // Import your relevant file here
 
 class CancelarReservatimeWidget extends StatefulWidget {
-  final String userId; // Define the userId property
+  final String userId;
+  final String vehicleid;
 
-  const CancelarReservatimeWidget({Key? key, required this.userId}) : super(key: key);
+  const CancelarReservatimeWidget({Key? key, required this.userId,
+    required this.vehicleid}) : super(key: key);
 
   @override
   CancelarReservatimeWidgetState createState() => CancelarReservatimeWidgetState();
@@ -16,7 +18,7 @@ class CancelarReservatimeWidgetState extends State<CancelarReservatimeWidget> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId)),
+        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId, vehicleid: widget.vehicleid)),
       );
     });
   }

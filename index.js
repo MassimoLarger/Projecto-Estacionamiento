@@ -104,7 +104,8 @@ app.post('/api/login', async (req, res) => {
     const result = await pool.query('SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2', [correo, contrasena]);
     if (result.rows.length > 0) {
       const { correo } = result.rows[0];
-      res.json({ success: true, userId: correo, message: 'Usuario encontrado' });
+      const { tipo } = result.rows[0];
+      res.json({ success: true, userId: correo, typeId: tipo, message: 'Usuario encontrado' });
     } else {
       res.json({ success: false, message: 'Usuario no encontrado, o algun campo incorrecto' });
     }
@@ -204,6 +205,63 @@ app.post('/api/actualizar_contrasena', async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar contraseña:', error);
     res.status(500).send('Error al actualizar contraseña');
+  }
+});
+
+app.post('/api/ocupados', async (req, res) => {
+  const { vehicleId, estNum} = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM Ocupa Where id_estacionamiento = $1 and id_vehiculo = $2' ,[estNum, vehicleId]);
+    if (result.rows.length > 0) {
+      const { estado } = result.rows[0];
+      res.json({ success: true, status: estado, message: 'Estado del estacionamiento actualizado' });
+    } else {
+      res.json({ success: false, message: 'Error al actualizar el estado del estacionamiento' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Codigo del estacionamiento no valido' });
+  }
+});
+
+app.post('/api/estacionamientos', async (req, res) => {
+  const { sectionName, sedeName } = req.body;
+  try {
+    const result = await pool.query(
+      `SELECT ID_Estacionamiento
+       FROM Estacionamiento
+       WHERE ID_Lugar = (
+         SELECT ID_Lugar
+         FROM Lugar_Estacionamiento
+         WHERE Descripcion = $1
+       ) AND ID_Campus = (
+         SELECT ID_Campus
+         FROM Campus_Sede
+         WHERE Nombre = $2
+       )`,
+      [sectionName, sedeName]
+    );
+    if (result.rows.length > 0) {
+      const estacionamientos = result.rows.map(row => row.id_estacionamiento);
+      res.json({ success: true, estacionamientos: estacionamientos });
+    } else {
+      res.json({ success: false, message: 'No se encontraron estacionamientos' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+app.post('/api/reserva', async (req, res) => {
+  const { userId, estacionamiento, selectedDate, timeFrom, timeTo, vehicleid } = req.body;
+  try {
+    const result = await pool.query('INSERT INTO Reserva VALUES ($1, $2, $3) RETURNING *', [userId, estacionamiento, selectedDate]);
+    const resultado = await pool.query('INSERT INTO Ocupa VALUES ($1, $2, False, $3, $4) RETURNING *', [timeFrom, timeTo, estacionamiento, vehicleid]);
+    res.status(200).send({ success: true, reserva: result.rows[0].id, ocupado: resultado.rows[0].id });
+  } catch (error) {
+    console.error('Error al reservar el espacio:', error);
+    res.status(500).send('Error al reservar el espacio');
   }
 });
 

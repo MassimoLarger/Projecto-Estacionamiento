@@ -3,8 +3,9 @@ import '../reserva_time_inicio.dart';
 
 class ReservaEspacioWidget extends StatefulWidget {
   final String userId;
+  final String vehicleid;
 
-  const ReservaEspacioWidget({Key? key, required this.userId}) : super(key: key);
+  const ReservaEspacioWidget({Key? key, required this.userId, required this.vehicleid}) : super(key: key);
 
   @override
   ReservaEspacioWidgetState createState() => ReservaEspacioWidgetState();
@@ -19,7 +20,7 @@ class ReservaEspacioWidgetState extends State<ReservaEspacioWidget> {
       // Navega a la pantalla de reserva de tiempo pasando el userId
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => VehicleTimeReserva(userId: widget.userId),
+          builder: (_) => VehicleTimeReserva(userId: widget.userId, vehicleid: widget.vehicleid),
         ),
       );
     });

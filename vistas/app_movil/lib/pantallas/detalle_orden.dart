@@ -5,8 +5,15 @@ import 'usuario.dart';
 
 class DetailScreen extends StatelessWidget {
   final String userId;
+  final String vehicleid;
+  final DateTime selectedDate;
+  final TimeOfDay timeFrom;
+  final TimeOfDay timeTo;
+  final String estacionamiento;
 
-  const DetailScreen({Key? key, required this.userId}) : super(key: key);
+  const DetailScreen({Key? key, required this.userId, required this.vehicleid,
+    required this.selectedDate, required this.timeFrom, required this.timeTo,
+    required this.estacionamiento,}) : super(key: key);
 
   void _showConfirmarReservaDialog(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -35,7 +42,7 @@ class DetailScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => ReservaEspacioWidget(userId: userId)),
+                      MaterialPageRoute(builder: (_) => ReservaEspacioWidget(userId: userId, vehicleid: vehicleid)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -93,7 +100,7 @@ class DetailScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => CancelarReservaWidget(userId: userId)),
+                      MaterialPageRoute(builder: (_) => CancelarReservaWidget(userId: userId, vehicleid: vehicleid)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -170,10 +177,10 @@ class DetailScreen extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  DetailItem(title: 'Espacio:', value: 'A1'),
-                  DetailItem(title: 'Fecha:', value: '24/06/2023'),
-                  DetailItem(title: 'Hora:', value: '10:00 AM - 11:00 AM'),
+                children: [
+                  DetailItem(title: 'Espacio:', value: estacionamiento),
+                  DetailItem(title: 'Fecha:', value: '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+                  DetailItem(title: 'Hora:', value: '${timeFrom.format(context)} - ${timeTo.format(context)}'),
                 ],
               ),
             ),

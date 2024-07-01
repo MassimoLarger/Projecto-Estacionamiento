@@ -81,6 +81,9 @@ flutter:
     - assets/images/moto.png
     - assets/images/auto.png
     - assets/images/furgon.png
+    - assets/images/disponible.png
+    - assets/images/ocupado.png
+    - assets/images/reservado.png
 
   fonts:
     - family: Luckiest Guy

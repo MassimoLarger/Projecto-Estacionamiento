@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
-import 'espacios_estacionamiento.dart';
 import 'agenda_reserva.dart';
 
 class SelectCampusPage extends StatelessWidget {
   final String userId;
+  final String vehicleid;
 
-  const SelectCampusPage({Key? key, required this.userId}) : super(key: key);
+  const SelectCampusPage({Key? key, required this.userId, required this.vehicleid}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +51,10 @@ class SelectCampusPage extends StatelessWidget {
             ),
           ),
           campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth, () {
-            _showPlaceSelectionSheet(context, userId, 'Chuyaca');
+            _showPlaceSelectionSheet(context, userId, vehicleid, 'Chuyaca');
           }),
           campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth, () {
-            _showPlaceSelectionSheet(context, userId, 'Meyer');
+            _showPlaceSelectionSheet(context, userId, vehicleid, 'Meyer');
           }),
         ],
       ),
@@ -90,7 +90,7 @@ class SelectCampusPage extends StatelessWidget {
     );
   }
 
-  void _showPlaceSelectionSheet(BuildContext context, String userId, String campus) {
+  void _showPlaceSelectionSheet(BuildContext context, String userId, String vehicleid, String campus) {
     showModalBottomSheet(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
@@ -106,13 +106,13 @@ class SelectCampusPage extends StatelessWidget {
         int _selectedIndex = -1;
         final List<Map<String, dynamic>> places = (campus == 'Chuyaca')
             ? [
-          {'name': 'Entrada'},
+          {'name': 'Entrada C'},
           {'name': 'Gym'},
           {'name': 'Aulas Virtuales'},
           {'name': 'Casino'},
         ]
             : [
-          {'name': 'Entrada'},  // Ejemplo con una sola entrada
+          {'name': 'Entrada M'}, // Ejemplo con una sola entrada
         ];
 
         return StatefulBuilder(
@@ -169,15 +169,12 @@ class SelectCampusPage extends StatelessWidget {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) {
-                                    return (campus == 'Chuyaca')
-                                        ? EspacioEstacionamientoWidget(
-                                      //sectionName: places[index]['name'],
-                                      //sedeName: 'Chuyaca',
-                                      userId: userId,
-                                    )
-                                        : BookingScreen(userId: userId);
-                                  },
+                                  builder: (context) => BookingScreen(
+                                    sectionName: places[index]['name'],
+                                    sedeName: campus,
+                                    userId: userId,
+                                    vehicleid: vehicleid,
+                                  ),
                                 ),
                               );
                             },

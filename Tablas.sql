@@ -46,7 +46,7 @@ create table Registra(
 );
 
 create table Estacionamiento(
-	ID_Estacionamiento smallint primary key,
+	ID_Estacionamiento text primary key,
 	ID_Lugar smallint,
 	ID_Campus smallint,
 	Tipo varchar(20),
@@ -58,7 +58,7 @@ create table Estacionamiento(
 
 create table Reserva(
 	ID_Usuario text,
-	ID_Estacionamiento smallint,
+	ID_Estacionamiento text,
 	fecha_reserva date,
 	foreign key (ID_Usuario) references Usuario(Correo)
 	on delete no action on update cascade,
@@ -71,7 +71,7 @@ create table Ocupa(
 	Fecha_Entrada date,
 	Fecha_Salida date,
 	Estado Boolean,
-	ID_Estacionamiento smallint,
+	ID_Estacionamiento text,
 	ID_Vehiculo varchar(12),
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
 	on delete no action on update cascade,

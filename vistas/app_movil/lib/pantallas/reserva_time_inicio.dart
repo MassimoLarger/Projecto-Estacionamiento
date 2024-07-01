@@ -5,8 +5,9 @@ import 'verificaciones/cancelar_reserva_time.dart';
 
 class VehicleTimeReserva extends StatefulWidget {
   final String userId;
+  final String vehicleid;
 
-  const VehicleTimeReserva({Key? key, required this.userId}) : super(key: key);
+  const VehicleTimeReserva({Key? key, required this.userId, required this.vehicleid}) : super(key: key);
 
   @override
   VehicleTimeReservaState createState() => VehicleTimeReservaState();
@@ -68,7 +69,7 @@ class VehicleTimeReservaState extends State<VehicleTimeReserva> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => CancelarReservatimeWidget(userId: widget.userId)));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => CancelarReservatimeWidget(userId: widget.userId, vehicleid: widget.vehicleid)));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón

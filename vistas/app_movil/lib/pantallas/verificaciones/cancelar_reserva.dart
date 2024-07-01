@@ -3,8 +3,10 @@ import '../inicio.dart';
 
 class CancelarReservaWidget extends StatefulWidget {
   final String userId;
+  final String vehicleid;
 
-  const CancelarReservaWidget({Key? key, required this.userId}) : super(key: key);
+  const CancelarReservaWidget({Key? key, required this.userId,
+    required this.vehicleid}) : super(key: key);
 
   @override
   CancelarReservaWidgetState createState() => CancelarReservaWidgetState();
@@ -17,7 +19,7 @@ class CancelarReservaWidgetState extends State<CancelarReservaWidget> {
     Future.delayed(const Duration(seconds: 2), () {
       // Navegar de regreso a la pantalla inicial después de 2 segundos
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId)),
+        MaterialPageRoute(builder: (_) => VehicleInterface(userId: widget.userId, vehicleid: widget.vehicleid)),
       ); // Ajusta el nombre de la pantalla inicial según tu proyecto
     });
   }

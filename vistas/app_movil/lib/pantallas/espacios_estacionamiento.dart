@@ -1,16 +1,103 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'usuario.dart';
 import 'detalle_orden.dart';
 
-class EspacioEstacionamientoWidget extends StatelessWidget {
+class EspacioEstacionamientoWidget extends StatefulWidget {
   final String userId;
+  final String sectionName;
+  final String sedeName;
+  final String vehicleid;
+  final DateTime selectedDate;
+  final TimeOfDay timeFrom;
+  final TimeOfDay timeTo;
 
-  const EspacioEstacionamientoWidget({super.key, required this.userId});
+  const EspacioEstacionamientoWidget({Key? key, required this.userId,
+    required this.sectionName, required this.sedeName, required this.vehicleid,
+    required this.selectedDate, required this.timeFrom, required this.timeTo,
+  }) : super(key: key);
+
+  @override
+  _EspacioEstacionamientoWidgetState createState() =>
+      _EspacioEstacionamientoWidgetState();
+}
+
+class _EspacioEstacionamientoWidgetState
+    extends State<EspacioEstacionamientoWidget> {
+  List<String> estacionamientos = [];
+  Map<String, bool> ocupados = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEstacionamientos();
+  }
+
+  Future<void> _loadEstacionamientos() async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/estacionamientos'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'sectionName': widget.sectionName,
+          'sedeName': widget.sedeName,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success']) {
+          setState(() {
+            estacionamientos = List<String>.from(data['estacionamientos']);
+            ocupados = {for (var e in estacionamientos) e: false};
+          });
+          await _checkOcupados();
+        } else {
+          print('Error en la API: ${data['message']}');
+        }
+      } else {
+        print('Error de red: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error de carga de estacionamientos: $e');
+    }
+  }
+
+  Future<void> _checkOcupados() async {
+    try {
+      for (String estNum in estacionamientos) {
+        final response = await http.post(
+          Uri.parse('http://localhost:3500/api/ocupados'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'vehicleId': widget.vehicleid,
+            'estNum': estNum,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          if (data['success']) {
+            setState(() {
+              ocupados[estNum] = data['status'];
+            });
+          }
+        } else {
+          print('Failed to check ocupados for $estNum');
+        }
+      }
+    } catch (e) {
+      print('Error checking ocupados: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Obtener las dimensiones de la pantalla para un diseño responsivo
-    var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -28,20 +115,20 @@ class EspacioEstacionamientoWidget extends StatelessWidget {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return CustomUserDialog(userId: userId);
+                  return CustomUserDialog(userId: widget.userId);
                 },
               );
             },
           ),
         ],
-        backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center, // Central alignment vertically
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05), // 2% of total screen height
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
             child: const Text(
               'Selecciona los espacios de estacionamiento requeridos',
               style: TextStyle(
@@ -52,35 +139,75 @@ class EspacioEstacionamientoWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(1),
-              child: Image.asset('assets/images/estacionamiento.png', fit: BoxFit.contain),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+            child: Text(
+              'Sección: ${widget.sectionName} - Sede: ${widget.sedeName}',
+              style: const TextStyle(
+                fontFamily: 'Lato',
+                fontSize: 16,
+                fontWeight: FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(screenWidth * 0.1), // 5% of total screen width
-            child: SizedBox(
-              width: screenWidth * 0.9, // Button width set to 90% of screen width
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailScreen(userId: userId)),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF567DF4),
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02), // 1% of total screen height
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(27.5)
-                    )
-                ),
-                child: const Text(
-                  'Continuar',
-                  style: TextStyle(fontSize: 16, fontFamily: 'Lato', color: Colors.white),
-                ),
+          Expanded(
+            child: GridView.builder(
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 4, // Espacio horizontal entre las imágenes
+                mainAxisSpacing: 4, // Espacio vertical entre las imágenes
               ),
+              itemCount: estacionamientos.length,
+              itemBuilder: (context, index) {
+                String estNum = estacionamientos[index];
+                bool ocupado = ocupados[estNum] ?? false;
+                return GestureDetector(
+                  onTap: () {
+                    if (!ocupado) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailScreen(
+                            userId: widget.userId,
+                            vehicleid: widget.vehicleid,
+                            selectedDate: widget.selectedDate,
+                            timeFrom: widget.timeFrom,
+                            timeTo: widget.timeTo,
+                            estacionamiento: estNum,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  child: Container(
+                    child: Stack(
+                      alignment: Alignment.center, // Alinea el contenido al centro
+                      children: [
+                        Image.asset(
+                          ocupado
+                              ? 'assets/images/ocupado.png'
+                              : 'assets/images/disponible.png',
+                          fit: BoxFit.cover, // Ajusta la imagen para que cubra el contenedor
+                          width: 75, // Ancho de la imagen
+                          height: 70, // Alto de la imagen
+                        ),
+                        Text(
+                          estNum,
+                          style: TextStyle(
+                            fontSize: 14, // Tamaño del texto
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black, // Color del texto
+                            backgroundColor: Colors.white.withOpacity(0.8), // Fondo semi-transparente para el texto
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

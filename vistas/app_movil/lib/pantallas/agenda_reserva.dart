@@ -5,8 +5,14 @@ import 'espacios_estacionamiento.dart';
 
 class BookingScreen extends StatefulWidget {
   final String userId;
+  final String vehicleid;
+  final String sectionName;
+  final String sedeName;
 
-  const BookingScreen({Key? key, required this.userId}) : super(key: key);
+  const BookingScreen({
+    Key? key, required this.userId, required this.vehicleid,
+    required this.sectionName, required this.sedeName,
+  }) : super(key: key);
 
   @override
   BookingScreenState createState() => BookingScreenState();
@@ -358,8 +364,20 @@ class BookingScreenState extends State<BookingScreen> {
           ElevatedButton(
             onPressed: canReserve
                 ? () {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => EspacioEstacionamientoWidget(userId: widget.userId)));
-                }
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (_) => EspacioEstacionamientoWidget(
+                    userId: widget.userId,
+                    sectionName: widget.sectionName,
+                    sedeName: widget.sedeName,
+                    vehicleid: widget.vehicleid,
+                    selectedDate: selectedDate,
+                    timeFrom: timeFrom!,
+                    timeTo: timeTo!,
+                  ),
+                ),
+              );
+            }
                 : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: canReserve ? const Color(0xFF567DF4) : Colors.grey,

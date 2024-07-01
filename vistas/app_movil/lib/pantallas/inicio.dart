@@ -4,8 +4,9 @@ import 'usuario.dart';
 
 class VehicleInterface extends StatelessWidget {
   final String userId;
+  final String vehicleid;
 
-  const VehicleInterface({super.key, required this.userId});
+  const VehicleInterface({super.key, required this.userId, required this.vehicleid});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +95,7 @@ class VehicleInterface extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SelectCampusPage(userId: userId)),
+              MaterialPageRoute(builder: (context) => SelectCampusPage(userId: userId, vehicleid: vehicleid)),
             );
           },
           backgroundColor: const Color(0xFF456EFF),
