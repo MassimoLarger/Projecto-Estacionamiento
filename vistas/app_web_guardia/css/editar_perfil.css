@@ -1,0 +1,55 @@
+body, html {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #FFF;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #FFF;
+    border-bottom: 1px solid #ccc;
+}
+
+main {
+    padding: 20px;
+}
+
+.time-selector button {
+    background-color: #F3F8FF;
+    border: none;
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.time-selector button.active {
+    background-color: #C6D4FF;
+}
+
+.date-picker input,
+.time-range input {
+    padding: 10px;
+    width: calc(100% - 20px);
+    margin: 10px 0;
+}
+
+.reserve-button {
+    background-color: #567DF4;
+    color: white;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    cursor: pointer;
+}

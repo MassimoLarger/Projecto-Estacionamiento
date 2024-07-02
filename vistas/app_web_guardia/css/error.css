@@ -1,0 +1,74 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffecf9;
+}
+
+#main-container {
+    width: 90%;
+    max-width: 600px; /* Limita el ancho máximo para pantallas grandes */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.circle {
+    width: 50%; /* Ajusta esto para cambiar el tamaño del círculo */
+    aspect-ratio: 1; /* Mantiene la proporción para asegurar que es un círculo perfecto */
+    background-color: #ffffff;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden; /* Esto asegura que todo dentro del círculo se quede dentro de sus límites */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    font-size: 4em; /* Ajusta el tamaño del icono dentro del círculo */
+    color: red;
+    position: absolute; /* Posicionamiento absoluto */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto; /* Margen automático para centrar exactamente en el medio */
+    height: min-content; /* Ajusta el tamaño de la caja al contenido dentro de ella */
+}
+
+
+.message-large {
+    font-size: 2em; /* Tamaño de la fuente para grandes mensajes */
+    margin-top: 5vh; /* Espacio vertical después del círculo */
+    color: black;
+}
+
+.message-small {
+    font-size: 1.25em; /* Tamaño de la fuente para mensajes pequeños */
+    color: black;
+    margin-top: 10vh; /* Espacio vertical después del mensaje grande */
+}
+
+@media (max-width: 600px) {
+    .circle {
+        width: 70%; /* Aumenta el tamaño del círculo en pantallas pequeñas */
+        padding-top: 70%; /* Mantiene la proporción */
+    }
+
+    .icon {
+        font-size: 6em; /* Hace el icono más grande en pantallas pequeñas */
+    }
+
+    .message-large {
+        font-size: 1.5em; /* Disminuye el tamaño de la fuente en pantallas pequeñas */
+    }
+
+    .message-small {
+        font-size: 1em; /* Disminuye el tamaño de la fuente en pantallas pequeñas */
+    }
+}
