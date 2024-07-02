@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'verificaciones/reserva_espacio.dart';
 import 'verificaciones/cancelar_reserva.dart';
 import 'usuario.dart';
@@ -14,6 +16,67 @@ class DetailScreen extends StatelessWidget {
   const DetailScreen({Key? key, required this.userId, required this.vehicleid,
     required this.selectedDate, required this.timeFrom, required this.timeTo,
     required this.estacionamiento,}) : super(key: key);
+
+  Future<void> _confirmarReserva(BuildContext context) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/reserva'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'userId': userId,
+          'estacionamiento': estacionamiento,
+          'selectedDate': selectedDate.toIso8601String(),
+          'timeFrom': '${timeFrom.hour}:${timeFrom.minute}',
+          'timeTo': '${timeTo.hour}:${timeTo.minute}',
+          'vehicleid': vehicleid,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success']) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => ReservaEspacioWidget(
+                userId: userId,
+                vehicleid: vehicleid,
+                timeFrom: timeFrom,
+                timeTo: timeTo,
+              ),
+            ),
+          );
+        } else {
+          _showErrorDialog(context, data['message'] ?? 'Error al reservar el espacio');
+        }
+      } else {
+        _showErrorDialog(context, 'Error al reservar el espacio');
+      }
+    } catch (e) {
+      _showErrorDialog(context, 'Error de red: $e');
+    }
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showConfirmarReservaDialog(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -41,9 +104,8 @@ class DetailScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => ReservaEspacioWidget(userId: userId, vehicleid: vehicleid)),
-                    );
+                    Navigator.of(context).pop(); // Close the dialog
+                    _confirmarReserva(context); // Call the reservation function
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4),
@@ -99,8 +161,14 @@ class DetailScreen extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => CancelarReservaWidget(userId: userId, vehicleid: vehicleid)),
+                      MaterialPageRoute(
+                        builder: (_) => CancelarReservaWidget(
+                          userId: userId,
+                          vehicleid: vehicleid,
+                        ),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

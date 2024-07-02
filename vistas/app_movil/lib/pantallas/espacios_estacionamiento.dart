@@ -74,9 +74,11 @@ class _EspacioEstacionamientoWidgetState
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode(<String, String>{
-            'vehicleId': widget.vehicleid,
+          body: jsonEncode(<String, dynamic>{
             'estNum': estNum,
+            'selectedDate': widget.selectedDate.toIso8601String(),
+            'timeFrom': '${widget.timeFrom.hour}:${widget.timeFrom.minute}',
+            'timeTo': '${widget.timeTo.hour}:${widget.timeTo.minute}',
           }),
         );
 
@@ -156,8 +158,8 @@ class _EspacioEstacionamientoWidgetState
               padding: const EdgeInsets.all(8),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 4, // Espacio horizontal entre las imágenes
-                mainAxisSpacing: 4, // Espacio vertical entre las imágenes
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
               ),
               itemCount: estacionamientos.length,
               itemBuilder: (context, index) {
@@ -183,23 +185,23 @@ class _EspacioEstacionamientoWidgetState
                   },
                   child: Container(
                     child: Stack(
-                      alignment: Alignment.center, // Alinea el contenido al centro
+                      alignment: Alignment.center,
                       children: [
                         Image.asset(
                           ocupado
                               ? 'assets/images/ocupado.png'
                               : 'assets/images/disponible.png',
-                          fit: BoxFit.cover, // Ajusta la imagen para que cubra el contenedor
-                          width: 75, // Ancho de la imagen
-                          height: 70, // Alto de la imagen
+                          fit: BoxFit.cover,
+                          width: 75,
+                          height: 70,
                         ),
                         Text(
                           estNum,
                           style: TextStyle(
-                            fontSize: 14, // Tamaño del texto
+                            fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black, // Color del texto
-                            backgroundColor: Colors.white.withOpacity(0.8), // Fondo semi-transparente para el texto
+                            color: Colors.black,
+                            backgroundColor: Colors.white.withOpacity(0.8),
                           ),
                           textAlign: TextAlign.center,
                         ),

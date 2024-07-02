@@ -68,8 +68,8 @@ create table Reserva(
 );
 
 create table Ocupa(
-	Fecha_Entrada date,
-	Fecha_Salida date,
+	Fecha_Entrada time,
+	Fecha_Salida time,
 	Estado Boolean,
 	ID_Estacionamiento text,
 	ID_Vehiculo varchar(12),
