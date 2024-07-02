@@ -8,8 +8,7 @@ class VehicleInterface extends StatefulWidget {
   final String userId;
   final String vehicleid;
 
-  const VehicleInterface({Key? key, required this.userId, required this.vehicleid,
-  }) : super(key: key);
+  const VehicleInterface({Key? key, required this.userId, required this.vehicleid}) : super(key: key);
 
   @override
   _VehicleInterfaceState createState() => _VehicleInterfaceState();
@@ -187,7 +186,7 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
         padding: EdgeInsets.only(top: size.height * 0.1),
         child: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (_) => PatentesPage(
                   userId: widget.userId,

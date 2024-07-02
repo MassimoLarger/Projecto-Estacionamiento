@@ -57,14 +57,13 @@ create table Estacionamiento(
 );
 
 create table Reserva(
+	fecha_reserva date primary key,
 	ID_Usuario text,
 	ID_Estacionamiento text,
-	fecha_reserva date,
 	foreign key (ID_Usuario) references Usuario(Correo)
 	on delete no action on update cascade,
 	foreign key (ID_Estacionamiento) references Estacionamiento(ID_Estacionamiento)
-	on delete no action on update cascade,
-	primary key (ID_Usuario,ID_Estacionamiento)
+	on delete no action on update cascade
 );
 
 create table Ocupa(

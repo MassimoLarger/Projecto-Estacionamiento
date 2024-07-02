@@ -262,7 +262,7 @@ app.post('/api/estacionamientos', async (req, res) => {
 app.post('/api/reserva', async (req, res) => {
   const { userId, estacionamiento, selectedDate, timeFrom, timeTo, vehicleid } = req.body;
   try {
-    const result = await pool.query('INSERT INTO Reserva VALUES ($1, $2, $3) RETURNING *', [userId, estacionamiento, selectedDate]);
+    const result = await pool.query('INSERT INTO Reserva VALUES ($1, $2, $3) RETURNING *', [selectedDate, userId, estacionamiento ]);
     const resultado = await pool.query('INSERT INTO Ocupa VALUES ($1, $2, True, $3, $4) RETURNING *', [timeFrom, timeTo, estacionamiento, vehicleid]);
     res.status(200).send({ success: true, reserva: result.rows[0].id, ocupado: resultado.rows[0].id });
   } catch (error) {
@@ -272,11 +272,10 @@ app.post('/api/reserva', async (req, res) => {
 });
 
 app.post('/api/cancelar-reserva', async (req, res) => {
-  const { userId, vehicleid } = req.body;
+  const { vehicleid } = req.body;
   try {
-    const result1 = await pool.query('DELETE FROM Reserva WHERE ID_Usuario = $1', [userId]);
-    const result2 = await pool.query('DELETE FROM Ocupa WHERE ID_Vehiculo = $1', [vehicleid]);
-    if (result1.rowCount > 0 && result2.rowCount > 0) {
+    const result = await pool.query('DELETE FROM Ocupa WHERE ID_Vehiculo = $1', [vehicleid]);
+    if (result.rowCount > 0) {
       res.status(200).json({ success: true });
     } else {
       res.status(500).json({ success: false, error: 'No se pudo cancelar la reserva o liberar el vehículo.' });
