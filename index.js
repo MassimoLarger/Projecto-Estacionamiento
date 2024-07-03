@@ -30,7 +30,8 @@ app.use(express.json());
 // Servir archivos estáticos
 app.use('/static/css', express.static(path.join(__dirname, 'vistas/app_web_guardia/css')));
 app.use('/static/js', express.static(path.join(__dirname, 'vistas/app_web_guardia/js')));
-app.use('/static/images', express.static(path.join(__dirname, 'vistas/app_web_guardia/images')));
+app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
+
 
 // Ruta principal para servir el archivo HTML
 app.get('/', (req, res) => {
