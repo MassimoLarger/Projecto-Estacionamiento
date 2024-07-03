@@ -12,7 +12,7 @@ import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 
 // Configuraciones iniciales
 dotenv.config();
-
+/*
 const { Pool } = pkg;
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -21,6 +21,14 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
+*/
+// Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
+    }
+  });
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
