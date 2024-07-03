@@ -26,14 +26,11 @@ const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json());
 app.use(express.json());
+
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
-
-app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/html')));
-
-app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/js')));
-
-app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/css')));
+app.use('/static/css', express.static(path.join(__dirname, 'vistas/app_web_guardia/css')));
+app.use('/static/js', express.static(path.join(__dirname, 'vistas/app_web_guardia/js')));
+app.use('/static/images', express.static(path.join(__dirname, 'vistas/app_web_guardia/images')));
 
 // Ruta principal para servir el archivo HTML
 app.get('/', (req, res) => {
