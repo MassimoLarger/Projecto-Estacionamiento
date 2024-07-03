@@ -42,7 +42,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/html')));
 
 // Rutas para los archivos HTML
-app.get('/bienvenida.html', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
 });
 
