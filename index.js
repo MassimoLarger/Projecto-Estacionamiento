@@ -33,11 +33,41 @@ app.use('/static/js', express.static(path.join(__dirname, 'vistas/app_web_guardi
 app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
 
 
+
+//mover a otro archivo
 // Ruta principal para servir el archivo HTML
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
 });
 
+
+app.get('/editar_perfil.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/editar_perfil.html'));
+});
+
+app.get('/error.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/error.html'));
+});
+
+app.get('/exito.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/exito.html'));
+});
+
+app.get('/iniciar_sesion.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/iniciar_sesion.html'));
+});
+
+app.get('/lugares_estacionamiento.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/lugares_estacionamiento.html'));
+});
+
+app.get('/sede.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
+});
+
+app.get('/splash_screen.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/splash_screen.html'));
+});
 
 // esto va en una carpeta aparte 
 // Rutas existentes
