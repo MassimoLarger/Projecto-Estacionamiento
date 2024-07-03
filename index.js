@@ -9,26 +9,16 @@ import { Ppu } from './ppu.js';
 import _ from 'lodash';
 import _variables from './variables.json' assert { type: 'json' };
 import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
-const { Pool } = pkg;
-// Configuraciones iniciales
-dotenv.config();
-/*
 
-const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-*/
-// Configura el pool de conexiones usando la URL de la base de datos desde las variables de entorno
+const { Pool } = pkg;
+dotenv.config();
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
-    }
-  });
+  },
+});
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -36,14 +26,13 @@ const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json());
 app.use(express.json());
-//app.use(express.static(path.join(__dirname, 'public')));
 
 // Servir archivos estáticos
-app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/html')));
+app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
 
-// Rutas para los archivos HTML
+// Ruta principal para servir el archivo HTML
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
 });
 
 // Rutas existentes
@@ -302,9 +291,9 @@ app.post('/api/cancelar-reserva', async (req, res) => {
   }
 });
 
+
 // Start the server
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
   console.log(`Servidor activo en el puerto ${PORT}`);
 });
-
