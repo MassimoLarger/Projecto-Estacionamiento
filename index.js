@@ -9,11 +9,11 @@ import { Ppu } from './ppu.js';
 import _ from 'lodash';
 import _variables from './variables.json' assert { type: 'json' };
 import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
-
+const { Pool } = pkg;
 // Configuraciones iniciales
 dotenv.config();
 /*
-const { Pool } = pkg;
+
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
