@@ -36,7 +36,15 @@ const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+
+// Servir archivos estáticos
+app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/html')));
+
+// Rutas para los archivos HTML
+app.get('/bienvenida.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
+});
 
 // Rutas existentes
 app.post('/api/consultau', async (req, res) => {
@@ -299,3 +307,4 @@ const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
   console.log(`Servidor activo en el puerto ${PORT}`);
 });
+
