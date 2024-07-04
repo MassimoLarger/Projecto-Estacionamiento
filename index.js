@@ -32,16 +32,14 @@ app.use('/static/css', express.static(path.join(__dirname, 'vistas/app_web_guard
 app.use('/static/js', express.static(path.join(__dirname, 'vistas/app_web_guardia/js')));
 app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
 
-
-
 //mover a otro archivo
 // Ruta principal para servir el archivo HTML
 
-app.get('/splash_screen.html', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/splash_screen.html'));
 });
 
-app.get('/', (req, res) => {
+app.get('/bienvenida.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
 });
 
