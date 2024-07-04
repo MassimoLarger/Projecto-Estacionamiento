@@ -33,7 +33,7 @@
                 Swal.fire('Ícono de usuario clickeado');
             });
         </script>
-        <div class="title">Guardia123</div>
+        <div class="title" id="nombre">Guardia123</div>
     </div>
     <div class="main-content">
         <div class="image-column">
@@ -76,6 +76,38 @@
         function sectorSeleccionado(sector) {
             Swal.fire('Has seleccionado: ' + sector);
         }
+    </script>
+    <script>
+        async function fetchUserName() {
+            try {
+                const response = await fetch('http://localhost:3500/api/consultau', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    body: JSON.stringify({ correo: 'correo@example.com' }) // Cambia esto según cómo obtengas el correo del usuario.
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('userNameDisplay').textContent = data.usuario.nombre;
+                    } else {
+                        document.getElementById('userNameDisplay').textContent = 'Usuario no encontrado';
+                    }
+                } else {
+                    document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('userNameDisplay').textContent = 'Error de red';
+            }
+        }
+
+        document.getElementById('userIcon').addEventListener('click', function() {
+            fetchUserName();
+            Swal.fire('Ícono de usuario clickeado');
+        });
     </script>
 </body>
 </html>

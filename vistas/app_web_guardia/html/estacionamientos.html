@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Estacionamiento Entrada</title>
+<link rel="stylesheet" href="/static/css/estacionamientos.css">
+</head>
+<body>
+<div class="container">
+    <h1>Estacionamiento Entrada</h1>
+    <div class="parking-lot">
+        <div class="space reserved" id="A01">A01</div>
+        <div class="space available" id="A04">A04</div>
+        <!-- Repite para otros espacios -->
+    </div>
+    <div class="status">
+        <div class="reserved">Reservados: <span id="reserved-count">14</span></div>
+        <div class="available">Disponibles: <span id="available-count">5</span></div>
+    </div>
+    <button onclick="continuar()">Continuar</button>
+</div>
+<script src="/static/js/estacionamientos.js"></script>
+</body>
+</html>
