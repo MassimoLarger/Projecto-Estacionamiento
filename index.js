@@ -69,8 +69,8 @@ app.post('/api/vehiculoR', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM Vehiculo WHERE Patente = $1', [patente]);
     if (result.rows.length > 0) {
-      const { patente, descripcion } = result.rows[0];
-      res.json({ success: true, patentes:{ patente, descripcion } , message: 'Vehículos encontrados' });
+      const { patente, descripcion, id_tipo_v } = result.rows[0];
+      res.json({ success: true, patentes:{ patente, descripcion, id_tipo_v } , message: 'Vehículos encontrados' });
     } else {
       res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
     }
@@ -283,6 +283,38 @@ app.post('/api/cancelar-reserva', async (req, res) => {
   } catch (error) {
     console.error('Error al cancelar la reserva:', error);
     res.status(500).send('Error al cancelar la reserva');
+  }
+});
+
+app.post('/api/reservations', async (req, res) => {
+  const { correo } = req.body;
+
+  try {
+    const result = await pool.query(`
+      SELECT r.fecha_reserva AS fecha,
+             o.Fecha_Entrada AS hora_inicio,
+             o.Fecha_Salida AS hora_fin,
+             cs.Nombre AS campus,
+             v.Descripcion AS modelo_vehiculo,
+             v.Patente AS patente
+      FROM Registra reg
+      JOIN Vehiculo v ON reg.ID_Vehiculo = v.Patente
+      JOIN Ocupa o ON v.Patente = o.ID_Vehiculo
+      JOIN Estacionamiento e ON o.ID_Estacionamiento = e.ID_Estacionamiento
+      JOIN Campus_Sede cs ON e.ID_Campus = cs.ID_Campus
+      JOIN Reserva r ON reg.ID_Usuario = r.ID_Usuario
+      WHERE reg.ID_Usuario = $1
+      ORDER BY o.Fecha_Entrada DESC;
+    `, [correo]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ success: true, reservations: result.rows });
+    } else {
+      res.status(404).json({ success: false, error: 'No se encontraron reservas para el usuario.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener las reservas:', error);
+    res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
   }
 });
 

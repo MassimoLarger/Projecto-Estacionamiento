@@ -57,7 +57,7 @@ create table Estacionamiento(
 );
 
 create table Reserva(
-	fecha_reserva date primary key,
+	fecha_reserva date,
 	ID_Usuario text,
 	ID_Estacionamiento text,
 	foreign key (ID_Usuario) references Usuario(Correo)

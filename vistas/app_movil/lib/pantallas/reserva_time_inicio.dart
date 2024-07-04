@@ -24,18 +24,19 @@ class VehicleTimeReserva extends StatefulWidget {
 }
 
 class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
-  int _seconds = 0; // Inicializado en 0, se actualizará con la duración calculada
   late Timer _timer;
+  int _seconds = 0; // Declaración e inicialización de _seconds
   String _userName = 'Usuario';
   String _vehicleModel = 'Vehículo';
   String _vehiclePlate = 'CJ CH 25';
+  String _vehicleImage = 'assets/images/auto.png'; // Imagen por defecto
 
   @override
   void initState() {
     super.initState();
     _fetchUserName();
     _fetchVehicleInfo();
-    _calculateDuration(); // Calcular la duración inicial al inicio
+    _calculateDuration(); // Calcular la duración inicial
 
     // Iniciar el timer
     _startTimer();
@@ -90,6 +91,8 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
           setState(() {
             _vehicleModel = data['patentes']['descripcion'];
             _vehiclePlate = data['patentes']['patente'];
+            int vehicleTypeId = data['patentes']['id_tipo_v'];
+            _setVehicleImage(vehicleTypeId);
           });
         } else {
           setState(() {
@@ -105,6 +108,28 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
       setState(() {
         _vehicleModel = 'Error de red';
       });
+    }
+  }
+
+  void _setVehicleImage(int vehicleTypeId) {
+    switch (vehicleTypeId) {
+      case 1:
+        _vehicleImage = 'assets/images/auto.png';
+        break;
+      case 2:
+        _vehicleImage = 'assets/images/camion.png';
+        break;
+      case 3:
+        _vehicleImage = 'assets/images/moto.png';
+        break;
+      case 4:
+        _vehicleImage = 'assets/images/camioneta.png';
+        break;
+      case 5:
+        _vehicleImage = 'assets/images/furgon.png';
+        break;
+      default:
+        _vehicleImage = 'assets/images/auto.png';
     }
   }
 
@@ -125,7 +150,7 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
         final data = jsonDecode(response.body);
         if (data['success']) {
           setState(() {
-            _seconds = 0;
+            _timer.cancel();
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (_) => CancelarReservatimeWidget(
@@ -137,51 +162,15 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
           });
         } else {
           // Manejo de errores si no se pudo cancelar la reserva
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text('Error'),
-              content: Text(data['error'] ?? 'No se pudo cancelar la reserva.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('OK'),
-                ),
-              ],
-            ),
-          );
+          _showErrorDialog(data['error'] ?? 'No se pudo cancelar la reserva.');
         }
       } else {
         // Manejo de errores si no se pudo conectar con el servidor
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Error'),
-            content: Text('Error de conexión con el servidor.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('OK'),
-              ),
-            ],
-          ),
-        );
+        _showErrorDialog('Error de conexión con el servidor.');
       }
     } catch (e) {
       // Manejo de errores si hubo una excepción
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Error inesperado: $e'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
+      _showErrorDialog('Error inesperado: $e');
     }
   }
 
@@ -195,12 +184,6 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
         timer.cancel();
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
   }
 
   void _calculateDuration() {
@@ -274,6 +257,22 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     );
   }
 
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -309,7 +308,7 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
             ),
             SizedBox(height: size.height * 0.05),
             Expanded(
-              child: Image.asset('assets/images/camioneta.png', fit: BoxFit.contain),
+              child: Image.asset(_vehicleImage, fit: BoxFit.contain),
             ),
             SizedBox(height: size.height * 0.01),
             Padding(
