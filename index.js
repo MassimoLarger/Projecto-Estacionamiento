@@ -324,7 +324,6 @@ app.post('/api/cancelar-reserva', async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
 app.post('/api/reservations', async (req, res) => {
   const { correo } = req.body;
 
@@ -353,11 +352,9 @@ app.post('/api/reservations', async (req, res) => {
     }
   } catch (error) {
     console.error('Error al obtener las reservas:', error);
-    res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
-  }
+    res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
+  }
 });
-=======
->>>>>>> d07a2f34599444cb3640a48c3f4ab45f4dad0f84
 
 // Start the server
 const PORT = process.env.PORT || 3500;
