@@ -13,11 +13,19 @@ import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 const { Pool } = pkg;
 dotenv.config();
 
-const pool = new Pool({
+/*const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   },
+});*/
+
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'estacionamientos_local',
+  password: 'admin',
+  port: 5432,
 });
 
 const app = express();
@@ -138,6 +146,8 @@ app.post('/api/updateProfile', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
   const { correo, contrasena } = req.body;
+  console.log(correo);
+  console.log(contrasena);
   try {
     const result = await pool.query('SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2', [correo, contrasena]);
     if (result.rows.length > 0) {
