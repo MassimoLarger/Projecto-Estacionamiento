@@ -7,6 +7,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         alert('Por favor, completa todos los campos.');
     } else {
         // Aquí podrías implementar validación adicional o consulta a una API
-        window.location.href = '../html/sede.html'; // Redirige a la página de sede
+        window.location.href = 'sede.html'; // Redirige a la página de sede
     }
 });

@@ -10,16 +10,14 @@ import _ from 'lodash';
 import _variables from './variables.json' assert { type: 'json' };
 import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 
-// Configuraciones iniciales
+const { Pool } = pkg;
 dotenv.config();
 
-const { Pool } = pkg;
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
+  },
 });
 
 const app = express();
@@ -28,8 +26,50 @@ const __dirname = path.dirname(__filename);
 
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
+// Servir archivos estáticos
+app.use('/static/css', express.static(path.join(__dirname, 'vistas/app_web_guardia/css')));
+app.use('/static/js', express.static(path.join(__dirname, 'vistas/app_web_guardia/js')));
+app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
+
+
+
+//mover a otro archivo
+// Ruta principal para servir el archivo HTML
+
+app.get('/splash_screen.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/splash_screen.html'));
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
+});
+
+app.get('/editar_perfil.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/editar_perfil.html'));
+});
+
+app.get('/error.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/error.html'));
+});
+
+app.get('/exito.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/exito.html'));
+});
+
+app.get('/iniciar_sesion.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/iniciar_sesion.html'));
+});
+
+app.get('/lugares_estacionamiento.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/lugares_estacionamiento.html'));
+});
+
+app.get('/sede.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
+});
+
+// esto va en una carpeta aparte 
 // Rutas existentes
 app.post('/api/consultau', async (req, res) => {
   const { correo } = req.body;
@@ -286,6 +326,7 @@ app.post('/api/cancelar-reserva', async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 app.post('/api/reservations', async (req, res) => {
   const { correo } = req.body;
 
@@ -317,6 +358,8 @@ app.post('/api/reservations', async (req, res) => {
     res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
   }
 });
+=======
+>>>>>>> d07a2f34599444cb3640a48c3f4ab45f4dad0f84
 
 // Start the server
 const PORT = process.env.PORT || 3500;
