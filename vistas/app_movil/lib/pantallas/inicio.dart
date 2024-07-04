@@ -18,6 +18,7 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
   String _userName = 'Usuario';
   String _vehicleModel = 'Vehículo';
   String _vehiclePlate = 'CJ CH 25';
+  String _vehicleImage = 'assets/images/auto.png'; // Default image
 
   @override
   void initState() {
@@ -75,6 +76,8 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
           setState(() {
             _vehicleModel = data['patentes']['descripcion'];
             _vehiclePlate = data['patentes']['patente'];
+            int vehicleTypeId = data['patentes']['id_tipo_v'];
+            _setVehicleImage(vehicleTypeId);
           });
         } else {
           setState(() {
@@ -90,6 +93,28 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
       setState(() {
         _vehicleModel = 'Error de red';
       });
+    }
+  }
+
+  void _setVehicleImage(int vehicleTypeId) {
+    switch (vehicleTypeId) {
+      case 1:
+        _vehicleImage = 'assets/images/auto.png';
+        break;
+      case 2:
+        _vehicleImage = 'assets/images/camion.png';
+        break;
+      case 3:
+        _vehicleImage = 'assets/images/moto.png';
+        break;
+      case 4:
+        _vehicleImage = 'assets/images/camioneta.png';
+        break;
+      case 5:
+        _vehicleImage = 'assets/images/furgon.png';
+        break;
+      default:
+        _vehicleImage = 'assets/images/auto.png'; // Default fallback image
     }
   }
 
@@ -132,7 +157,10 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
             ),
             SizedBox(height: size.height * 0.05),
             Expanded(
-              child: Image.asset('assets/images/camioneta.png', fit: BoxFit.contain),
+              child: Image.asset(
+                _vehicleImage,
+                fit: BoxFit.contain,
+              ),
             ),
             SizedBox(height: size.height * 0.01),
             Padding(

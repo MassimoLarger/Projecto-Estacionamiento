@@ -1,37 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class ReservasScreen extends StatelessWidget {
-  ReservasScreen({super.key});
+class ReservasScreen extends StatefulWidget {
+  final String userId;
 
-  final List<Map<String, String>> reservas = [
-    {
-      'fecha': '06/06/2024',
-      'hora_inicio': '10:00 AM',
-      'hora_fin': '12:00 PM',
-      'campus': 'Campus Chuyaca',
-      'modelo_vehiculo': 'Toyota Corolla',
-      'patente': 'XYZ123'
-    },
-    {
-      'fecha': '06/06/2024',
-      'hora_inicio': '10:00 AM',
-      'hora_fin': '12:00 PM',
-      'campus': 'Campus Meyer',
-      'modelo_vehiculo': 'Toyota Corolla',
-      'patente': 'XYZ123'
-    },
-    // Añadir más reservas aquí...
-  ];
+  const ReservasScreen({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _ReservasScreenState createState() => _ReservasScreenState();
+}
+
+class _ReservasScreenState extends State<ReservasScreen> {
+  List<Map<String, dynamic>> reservas = [];
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Llamar a la función para cargar las reservas desde la API
+    _fetchReservas();
+  }
+
+  Future<void> _fetchReservas() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3500/api/reservations'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{'correo': widget.userId}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          reservas = List<Map<String, dynamic>>.from(data['reservations']);
+          isLoading = false;
+        });
+      } else {
+        // Manejar errores de solicitud
+        print('Error al cargar reservas: ${response.statusCode}');
+        setState(() {
+          isLoading = false;
+        });
+      }
+    } catch (error) {
+      // Manejar errores de conexión u otros
+      print('Error en la conexión: $error');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Dimensiones de la pantalla para diseños responsivos
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    // Adaptar tamaños de fuente según el tamaño de la pantalla
-    double titleFontSize = screenWidth < 600 ? 20 : 24; // Menor para teléfonos, mayor para tablets
-    double listTitleFontSize = screenWidth < 600 ? 16 : 18; // Menor para teléfonos, mayor para tablets
+    double titleFontSize = screenWidth < 600 ? 20 : 24;
+    double listTitleFontSize = screenWidth < 600 ? 16 : 18;
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +91,13 @@ class ReservasScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : reservas.isEmpty
+                ? Center(
+              child: Text('No hay reservas disponibles'),
+            )
+                : ListView.separated(
               itemCount: reservas.length,
               itemBuilder: (context, index) {
                 return ListTile(
@@ -73,10 +112,10 @@ class ReservasScreen extends StatelessWidget {
                   ),
                   subtitle: Text(
                     'Fecha: ${reservas[index]['fecha']}\n'
-                    'Hora: ${reservas[index]['hora_inicio']} - ${reservas[index]['hora_fin']}\n'
-                    'Campus: ${reservas[index]['campus']}\n'
-                    'Modelo del vehículo: ${reservas[index]['modelo_vehiculo']}\n'
-                    'Patente: ${reservas[index]['patente']}'
+                        'Hora: ${reservas[index]['hora_inicio']} - ${reservas[index]['hora_fin']}\n'
+                        'Campus: ${reservas[index]['campus']}\n'
+                        'Modelo del vehículo: ${reservas[index]['modelo_vehiculo']}\n'
+                        'Patente: ${reservas[index]['patente']}',
                   ),
                 );
               },
