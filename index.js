@@ -36,10 +36,14 @@ app.use(express.static(path.join(__dirname, 'vistas/app_web_guardia/assets')));
 
 //mover a otro archivo
 // Ruta principal para servir el archivo HTML
+
+app.get('/splash_screen.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/splash_screen.html'));
+});
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
 });
-
 
 app.get('/editar_perfil.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/editar_perfil.html'));
@@ -63,10 +67,6 @@ app.get('/lugares_estacionamiento.html', (req, res) => {
 
 app.get('/sede.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
-});
-
-app.get('/splash_screen.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/splash_screen.html'));
 });
 
 // esto va en una carpeta aparte 
