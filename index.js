@@ -163,6 +163,27 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+app.post('/api/loginGuardia', async (req, res) => {
+  const { correo, contrasena } = req.body;
+  try {
+    // Modifica la consulta para incluir el tipo de usuario deseado en la condición
+    const result = await pool.query(
+      'SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2 AND tipo = $3',
+      [correo, contrasena, 'Guardia']
+    );
+
+    if (result.rows.length > 0) {
+      const { correo, tipo } = result.rows[0];
+      res.json({ success: true, userId: correo, typeId: tipo, message: 'Usuario encontrado' });
+    } else {
+      res.json({ success: false, message: 'Usuario no encontrado, o algun campo incorrecto' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
 app.post('/api/register', async (req, res) => {
   const { correo, nombre, telefono, tipo, contrasena } = req.body;
   try {

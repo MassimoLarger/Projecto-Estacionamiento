@@ -63,7 +63,7 @@ button:hover {
         font-size: 1.25em; /* Aumenta el tamaño de fuente para mejorar la legibilidad */
     }
 
-    input[type="text"], input[type="password"], button {
+    input[type="email"], input[type="password"], button {
         font-size: 1em; /* Aumenta el tamaño de fuente en los elementos de formulario */
     }
 }

@@ -4,31 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="/static/css/sede.css">
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/static/css/sede.css">
     <title>Guardia Screen</title>
     <style>
         .swal2-html-container button {
             padding: 10px;
             margin: 5px;
             border: none;
-            background-color: #3085d6;
-            color: white;
-            border-radius: 5px;
+            background-color: #C6D4FF;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
             display: block; /* hace que los botones se apilen verticalmente */
             width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
         }
 
         .swal2-html-container button:hover {
-            background-color: #76a5af;
+            background-color: #567DF4;
+            color: rgb(255, 255, 255);
         }
     </style>
 </head>
 <body>
     <div class="app-bar">
-        <div class="icon-container">
-            <img src="/images/user.png" alt="User Icon">
-        </div>
+        <img src="/images/user.png" alt="User Icon" id="userIcon" style="width: 40px; height: 40px;">
+        <script>
+            document.getElementById('userIcon').addEventListener('click', function() {
+                Swal.fire('Ícono de usuario clickeado');
+            });
+        </script>
         <div class="title">Guardia123</div>
     </div>
     <div class="main-content">
@@ -64,10 +68,8 @@
                 title: 'Selecciona el lugar a administrar en Meyer',
                 showConfirmButton: false, // oculta el botón de confirmar
                 html:
-                    '<button onclick="sectorSeleccionado(\'Entrada\')">Entrada</button>' +
-                    '<button onclick="sectorSeleccionado(\'Laboratorios\')">Laboratorios</button>' +
-                    '<button onclick="sectorSeleccionado(\'Biblioteca\')">Biblioteca</button>' +
-                    '<button onclick="sectorSeleccionado(\'Cafetería\')">Cafetería</button>'
+                    '<button onclick="sectorSeleccionado(\'Entrada1\')">Entrada 1</button>' +
+                    '<button onclick="sectorSeleccionado(\'Entrada2\')">Entrada 2</button>' 
             });
         });
 
