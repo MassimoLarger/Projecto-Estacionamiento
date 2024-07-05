@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             if (data.success) {
                 console.log('Tipo de Usuario:', data.tipo_usuario);
+                localStorage.setItem('userEmail', correo); // Almacenar el correo del usuario en localStorage
                 window.location.href = 'sede.html'; // Redirige a la página adecuada
             } else {
                 Swal.fire('Autenticación fallida. Por favor verifica tus credenciales.');

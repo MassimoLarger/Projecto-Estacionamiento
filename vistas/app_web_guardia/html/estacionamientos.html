@@ -3,22 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <title>Estacionamiento Entrada</title>
-<link rel="stylesheet" href="/static/css/estacionamientos.css">
+<style>
+    .container {
+        width: 80%;
+        margin: auto;
+        text-align: center;
+    }
+
+    .parking-lot {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f0f0f0;
+        padding: 50px 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .building {
+        width: 80%;
+        height: 100px;
+        background-color: #808080;
+        color: white;
+        line-height: 100px;
+        text-align: center;
+        border-radius: 4px;
+        margin-bottom: 40px;
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+
+    .space {
+        width: 60px;
+        height: 100px;
+        line-height: 100px;
+        text-align: center;
+        margin: 10px 5px;
+        border: 1px solid #333;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .space.reserved {
+        background-color: #FF317B;
+        color: rgb(0, 0, 0);
+    }
+
+    .space.available {
+        background-color: #F3F6FF;
+        color: rgb(0, 0, 0);
+    }
+
+    .space:hover {
+        transform: translateY(-2px);
+    }
+
+    .button {
+        padding: 15px 40px;
+        background-color: #567DF4;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 30px;
+    }
+
+    .button:hover {
+        background-color: #4869B0;
+    }
+
+    .status {
+        margin-top: 20px;
+        font-size: 18px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .status .reserved, .status .available {
+    width: 110px;
+    height: 110px;
+    display: flex;
+    flex-direction: column; /* Organiza el contenido en columna */
+    align-items: center; /* Centra horizontalmente el contenido */
+    justify-content: center; /* Centra verticalmente el contenido */
+    border: 1px solid #333;
+    font-weight: bold;
+    border-radius: 10px; /* Hace los divs completamente circulares */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 18px; /* Ajusta el tamaño de la fuente para visibilidad */
+    padding: 10px;
+    line-height: 1.2; /* Ajusta la línea para mejor visualización del texto y el número */
+    }
+
+    .status div span {
+        display: block; /* Hace que el número aparezca en una nueva línea */
+        font-size: 24px; /* Tamaño de fuente más grande para el número */
+        margin-top: 5px; /* Espacio entre el texto y el número */
+    }
+
+
+    .status .reserved {
+        background-color: #FFECEF;
+        color: #DF1525;
+    }
+
+    .status .available {
+        background-color: #F3F8FF;
+        color: #2957C2;
+    }
+</style>
 </head>
 <body>
 <div class="container">
-    <h1>Estacionamiento Entrada</h1>
+    <h1 id="title">Estacionamiento Entrada</h1>
     <div class="parking-lot">
-        <div class="space reserved" id="A01">A01</div>
-        <div class="space available" id="A04">A04</div>
-        <!-- Repite para otros espacios -->
+        <div class="building">Edificio</div>
+        <div class="row">
+            <div class="space reserved" id="A01">A01</div>
+            <div class="space available" id="A02">A02</div>
+            <div class="space reserved" id="A03">A03</div>
+            <div class="space reserved" id="A04">A04</div>
+            <div class="space available" id="A05">A05</div>
+            <div class="space reserved" id="A06">A06</div>
+            <div class="space reserved" id="A07">A07</div>
+            <div class="space available" id="A08">A08</div>
+            <div class="space available" id="A09">A09</div>
+            <div class="space available" id="A10">A10</div>
+            <div class="space reserved" id="A11">A11</div>
+        </div>
     </div>
     <div class="status">
-        <div class="reserved">Reservados: <span id="reserved-count">14</span></div>
-        <div class="available">Disponibles: <span id="available-count">5</span></div>
+        <div class="reserved">Reservados <span id="reserved-count">6</span></div>
+        <div class="available">Disponibles <span id="available-count">5</span></div>
     </div>
-    <button onclick="continuar()">Continuar</button>
+    <button class="button" onclick="continuar()">Continuar</button>
 </div>
-<script src="/static/js/estacionamientos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    updateCounts();
+    const params = new URLSearchParams(window.location.search);
+    const sector = params.get('sector');
+    if (sector) {
+        const titleElement = document.getElementById('title');
+        titleElement.textContent = `Estacionamiento ${sector}`;
+    }
+});
+
+function updateCounts() {
+    const reserved = document.querySelectorAll('.space.reserved').length;
+    const available = document.querySelectorAll('.space.available').length;
+    document.getElementById('reserved-count').textContent = reserved;
+    document.getElementById('available-count').textContent = available;
+}
+
+function continuar() {
+    alert('Continuar a la siguiente acción');
+}
+</script>
 </body>
 </html>

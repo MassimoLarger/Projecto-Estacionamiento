@@ -13,20 +13,20 @@ import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 const { Pool } = pkg;
 dotenv.config();
 
-/*const pool = new Pool({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   },
-});*/
+});
 
-const pool = new Pool({
+/*const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'estacionamientos_local',
   password: 'admin',
   port: 5432,
-});
+});*/
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -67,8 +67,8 @@ app.get('/iniciar_sesion.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/iniciar_sesion.html'));
 });
 
-app.get('/lugares_estacionamiento.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/lugares_estacionamiento.html'));
+app.get('/estacionamientos.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos.html'));
 });
 
 app.get('/sede.html', (req, res) => {
@@ -84,6 +84,25 @@ app.post('/api/consultau', async (req, res) => {
     if (result.rows.length > 0) {
       const { nombre, telefono, tipo, contrasena } = result.rows[0];
       res.json({ success: true, message: 'Usuario encontrado', usuario: { nombre, telefono, tipo, contrasena } });
+    } else {
+      res.json({ success: false, message: 'No se encuentra el usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+app.post('/api/consultan', async (req, res) => {
+  const { correo } = req.body;
+  try {
+    // Corrección aquí: quita RETURNING *
+    const result = await pool.query('SELECT nombre FROM Usuario WHERE Correo = $1', [correo]);
+    if (result.rows.length > 0) {
+      const usuario = result.rows[0];
+      console.log(usuario);
+      // Asegúrate de acceder correctamente al campo 'nombre'
+      res.json({ success: true, message: 'Usuario encontrado', nombre: usuario.nombre });
     } else {
       res.json({ success: false, message: 'No se encuentra el usuario' });
     }
