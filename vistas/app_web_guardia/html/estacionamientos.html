@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <title>Estacionamiento Entrada</title>
 <style>
     .container {
@@ -19,6 +21,21 @@
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    .swal2-html-container button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #C6D4FF;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
+            display: block; /* hace que los botones se apilen verticalmente */
+            width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
+        }
+        .swal2-html-container button:hover {
+            background-color: #567DF4;
+            color: rgb(255, 255, 255);
+        }
 
     .building {
         width: 80%;
@@ -107,7 +124,6 @@
         margin-top: 5px; /* Espacio entre el texto y el número */
     }
 
-
     .status .reserved {
         background-color: #FFECEF;
         color: #DF1525;
@@ -117,9 +133,29 @@
         background-color: #F3F8FF;
         color: #2957C2;
     }
+
+    .icon {
+        position: fixed;
+        top: 20px;
+        font-size: 24px;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .back-icon {
+        left: 20px;
+    }
+
+    .user-icon {
+        right: 20px;
+    }   
+   
 </style>
 </head>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
+    <i class="fas fa-arrow-left icon back-icon" onclick="history.back();"></i>
+    <i class="fas fa-user-circle icon user-icon" id="userIcon"></i>
 <div class="container">
     <h1 id="title">Estacionamiento Entrada</h1>
     <div class="parking-lot">
@@ -145,13 +181,53 @@
     <button class="button" onclick="continuar()">Continuar</button>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    
+    document.addEventListener('DOMContentLoaded', function() {
     updateCounts();
     const params = new URLSearchParams(window.location.search);
     const sector = params.get('sector');
     if (sector) {
         const titleElement = document.getElementById('title');
         titleElement.textContent = `Estacionamiento ${sector}`;
+    }
+
+    document.getElementById('userIcon').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Acciones del Usuario',
+            html: `
+                <button onclick="accion1()">Detalles Personales</button>
+                <button onclick="accion2()">Contraseña y Seguridad</button>
+                <button onclick="accion3()">Historial de Reserva</button>
+                <button onclick="accion4()">Estacionamientos</button>
+                <button onclick="accion5()">Comentarios</button>
+            `,
+            showConfirmButton: false
+        });
+    });
+
+    function accion1() {
+        console.log('Detalles Personales seleccionado');
+        Swal.close();
+    }
+
+    function accion2() {
+        console.log('Contraseña y Seguridad seleccionado');
+        Swal.close();
+    }
+
+    function accion3() {
+        console.log('Historial de Reserva seleccionado');
+        Swal.close();
+    }
+
+    function accion4() {
+        console.log('Estacionamientos seleccionado');
+        Swal.close();
+    }
+
+    function accion5() {
+        console.log('Comentarios seleccionado');
+        Swal.close();
     }
 });
 
@@ -165,6 +241,7 @@ function updateCounts() {
 function continuar() {
     alert('Continuar a la siguiente acción');
 }
+
 </script>
 </body>
 </html>

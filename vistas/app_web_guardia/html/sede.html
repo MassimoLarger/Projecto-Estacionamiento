@@ -47,15 +47,52 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchUserName();
-            document.getElementById('userIcon').addEventListener('click', function() {
-                Swal.fire('Ícono de usuario clickeado');
+                document.getElementById('userIcon').addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Acciones del Usuario',
+                    html: `
+                        <button onclick="accion1()">Detalles Personales</button>
+                        <button onclick="accion2()">Contraseña y Seguridad</button>
+                        <button onclick="accion3()">Historial de Reserva</button>
+                        <button onclick="accion4()">Estacionamientos</button>
+                        <button onclick="accion5()">Comentarios</button>
+                    `,
+                    showConfirmButton: false
+                });
             });
+
+            function accion1() {
+                console.log('Perfil seleccionado');
+                Swal.close();
+            }
+
+            function accion2() {
+                console.log('Configuraciones seleccionado');
+                Swal.close();
+            }
+
+            function accion3() {
+                console.log('Cerrar sesión seleccionado');
+                Swal.close();
+            }
+
+            function accion4() {
+                console.log('Cerrar sesión seleccionado');
+                Swal.close();
+            }
+
+            function accion5() {
+                console.log('Cerrar sesión seleccionado');
+                Swal.close();
+            }
+
             document.getElementById('chuyacaButton').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Selecciona el lugar a administrar en Chuyaca',
                     showConfirmButton: false,
                     html: '<button onclick="sectorSeleccionado(\'Entrada\')">Entrada</button>' +
                           '<button onclick="sectorSeleccionado(\'Gym 1\')">Gym 1</button>' +
+                          '<button onclick="sectorSeleccionado(\'Edificio Ingeco\')">Edificio Ingeco</button>' +
                           '<button onclick="sectorSeleccionado(\'Aulas Virtuales\')">Aulas Virtuales</button>' +
                           '<button onclick="sectorSeleccionado(\'Edificio Arquitectura\')">Edificio Arquitectura</button>' +
                           '<button onclick="sectorSeleccionado(\'Aulas Virtuales\')">Aulas Virtuales</button>' +
@@ -84,6 +121,9 @@
                 case 'Edificio Matematica':
                     window.location.href = 'estacionamientos.html?sector=Edificio%20Matematica';
                     break;
+                case 'Edificio Ingeco':
+                    window.location.href = 'estacionamientos.html?sector=Edificio%20Ingeco';
+                    break;    
                 case 'Edificio E':
                     window.location.href = 'estacionamientos.html?sector=Edificio%20E';
                     break;                          

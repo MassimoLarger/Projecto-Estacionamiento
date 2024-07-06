@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Modificar reserva</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: #333;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .info-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 400px;
+      padding: 15px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 15px;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .info-value {
+      color: #666;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 400px;
+    }
+
+    button {
+      background-color: #567DF4;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #567DF4;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <i class="back-button fas fa-arrow-left" onclick="history.back()";></i>
+  <i class="user-icon fas fa-user-circle"></i>
+
+  <div class="container">
+    <h2>Modificar reserva</h2>
+    <div class="info-section">
+      <div class="info-label">VEHÍCULO</div>
+      <div class="info-value">Ford Ecoesport</div>
+      <div class="info-value">CU ML 69</div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">ESTACIONAMIENTO</div>
+      <div class="info-value">Campus Meyer</div>
+      <div class="info-value">Espacio AV01</div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">HORA/FECHA</div>
+      <div class="info-value">16:00-17:00 PM</div>
+      <div class="info-value">23 Jun. 2024</div>
+    </div>
+    <div class="buttons">
+      <button>Editar Reserva</button>
+      <button>Eliminar Reservar</button>
+    </div>
+  </div>
+
+  <script>
+    const backButton = document.querySelector('.back-button');
+
+    backButton.addEventListener('click', () => {
+      // Aquí debes agregar la lógica para volver a la página anterior.
+      // Por ejemplo, puedes usar window.history.back();
+    });
+  </script>
+</body>
+</html>
