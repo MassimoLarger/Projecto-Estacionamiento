@@ -15,18 +15,43 @@ class RecuperarContraScreenState extends State<RecuperarContraScreen> {
   String? _errorMessage;
 
   Future<void> _sendVerificationEmail(String email) async {
+    setState(() {
+      _errorMessage = null; // Resetea el mensaje de error
+    });
+
     try {
-      final response = await http.post(
+      var response = await http.post(
         Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/send-verification-code'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'email': _emailController.text, // Usar el parámetro 'email' pasado a la función
+          'email': email,
         }),
       );
+
+      if (response.statusCode == 307) {
+        // Manejar la redirección
+        var redirectedUrl = response.headers['location'];
+        if (redirectedUrl != null) {
+          response = await http.post(
+            Uri.parse(redirectedUrl),
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'email': email,
+            }),
+          );
+        }
+      }
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = json.decode(response.body);
+
         if (responseBody['success']) {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -47,6 +72,7 @@ class RecuperarContraScreenState extends State<RecuperarContraScreen> {
         });
       }
     } catch (e) {
+      print('Exception: $e');
       setState(() {
         _errorMessage = 'Error al enviar el correo.';
       });
