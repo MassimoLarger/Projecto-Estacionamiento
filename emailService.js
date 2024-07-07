@@ -7,10 +7,6 @@ export async function sendVerificationEmail(email, code) {
     throw new Error('Configuración de correo electrónico no encontrada.');
   }
 
-  // Imprime las variables para depuración
-  console.log('EMAIL_USER:', process.env.EMAIL_USER);
-  console.log('EMAIL_APP_PASSWORD:', process.env.EMAIL_APP_PASSWORD);
-
   // Configura el transporter
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
