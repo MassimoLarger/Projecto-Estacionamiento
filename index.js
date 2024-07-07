@@ -75,6 +75,14 @@ app.get('/sede.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
 });
 
+app.get('/modificar_reserva_1.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_1.html'));
+});
+
+app.get('/modificar_reserva.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva.html'));
+});
+
 // esto va en una carpeta aparte 
 // Rutas existentes
 app.post('/api/consultau', async (req, res) => {

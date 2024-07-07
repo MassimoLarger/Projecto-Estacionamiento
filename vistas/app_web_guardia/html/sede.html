@@ -44,13 +44,19 @@
         <button id="home-button"><i class="fas fa-home"></i></button>
         <button id="add-button"><i class="fas fa-plus"></i></button>
     </div>
+    <input type="file" id="imageInput" style="display: none;" accept="image/*">
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchUserName();
                 document.getElementById('userIcon').addEventListener('click', function() {
+                    const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
+                    const userName = document.getElementById('userNameDisplay').textContent;
                 Swal.fire({
-                    title: 'Acciones del Usuario',
                     html: `
+                        <div style="text-align: center;">
+                        <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
+                        <h3>${userName}</h3>
+                        </div>
                         <button onclick="accion1()">Detalles Personales</button>
                         <button onclick="accion2()">Contraseña y Seguridad</button>
                         <button onclick="accion3()">Historial de Reserva</button>

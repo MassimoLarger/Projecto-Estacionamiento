@@ -2,6 +2,7 @@
 <html>
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Modificar reserva</title>
   <style>
     body {
@@ -13,6 +14,21 @@
       height: 100vh;
       margin: 0;
       background-color: #f2f2f2;
+    }
+
+    .swal2-html-container button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #C6D4FF;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
+            display: block; /* hace que los botones se apilen verticalmente */
+            width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
+    }
+    .swal2-html-container button:hover {
+            background-color: #567DF4;
+            color: rgb(255, 255, 255);
     }
 
     .container {
@@ -88,7 +104,8 @@
 </head>
 <body>
   <i class="back-button fas fa-arrow-left" onclick="history.back()";></i>
-  <i class="user-icon fas fa-user-circle"></i>
+  <i class="user-icon fas fa-user-circle" id="userIcon"></i>
+  <div id="userNameDisplay" style="display:none;"></div>
 
   <div class="container">
     <h2>Modificar reserva</h2>
@@ -114,12 +131,75 @@
   </div>
 
   <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+
     const backButton = document.querySelector('.back-button');
 
     backButton.addEventListener('click', () => {
       // Aquí debes agregar la lógica para volver a la página anterior.
       // Por ejemplo, puedes usar window.history.back();
     });
+
+
+    fetchUserName();
+
+    document.getElementById('userIcon').addEventListener('click', function() {
+        const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
+        const userName = document.getElementById('userNameDisplay').textContent;
+        Swal.fire({
+            html: `
+                <div style="text-align: center;">
+                <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
+                <h3>${userName}</h3>
+                </div>
+                <button onclick="accion1()">Detalles Personales</button>
+                <button onclick="accion2()">Contraseña y Seguridad</button>
+                <button onclick="accion3()">Historial de Reserva</button>
+                <button onclick="accion4()">Estacionamientos</button>
+                <button onclick="accion5()">Comentarios</button>
+            `,
+            showConfirmButton: false
+        });
+    });  
+  });  
+
+    async function fetchUserName() {
+            const userEmail = localStorage.getItem('userEmail');
+            console.log(userEmail)
+            if (!userEmail) {
+                console.log('No user email found.');
+                document.getElementById('userNameDisplay').textContent = 'Usuario no definido';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/consultan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    body: JSON.stringify({ correo: userEmail })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    if (data.success) {
+                        document.getElementById('userNameDisplay').textContent = data.nombre;
+                    } else {
+                        document.getElementById('userNameDisplay').textContent = 'Usuario no encontrado';
+                    }
+                } else {
+                    document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('userNameDisplay').textContent = 'Error de red';
+            }
+        }
+
+
   </script>
 </body>
 </html>
