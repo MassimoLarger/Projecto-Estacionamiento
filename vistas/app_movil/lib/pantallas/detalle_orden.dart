@@ -20,7 +20,7 @@ class DetailScreen extends StatelessWidget {
   Future<void> _confirmarReserva(BuildContext context) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/reserva'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/reserva'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

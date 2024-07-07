@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'usuario.dart';
@@ -38,14 +38,24 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     _fetchVehicleInfo();
     _calculateDuration(); // Calcular la duración inicial
 
-    // Iniciar el timer
-    _startTimer();
+    // Iniciar el timer si la hora local es mayor o igual a timeFrom
+    DateTime now = DateTime.now();
+    DateTime timeFromDateTime = DateTime(now.year, now.month, now.day, widget.timeFrom.hour, widget.timeFrom.minute);
+    if (now.isAfter(timeFromDateTime) || now.isAtSameMomentAs(timeFromDateTime)) {
+      _startTimer();
+    }
+
+    // Verificar si la hora actual es mayor que timeTo para cancelar la reserva automáticamente
+    DateTime timeToDateTime = DateTime(now.year, now.month, now.day, widget.timeTo.hour, widget.timeTo.minute);
+    if (now.isAfter(timeToDateTime)) {
+      _cancelarReservaAutomatica();
+    }
   }
 
   Future<void> _fetchUserName() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/consultau'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -78,7 +88,7 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
   Future<void> _fetchVehicleInfo() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/vehiculoR'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/vehiculoR'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -133,10 +143,22 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     }
   }
 
+  void _cancelarReservaAutomatica() {
+    _timer.cancel();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => CancelarReservatimeWidget(
+          userId: widget.userId,
+          vehicleid: widget.vehicleid,
+        ),
+      ),
+    );
+  }
+
   void _cancelarReserva() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/cancelar-reserva'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/cancelar-reserva'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
