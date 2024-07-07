@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'pantallas/splash_screen.dart';
+import 'pantallas_guardia/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());

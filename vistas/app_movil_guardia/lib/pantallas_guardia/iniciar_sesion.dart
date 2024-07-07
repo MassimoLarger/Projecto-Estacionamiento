@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'sedes.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -8,23 +10,65 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _rutController = TextEditingController();
+  final TextEditingController _correoController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final response = await http.post(
+      Uri.parse('http://your-api-url/api/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'correo': _correoController.text,
+        'contrasena': _passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      if (responseData['success']) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => GuardiaScreen(userId: responseData['userId']),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage = responseData['message'];
+        });
+      }
+    } else {
+      setState(() {
+        _errorMessage = 'Error en la solicitud. Por favor, inténtalo de nuevo.';
+      });
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el tamaño de la pantalla
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Fondo del Scaffold
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white, // Fondo de la AppBar
-        elevation: 0, // Remueve la sombra bajo la AppBar
-        iconTheme: const IconThemeData(color: Colors.black), // Iconos de la AppBar en negro para contraste
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: screenSize.width * 0.05), // Texto de la AppBar ajustado
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: TextStyle(color: Colors.black, fontSize: screenSize.width * 0.05),
       ),
-      body: SingleChildScrollView( // Usa SingleChildScrollView
+      body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(screenSize.width * 0.05),
           child: Column(
@@ -36,7 +80,7 @@ class LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold,
-                  fontSize: screenSize.width * 0.06, // Ajuste dinámico del tamaño de fuente
+                  fontSize: screenSize.width * 0.06,
                   color: Colors.black,
                 ),
               ),
@@ -46,7 +90,7 @@ class LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontFamily: 'Lato',
                   fontWeight: FontWeight.bold,
-                  fontSize: screenSize.width * 0.03, // Ajuste dinámico del tamaño de fuente
+                  fontSize: screenSize.width * 0.03,
                   color: Colors.black,
                 ),
               ),
@@ -54,15 +98,15 @@ class LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Rut', 
-                  style: TextStyle(fontSize: screenSize.width * 0.035, fontWeight: FontWeight.bold, color: Colors.black)
+                  'Correo',
+                  style: TextStyle(fontSize: screenSize.width * 0.035, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
               SizedBox(height: screenSize.height * 0.01),
               TextField(
-                controller: _rutController,
+                controller: _correoController,
                 decoration: InputDecoration(
-                  hintText: '12.345.678-9',                
+                  hintText: 'example@ulagos.cl',
                   prefixIcon: const Icon(Icons.account_circle),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -76,15 +120,15 @@ class LoginScreenState extends State<LoginScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Contraseña', 
-                  style: TextStyle(fontSize: screenSize.width * 0.035, fontWeight: FontWeight.bold, color: Colors.black)
+                  'Contraseña',
+                  style: TextStyle(fontSize: screenSize.width * 0.035, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
               SizedBox(height: screenSize.height * 0.01),
               TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  hintText: 'Introduce tu contraseña',      
+                  hintText: 'Introduce tu contraseña',
                   prefixIcon: const Icon(Icons.lock),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(25),
@@ -95,19 +139,24 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: screenSize.height * 0.35), // Espacio ajustable
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const GuardiaScreen()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4), // Fondo del botón
-                  minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 90% del ancho de la pantalla
+              if (_errorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    _errorMessage,
+                    style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  ),
                 ),
-                child: Text('Iniciar Sesión', style: TextStyle(color: Colors.white, fontSize: screenSize.width * 0.04)),
+              SizedBox(height: screenSize.height * 0.35),
+              ElevatedButton(
+                onPressed: _isLoading ? null : _login,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF567DF4),
+                  minimumSize: Size(screenSize.width * 0.90, 50),
+                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text('Iniciar Sesión', style: TextStyle(color: Colors.white, fontSize: screenSize.width * 0.04)),
               ),
             ],
           ),

@@ -308,57 +308,42 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
             ),
             SizedBox(height: size.height * 0.05),
             Expanded(
-              child: Image.asset(_vehicleImage, fit: BoxFit.contain),
-            ),
-            SizedBox(height: size.height * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-              child: Container(
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text("Vehículo", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 25)),
-                    const SizedBox(height: 10),
-                    Text(_vehicleModel, style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 5),
-                    Text(_vehiclePlate, style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: size.height * 0.05),
-            Container(
-              width: size.width,
-              color: const Color(0xFF677191),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _formatDuration(_seconds),
-                      style: TextStyle(fontSize: size.width * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: Icon(Icons.pause, color: Colors.white, size: size.width * 0.08),
-                      onPressed: () => _showCancelarReservaDialog(context),
-                    ),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _vehicleModel,
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Image.asset(
+                    _vehicleImage,
+                    height: 120,
+                    width: 120,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Placa: $_vehiclePlate',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Tiempo restante:',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _formatDuration(_seconds),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showCancelarReservaDialog(context);
+                    },
+                    child: const Text('Cancelar Reserva'),
+                  ),
+                ],
               ),
             ),
           ],
