@@ -37,39 +37,46 @@ class CustomUserDialogState extends State<CustomUserDialog> {
     setState(() {
       isLoading = true;
     });
-    final response = await http.post(
-      Uri.parse('http://localhost:3500/api/consultau'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'correo': widget.userId,
-      }),
-    );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> responseBody = json.decode(response.body);
-      if (responseBody['success']) {
-        setState(() {
-          userName = responseBody['usuario']['nombre'] ?? "";
-          userPhone = responseBody['usuario']['telefono'] ?? 0;
-          userType = responseBody['usuario']['tipo'] ?? "";
-          userPassword = responseBody['usuario']['contrasena'] ?? "";
-        });
+    try {
+      final response = await http.post(
+        Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'correo': widget.userId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          setState(() {
+            userName = responseBody['usuario']['nombre'] ?? "";
+            userPhone = responseBody['usuario']['telefono'] ?? 0;
+            userType = responseBody['usuario']['tipo'] ?? "";
+            userPassword = responseBody['usuario']['contrasena'] ?? "";
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseBody['message'])),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(responseBody['message'])),
+          SnackBar(content: Text('Error en la consulta al servidor')),
         );
       }
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error en la consulta al servidor')),
+        SnackBar(content: Text('Error: $e')),
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-
-    setState(() {
-      isLoading = false;
-    });
   }
 
   void _showCerrarSesionDialog(BuildContext context) {
@@ -145,33 +152,39 @@ class CustomUserDialogState extends State<CustomUserDialog> {
 
       String updatedName = result['nombre'];
 
-      final response = await http.post(
-        Uri.parse('http://localhost:3500/api/updateProfile'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'correo': widget.userId,
-          'nombre': updatedName,
-        }),
-      );
+      try {
+        final response = await http.post(
+          Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/updateProfile'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'correo': widget.userId,
+            'nombre': updatedName,
+          }),
+        );
 
-      if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
+          setState(() {
+            userName = updatedName;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Perfil actualizado correctamente')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al actualizar el perfil')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      } finally {
         setState(() {
-          userName = updatedName;
+          isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Perfil actualizado correctamente')),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error al actualizar el perfil')),
-        );
       }
-
-      setState(() {
-        isLoading = false;
-      });
     }
   }
 
@@ -242,7 +255,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                         context,
                         MaterialPageRoute(builder: (context) => MisVehiculosScreen(userId: widget.userId)),
                       );
-                      },
+                    },
                   ),
                   const Divider(),
                   ListTile(

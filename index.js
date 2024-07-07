@@ -252,7 +252,9 @@ app.post('/api/verify-ppu', (req, res) => {
 
 app.post('/api/send-verification-code', async (req, res) => {
   const { email } = req.body;
+  console.log(email);
   const code = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(code);
   try {
     const result = await pool.query('SELECT * FROM usuario WHERE Correo = $1', [email]);
     if (result.rows[0] != null) {

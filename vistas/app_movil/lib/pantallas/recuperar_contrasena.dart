@@ -17,7 +17,7 @@ class RecuperarContraScreenState extends State<RecuperarContraScreen> {
   Future<void> _sendVerificationEmail(String email) async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/send-verification-code'),
+        Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/send-verification-code'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
