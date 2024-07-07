@@ -20,34 +20,47 @@ class VerifyPhoneContraScreenState extends State<VerifyPhoneContraScreen> {
   String _errorMessage = '';
 
   Future<void> verificarCodigo() async {
-    final response = await http.post(
-      Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/verify-code'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'code': widget.code,
-        'codigo_verificacion': _pinController.text,
-      }),
-    );
+    setState(() {
+      _errorMessage = '';
+    });
 
-    final Map<String, dynamic> responseBody = json.decode(response.body);
+    try {
+      final response = await http.post(
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/verify-code'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'code': widget.code,
+          'codigo_verificacion': _pinController.text,
+        }),
+      );
 
-    if (response.statusCode == 200) {
-      if (responseBody['success']) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CodigoVerificadoContraWidget(email: widget.email)),
-        );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (responseBody['success']) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CodigoVerificadoContraWidget(email: widget.email)),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CodigoVerificadoErrorContraWidget()),
+          );
+        }
       } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => CodigoVerificadoErrorContraWidget()),
-        );
+        setState(() {
+          _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+        });
       }
-    } else {
+    } catch (e) {
       setState(() {
-        _errorMessage = 'Error en la solicitud. Inténtalo de nuevo.';
+        _errorMessage = 'Error al procesar la solicitud. Inténtalo de nuevo.';
       });
     }
   }

@@ -12,6 +12,7 @@ class VehicleTypeSelector extends StatefulWidget {
 
 class VehicleTypeSelectorState extends State<VehicleTypeSelector> {
   int _selectedIndex = -1;
+  int? _selectedVehicleId;
 
   final List<Map<String, dynamic>> vehicles = [
     {'name': 'Automóvil', 'icon': Icons.directions_car, 'id': 1},
@@ -88,12 +89,14 @@ class VehicleTypeSelectorState extends State<VehicleTypeSelector> {
                     onTap: () {
                       setState(() {
                         _selectedIndex = index;
+                        _selectedVehicleId = vehicles[index]['id']; // Guardar el ID del vehículo seleccionado
                       });
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => RegisterVehiclePage(
                             userId: widget.userId,
+                            vehicleType: _selectedVehicleId!,
                           ),
                         ),
                       );

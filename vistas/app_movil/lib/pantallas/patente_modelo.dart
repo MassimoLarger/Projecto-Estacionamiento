@@ -6,8 +6,10 @@ import 'usuario.dart';
 
 class VehicleInfoPage extends StatefulWidget {
   final String userId;
+  final int vehicleType;
 
-  const VehicleInfoPage({Key? key, required this.userId}) : super(key: key);
+  const VehicleInfoPage({Key? key, required this.userId, required this.vehicleType
+  }) : super(key: key);
 
   @override
   _VehicleInfoPageState createState() => _VehicleInfoPageState();
@@ -21,7 +23,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
   String? _errorMessage;
 
   Future<void> _verifyVehicle() async {
-    final url = Uri.parse('http://localhost:3500/api/verify-ppu');
+    final url = Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/verify-ppu');
 
     final response = await http.post(
       url,
@@ -51,7 +53,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
   }
 
   Future<void> _addVehicle() async {
-    final url = Uri.parse('http://localhost:3500/api/vehiculos');
+    final url = Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/vehiculos');
 
     final response = await http.post(
       url,
@@ -63,6 +65,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
         'verificador': _verificadorController.text,
         'year': _yearController.text,
         'model': _modelController.text,
+        'typevehicle': widget.vehicleType,
         'userId': widget.userId,
       }),
     );
@@ -72,7 +75,7 @@ class _VehicleInfoPageState extends State<VehicleInfoPage> {
       if (responseBody['success']) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => VehiculoAgregadoWidget(userId: widget.userId)),
+          MaterialPageRoute(builder: (context) => VehiculoAgregadoWidget(userId: widget.userId, vehicleType: widget.vehicleType)),
         );
       } else {
         setState(() {

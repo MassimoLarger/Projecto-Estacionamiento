@@ -29,7 +29,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/reservations'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/reservations'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

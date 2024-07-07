@@ -236,14 +236,14 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.post('/api/vehiculos', async (req, res) => {
-  const { patente, year, model, vehicleId, userId } = req.body;
+  const { patente, year, model, typevehicle, userId } = req.body;
   console.log(patente);
   console.log(year);
   console.log(model);
-  console.log(vehicleId);
+  console.log(typevehicle);
   console.log(userId);
   try {
-    const result = await pool.query('INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *', [patente, year, model, vehicleId]);
+    const result = await pool.query('INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *', [patente, year, model, typevehicle]);
     const resultado = await pool.query('INSERT INTO Registra VALUES ($1, $2) RETURNING *', [userId, patente]);
     res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
   } catch (error) {

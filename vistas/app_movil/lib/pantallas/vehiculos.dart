@@ -23,7 +23,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
   }
 
   Future<void> _fetchPatentes() async {
-    final url = Uri.parse('http://localhost:3500/api/consultar');
+    final url = Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultar');
 
     try {
       final response = await http.post(
@@ -70,7 +70,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
   }
 
   Future<void> _fetchVehiculo(String patente) async {
-    final url = Uri.parse('http://localhost:3500/api/vehiculoR');
+    final url = Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/vehiculoR');
 
     try {
       final response = await http.post(
@@ -271,7 +271,7 @@ class MisVehiculosScreenState extends State<MisVehiculosScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : hasError
-          ? Center(child: Text('Error al cargar los vehículos'))
+          ? Center(child: Text('No hay vehiculos registrados'))
           : Column(
         children: [
           Padding(

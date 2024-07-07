@@ -8,8 +8,10 @@ import 'verificaciones/eliminar_patente.dart';
 
 class PatentesPage extends StatefulWidget {
   final String userId;
+  final int vehicleType;
 
-  const PatentesPage({Key? key, required this.userId}) : super(key: key);
+  const PatentesPage({Key? key, required this.userId,required this.vehicleType
+  }) : super(key: key);
 
   @override
   PatentesPageState createState() => PatentesPageState();
@@ -28,7 +30,7 @@ class PatentesPageState extends State<PatentesPage> {
   }
 
   Future<void> _fetchPatentes() async {
-    final url = Uri.parse('http://localhost:3500/api/consultar');
+    final url = Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultar');
 
     try {
       final response = await http.post(
@@ -177,6 +179,13 @@ class PatentesPageState extends State<PatentesPage> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
+          : patentes.isEmpty
+          ? Center(
+        child: Text(
+          'Este usuario no tiene patentes registradas.',
+          style: TextStyle(fontSize: 18),
+        ),
+      )
           : Column(
         children: <Widget>[
           const Padding(
@@ -206,9 +215,7 @@ class PatentesPageState extends State<PatentesPage> {
                   elevation: 0,
                   color: isMarkedForDeletion
                       ? Colors.red
-                      : (index == selectedPatenteIndex
-                      ? Colors.green
-                      : const Color(0xFFC6D4FF)),
+                      : (index == selectedPatenteIndex ? Colors.green : const Color(0xFFC6D4FF)),
                   child: ListTile(
                     title: Text(
                       patente,
@@ -227,8 +234,7 @@ class PatentesPageState extends State<PatentesPage> {
                     ),
                     onTap: () {
                       setState(() {
-                        selectedPatenteIndex =
-                        index == selectedPatenteIndex ? null : index;
+                        selectedPatenteIndex = index == selectedPatenteIndex ? null : index;
                         if (isMarkedForDeletion) {
                           markedForDeletion.remove(patente);
                         }
@@ -242,14 +248,19 @@ class PatentesPageState extends State<PatentesPage> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: ElevatedButton(
-              onPressed: selectedPatenteIndex != null ? () {
+              onPressed: selectedPatenteIndex != null
+                  ? () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SelectCampusPage(userId: widget.userId, vehicleid: patentes[selectedPatenteIndex!]),
+                    builder: (context) => SelectCampusPage(
+                      userId: widget.userId,
+                      vehicleid: patentes[selectedPatenteIndex!],
+                    ),
                   ),
                 );
-              } : null,
+              }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF567DF4),
                 foregroundColor: Colors.white,
@@ -265,7 +276,7 @@ class PatentesPageState extends State<PatentesPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => VehicleInfoPage(userId: widget.userId),
+                    builder: (context) => VehicleInfoPage(userId: widget.userId, vehicleType: widget.vehicleType),
                   ),
                 );
               },

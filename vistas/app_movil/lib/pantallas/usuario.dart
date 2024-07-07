@@ -40,7 +40,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -154,7 +154,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://proyecto-estacionamiento-dy1e.onrender.com/api/updateProfile'),
+          Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/updateProfile'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
