@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Detalles Personales</title>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .subtitle {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+        .detail {
+            font-size: 16px;
+            margin-left: 8px;
+            margin-bottom: 16px;
+        }
+        .divider {
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .title {
+                font-size: 20px;
+            }
+            .subtitle {
+                font-size: 16px;
+            }
+            .detail {
+                font-size: 14px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <i class="back-button fas fa-arrow-left" onclick="history.back();"></i>
+    <div class="container">
+        <div class="title">Detalles Personales</div>
+        <div class="subtitle">Nombre</div>
+        <div class="detail" id="nombre"> </div>
+        <div class="divider"></div>
+        <div class="subtitle">Correo</div>
+        <div class="detail" id="correo"> </div>
+        <div class="divider"></div>
+        <div class="subtitle">Tipo de Cuenta</div>
+        <div class="detail" id="tipoCuenta"> </div>
+        <div class="divider"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtén el correo del usuario de localStorage
+            const userEmail = localStorage.getItem('userEmail');
+            if (!userEmail) {
+                Swal.fire('Error', 'No se pudo obtener el correo del usuario', 'error');
+                return;
+            }
+
+            fetch(`/api/detalles-personales?correo=${userEmail}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire('Error', data.error, 'error');
+                    } else {
+                        document.getElementById('nombre').textContent = data.nombre;
+                        document.getElementById('correo').textContent = data.correo;
+                        document.getElementById('tipoCuenta').textContent = data.tipo;
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error', 'No se pudo obtener los datos', 'error');
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+</body>
+</html>

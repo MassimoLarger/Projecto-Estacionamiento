@@ -48,11 +48,21 @@ insert into Registra (ID_Usuario, ID_Vehiculo) values
 	('carolinaivone.hernandez@alumnos.ulagos.cl', 'DEF789');
 
 insert into Reserva (fecha_reserva, ID_Usuario, ID_Estacionamiento) values
-	('2024-07-10', 'massimoalberto.larger@alumnos.ulagos.cl', 'A01'),
 	('2024-07-10', 'claudioandres.uribe@alumnos.ulagos.cl', 'B01'),
 	('2024-07-10', 'carolinaivone.hernandez@alumnos.ulagos.cl', 'C01');
+	('2024-07-20', 'massimoalberto.larger@alumnos.ulagos.cl', 'A01');
+	('2024-07-11', 'massimoalberto.larger@alumnos.ulagos.cl', 'E01');
 
 insert into Ocupa (Fecha_Entrada, Fecha_Salida, Estado, ID_Estacionamiento, ID_Vehiculo) values
-	('08:00:00', '16:00:00', true, 'A01', 'XYZ123'),
 	('09:00:00', '17:00:00', true, 'B01', 'ABC456'),
 	('10:00:00', '18:00:00', true, 'C01', 'DEF789');
+	('07:00:00', '15:00:00', true, 'A01', 'XYZ123');
+	('08:10:00', '16:00:00', true, 'E01', 'XYZ123');
+
+UPDATE Campus_Sede
+SET Capacidad = 300
+WHERE Nombre = 'Chuyaca';
+
+UPDATE Campus_Sede
+SET Capacidad = 50
+WHERE Nombre = 'Meyer';

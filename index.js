@@ -13,21 +13,20 @@ import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 const { Pool } = pkg;
 dotenv.config();
 
-const pool = new Pool({
+/*const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   },
-});
+});*/
 
-/*const pool = new Pool({
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'estacionamientos_local',
   password: 'admin',
   port: 5432,
-});*/
+});
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -50,6 +49,18 @@ app.get('/', (req, res) => {
 
 app.get('/bienvenida.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/bienvenida.html'));
+});
+
+app.get('/detalles_personales.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/detalles_personales.html'));
+});
+
+app.get('/detalles_historial_reservas.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/detalles_historial_reservas.html'));
+});
+
+app.get('/historial_reservas.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/historial_reservas.html'));
 });
 
 app.get('/editar_perfil.html', (req, res) => {
@@ -80,6 +91,10 @@ app.get('/estacionamientos_chuyaca.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos_chuyaca.html'));
 });
 
+app.get('/contrasena_seguridad.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/contrasena_seguridad.html'));
+});
+
 app.get('/sede.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
 });
@@ -98,6 +113,10 @@ app.get('/modificar_reserva_chuyaca.html', (req, res) => {
 
 app.get('/modificar_reserva_meyer.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_meyer.html'));
+});
+
+app.get('/estacionamientos.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos.html'));
 });
 
 app.get('/api/estados-estacionamientos', async (req, res) => {
@@ -530,6 +549,73 @@ app.post('/api/cancelar-reserva', async (req, res) => {
   }
 });
 
+app.get('/api/detalles-personales', async (req, res) => {
+  const correo = req.query.correo;
+  if (!correo) {
+      return res.status(400).json({ error: 'Correo es requerido' });
+  }
+
+  try {
+      const result = await pool.query('SELECT nombre, correo, tipo FROM usuario WHERE correo = $1', [correo]);
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+      res.json(result.rows[0]);
+  } catch (err) {
+      console.error('Database query error:', err);
+      res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/reservations-dos', async (req, res) => {
+  const searchQuery = req.query.search || '';
+
+  try {
+    const result = await pool.query(`
+      SELECT r.fecha_reserva AS fecha,
+             o.fecha_entrada AS hora_inicio,
+             o.fecha_salida AS hora_fin,
+             cs.nombre AS campus,
+             v.descripcion AS modelo_vehiculo,
+             v.patente AS patente,
+             e.id_estacionamiento,
+             reg.id_usuario
+      FROM Registra reg
+      JOIN Vehiculo v ON reg.id_vehiculo = v.patente
+      JOIN Ocupa o ON v.patente = o.id_vehiculo
+      JOIN Estacionamiento e ON o.id_estacionamiento = e.id_estacionamiento
+      JOIN Campus_Sede cs ON e.id_campus = cs.id_campus
+      JOIN Reserva r ON reg.id_usuario = r.id_usuario
+      WHERE v.descripcion ILIKE $1 OR v.patente ILIKE $1 OR cs.nombre ILIKE $1
+      ORDER BY r.fecha_reserva DESC
+    `, [`%${searchQuery}%`]);
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error al obtener reservas:', err);
+    res.status(500).json({ error: 'Error al obtener reservas' });
+  }
+});
+
+
+app.post('/api/actualizar-contrasena', async (req, res) => {
+  const { correo, nuevaContrasena } = req.body;
+  if (!correo || !nuevaContrasena) {
+      return res.status(400).json({ error: 'Correo y nueva contraseña son requeridos' });
+  }
+
+  try {
+      const result = await pool.query('UPDATE usuario SET contrasena = $1 WHERE correo = $2 RETURNING *', [nuevaContrasena, correo]);
+      if (result.rows.length === 0) {
+          return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
+      res.json({ success: true, message: 'Contraseña actualizada correctamente' });
+  } catch (err) {
+      console.error('Database update error:', err);
+      res.status(500).json({ error: err.message });
+  }
+});
+
 app.post('/api/reservations', async (req, res) => {
   const { correo } = req.body;
   console.log(correo);
@@ -562,6 +648,45 @@ app.post('/api/reservations', async (req, res) => {
     res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
   }
 });
+
+app.get('/api/estacionamientos-dos', async (req, res) => {
+  try {
+      const meyerReserved = await pool.query(`
+          SELECT COUNT(*) AS count FROM Ocupa 
+          WHERE ID_Estacionamiento IN (SELECT ID_Estacionamiento FROM Estacionamiento WHERE ID_Campus = (SELECT ID_Campus FROM Campus_Sede WHERE Nombre = 'Meyer')) AND Estado = true;
+      `);
+      const meyerTotal = await pool.query(`
+          SELECT COUNT(*) AS count FROM Estacionamiento WHERE ID_Campus = (SELECT ID_Campus FROM Campus_Sede WHERE Nombre = 'Meyer');
+      `);
+      const meyerAvailable = meyerTotal.rows[0].count - meyerReserved.rows[0].count;
+
+      const chuyacaReserved = await pool.query(`
+          SELECT COUNT(*) AS count FROM Ocupa 
+          WHERE ID_Estacionamiento IN (SELECT ID_Estacionamiento FROM Estacionamiento WHERE ID_Campus = (SELECT ID_Campus FROM Campus_Sede WHERE Nombre = 'Chuyaca')) AND Estado = true;
+      `);
+      const chuyacaTotal = await pool.query(`
+          SELECT COUNT(*) AS count FROM Estacionamiento WHERE ID_Campus = (SELECT ID_Campus FROM Campus_Sede WHERE Nombre = 'Chuyaca');
+      `);
+      const chuyacaAvailable = chuyacaTotal.rows[0].count - chuyacaReserved.rows[0].count;
+
+      res.json({
+          meyer: {
+              reserved: meyerReserved.rows[0].count,
+              available: meyerAvailable,
+              total: meyerTotal.rows[0].count
+          },
+          chuyaca: {
+              reserved: chuyacaReserved.rows[0].count,
+              available: chuyacaAvailable,
+              total: chuyacaTotal.rows[0].count
+          }
+      });
+  } catch (err) {
+      console.error('Error al obtener los datos de estacionamientos:', err);
+      res.status(500).json({ error: 'Error al obtener los datos de estacionamientos' });
+  }
+});
+
 
 app.post('/api/reserva-detalles', async (req, res) => {
   console.log(req.body);
@@ -609,6 +734,41 @@ app.post('/api/reserva-detalles', async (req, res) => {
     res.status(500).json({ error: 'Error al consultar la base de datos.' });
   }
 });
+
+app.get('/api/reserva-detalles-dos', async (req, res) => {
+  const { idEstacionamiento, idUsuario } = req.query;
+
+  console.log('idEstacionamiento:', idEstacionamiento);
+  console.log('idUsuario:', idUsuario);
+
+  try {
+    const result = await pool.query(`
+      SELECT v.descripcion AS modelo_vehiculo, 
+             v.patente, 
+             u.nombre AS usuario,
+             u.tipo AS categoria,
+             u.correo,
+             o.fecha_entrada AS hora_inicio,
+             o.fecha_salida AS hora_fin
+      FROM Reserva r
+      JOIN Registra reg ON r.ID_Usuario = reg.ID_Usuario
+      JOIN Vehiculo v ON reg.ID_Vehiculo = v.patente
+      JOIN Usuario u ON r.ID_Usuario = u.correo
+      JOIN Ocupa o ON r.ID_Estacionamiento = o.ID_Estacionamiento
+      WHERE r.ID_Estacionamiento = $1 AND r.ID_Usuario = $2
+    `, [idEstacionamiento, idUsuario]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'Reserva no encontrada' });
+    }
+  } catch (error) {
+    console.error('Error al obtener los detalles de la reserva:', error);
+    res.status(500).json({ error: 'Error al obtener los detalles de la reserva' });
+  }
+});
+
 
 // Start the server
 const PORT = process.env.PORT || 3500;

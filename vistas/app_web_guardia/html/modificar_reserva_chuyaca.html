@@ -181,14 +181,42 @@
                 <button onclick="accion2()">Contraseña y Seguridad</button>
                 <button onclick="accion3()">Historial de Reserva</button>
                 <button onclick="accion4()">Estacionamientos</button>
-                <button onclick="accion5()">Comentarios</button>
-                <button onclick="accion6()">Cerrar Sesión</button>
+                <button onclick="accion5()">Cerrar Sesión</button>
             `,
             showConfirmButton: false
         });
     });  
   });  
 
+  function accion1() {
+            console.log('Perfil seleccionado');
+            Swal.close();
+            window.location.href = 'detalles_personales.html';
+        }
+
+        function accion2() {
+            console.log('Contraseña y Seguridad seleccionado');
+            Swal.close();
+            window.location.href = 'contrasena_seguridad.html';
+        }
+
+        function accion3() {
+            console.log('Historial de Reserva seleccionado');
+            Swal.close();
+            window.location.href = 'historial_reservas.html';
+        }
+
+        function accion4() {
+            console.log('Estacionamientos seleccionado');
+            Swal.close();
+        }
+
+        function accion5() {
+            console.log('Cerrar Sesión seleccionado');
+            localStorage.removeItem('userEmail');
+            Swal.close();
+            window.location.href = 'iniciar_sesion.html'; 
+        }
 
       async function loadReservationDetails(spaceId) {
         try {

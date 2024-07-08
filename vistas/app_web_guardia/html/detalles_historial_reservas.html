@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Detalles de la Reserva</title>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .sutitle {
+            text-align: center; /* Centrando el subtítulo */
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .hours-reserved {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <i class="back-button fas fa-arrow-left" onclick="history.back();"></i>
+    <div class="container">
+        <div class="title">Más Detalles de la Reserva</div>
+        <div class="form-group">
+            <label for="modelo">Modelo</label>
+            <input type="text" id="modelo" readonly>
+        </div>
+        <div class="form-group">
+            <label for="patente">Patente</label>
+            <input type="text" id="patente" readonly>
+        </div>
+        <div class="form-group">
+            <label for="usuario">Usuario</label>
+            <input type="text" id="usuario" readonly>
+        </div>
+        <div class="form-group">
+            <label for="categoria">Categoría</label>
+            <input type="text" id="categoria" readonly>
+        </div>
+        <div class="form-group">
+            <label for="correo">Correo</label>
+            <input type="text" id="correo" readonly>
+        </div>
+        <div class="hours-reserved">
+            <span>Horas reservadas:</span>
+            <span id="horasReservadas"></span>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idEstacionamiento = urlParams.get('idEstacionamiento');
+            const idUsuario = urlParams.get('idUsuario');
+
+            if (!idEstacionamiento || !idUsuario) {
+                Swal.fire('Error', 'No se pudieron obtener los IDs de la reserva', 'error');
+                return;
+            }
+
+            fetch(`/api/reserva-detalles-dos?idEstacionamiento=${idEstacionamiento}&idUsuario=${idUsuario}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire('Error', data.error, 'error');
+                    } else {
+                        document.getElementById('modelo').value = data.modelo_vehiculo;
+                        document.getElementById('patente').value = data.patente;
+                        document.getElementById('usuario').value = data.usuario;
+                        document.getElementById('categoria').value = data.categoria;
+                        document.getElementById('correo').value = data.correo;
+
+                        const horasReservadas = calculateReservedHours(data.hora_inicio, data.hora_fin);
+                        document.getElementById('horasReservadas').textContent = horasReservadas;
+                    }
+                })
+                .catch(error => {
+                    Swal.fire('Error', 'No se pudieron obtener los datos', 'error');
+                    console.error('Error fetching data:', error);
+                });
+        });
+
+        function calculateReservedHours(horaInicio, horaFin) {
+            const start = new Date(`1970-01-01T${horaInicio}Z`);
+            const end = new Date(`1970-01-01T${horaFin}Z`);
+            const diff = end - start;
+            const hours = Math.floor(diff / 1000 / 60 / 60);
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / 1000 / 60);
+            return `${hours}hr ${minutes}min`;
+        }
+    </script>
+</body>
+</html>

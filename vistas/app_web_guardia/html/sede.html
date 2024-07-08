@@ -45,58 +45,35 @@
         <button id="add-button"><i class="fas fa-plus"></i></button>
     </div>
     <input type="file" id="imageInput" style="display: none;" accept="image/*">
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetchUserName();
-                document.getElementById('userIcon').addEventListener('click', function() {
-                    const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
-                    const userName = document.getElementById('userNameDisplay').textContent;
+            document.getElementById('userIcon').addEventListener('click', function() {
+                const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
+                const userName = document.getElementById('userNameDisplay').textContent;
                 Swal.fire({
                     html: `
                         <div style="text-align: center;">
-                        <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
-                        <h3>${userName}</h3>
+                            <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
+                            <h3>${userName}</h3>
                         </div>
-                        <button onclick="accion1()">Detalles Personales</button>
-                        <button onclick="accion2()">Contraseña y Seguridad</button>
-                        <button onclick="accion3()">Historial de Reserva</button>
-                        <button onclick="accion4()">Estacionamientos</button>
-                        <button onclick="accion5()">Comentarios</button>
-                        <button onclick="accion6()">Cerrar Sesión</button>
+                        <button id="detallesPersonalesButton">Detalles Personales</button>
+                        <button id="contrasenaSeguridadButton">Contraseña y Seguridad</button>
+                        <button id="historialReservaButton">Historial de Reserva</button>
+                        <button id="estacionamientosButton">Estacionamientos</button>
+                        <button id="cerrarSesionButton">Cerrar Sesión</button>
                     `,
-                    showConfirmButton: false
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        document.getElementById('detallesPersonalesButton').addEventListener('click', accion1);
+                        document.getElementById('contrasenaSeguridadButton').addEventListener('click', accion2);
+                        document.getElementById('historialReservaButton').addEventListener('click', accion3);
+                        document.getElementById('estacionamientosButton').addEventListener('click', accion4);
+                        document.getElementById('cerrarSesionButton').addEventListener('click', accion5);
+                    }
                 });
             });
-
-            function accion1() {
-                console.log('Perfil seleccionado');
-                Swal.close();
-            }
-
-            function accion2() {
-                console.log('Configuraciones seleccionado');
-                Swal.close();
-            }
-
-            function accion3() {
-                console.log('Cerrar sesión seleccionado');
-                Swal.close();
-            }
-
-            function accion4() {
-                console.log('Cerrar sesión seleccionado');
-                Swal.close();
-            }
-
-            function accion5() {
-                console.log('Cerrar sesión seleccionado');
-                Swal.close();
-            }
-
-            function accion6() {
-                console.log('Cerrar sesión seleccionado');
-                Swal.close();
-            }
 
             document.getElementById('chuyacaButton').addEventListener('click', function() {
                 Swal.fire({
@@ -108,6 +85,7 @@
                           '<button onclick="sectorSeleccionado(\'Casino\')">Casino</button>'
                 });
             });
+
             document.getElementById('meyerButton').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Selecciona el lugar a administrar en Meyer',
@@ -117,11 +95,42 @@
             });
         });
 
+        function accion1() {
+            console.log('Perfil seleccionado');
+            Swal.close();
+            window.location.href = 'detalles_personales.html';
+        }
+
+        function accion2() {
+            console.log('Contraseña y Seguridad seleccionado');
+            Swal.close();
+            window.location.href = 'contrasena_seguridad.html';
+        }
+
+        function accion3() {
+            console.log('Historial de Reserva seleccionado');
+            Swal.close();
+            window.location.href = 'historial_reservas.html';
+        }
+
+        function accion4() {
+            console.log('Estacionamientos seleccionado');
+            Swal.close();
+            window.location.href = 'estacionamientos.html';
+        }
+
+        function accion5() {
+            console.log('Cerrar Sesión seleccionado');
+            localStorage.removeItem('userEmail');
+            Swal.close();
+            window.location.href = 'iniciar_sesion.html'; // Redirigir a la página de inicio de sesión
+        }
+
         function sectorSeleccionado(sector) {
             switch (sector) {
                 case 'Entrada C':
                     window.location.href = 'estacionamientos_chuyaca.html?sector=Entrada%20C';
-                    break;                         
+                    break;
                 case 'Entrada M':
                     window.location.href = 'estacionamientos_meyer.html?sector=Entrada%20M';
                     break;
