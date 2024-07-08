@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'usuario.dart';
@@ -38,14 +38,24 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     _fetchVehicleInfo();
     _calculateDuration(); // Calcular la duración inicial
 
-    // Iniciar el timer
-    _startTimer();
+    // Iniciar el timer si la hora local es mayor o igual a timeFrom
+    DateTime now = DateTime.now();
+    DateTime timeFromDateTime = DateTime(now.year, now.month, now.day, widget.timeFrom.hour, widget.timeFrom.minute);
+    if (now.isAfter(timeFromDateTime) || now.isAtSameMomentAs(timeFromDateTime)) {
+      _startTimer();
+    }
+
+    // Verificar si la hora actual es mayor que timeTo para cancelar la reserva automáticamente
+    DateTime timeToDateTime = DateTime(now.year, now.month, now.day, widget.timeTo.hour, widget.timeTo.minute);
+    if (now.isAfter(timeToDateTime)) {
+      _cancelarReservaAutomatica();
+    }
   }
 
   Future<void> _fetchUserName() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/consultau'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -78,7 +88,7 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
   Future<void> _fetchVehicleInfo() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/vehiculoR'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/vehiculoR'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -133,10 +143,22 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     }
   }
 
+  void _cancelarReservaAutomatica() {
+    _timer.cancel();
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => CancelarReservatimeWidget(
+          userId: widget.userId,
+          vehicleid: widget.vehicleid,
+        ),
+      ),
+    );
+  }
+
   void _cancelarReserva() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/cancelar-reserva'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/cancelar-reserva'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -308,57 +330,42 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
             ),
             SizedBox(height: size.height * 0.05),
             Expanded(
-              child: Image.asset(_vehicleImage, fit: BoxFit.contain),
-            ),
-            SizedBox(height: size.height * 0.01),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-              child: Container(
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text("Vehículo", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 25)),
-                    const SizedBox(height: 10),
-                    Text(_vehicleModel, style: const TextStyle(fontSize: 18)),
-                    const SizedBox(height: 5),
-                    Text(_vehiclePlate, style: const TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: size.height * 0.05),
-            Container(
-              width: size.width,
-              color: const Color(0xFF677191),
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-              child: Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      _formatDuration(_seconds),
-                      style: TextStyle(fontSize: size.width * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: Icon(Icons.pause, color: Colors.white, size: size.width * 0.08),
-                      onPressed: () => _showCancelarReservaDialog(context),
-                    ),
-                  ],
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _vehicleModel,
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Image.asset(
+                    _vehicleImage,
+                    height: 120,
+                    width: 120,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Placa: $_vehiclePlate',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'Tiempo restante:',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _formatDuration(_seconds),
+                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showCancelarReservaDialog(context);
+                    },
+                    child: const Text('Cancelar Reserva'),
+                  ),
+                ],
               ),
             ),
           ],

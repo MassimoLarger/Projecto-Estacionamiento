@@ -79,7 +79,7 @@ class _PasswordAndSecurityPageState extends State<PasswordAndSecurityPage> {
 
   Future<void> _updatePassword(String newPassword) async {
     final response = await http.post(
-      Uri.parse('http://localhost:3500/api/actualizar_contrasena'),
+      Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/actualizar_contrasena'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

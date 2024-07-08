@@ -91,6 +91,7 @@ app.get('/modificar_reserva.html', (req, res) => {
 // Rutas existentes
 app.post('/api/consultau', async (req, res) => {
   const { correo } = req.body;
+  console.log(correo);
   try {
     const result = await pool.query('SELECT * FROM Usuario WHERE Correo = $1', [correo]);
     if (result.rows.length > 0) {
@@ -107,6 +108,7 @@ app.post('/api/consultau', async (req, res) => {
 
 app.post('/api/consultan', async (req, res) => {
   const { correo } = req.body;
+  console.log(correo);
   try {
     // Corrección aquí: quita RETURNING *
     const result = await pool.query('SELECT nombre FROM Usuario WHERE Correo = $1', [correo]);
@@ -126,6 +128,7 @@ app.post('/api/consultan', async (req, res) => {
 
 app.post('/api/consultar', async (req, res) => {
   const { correo } = req.body;
+  console.log(correo);
   try {
     const result = await pool.query('SELECT id_vehiculo FROM registra WHERE ID_Usuario = $1', [correo]);
     if (result.rows.length > 0) {
@@ -143,6 +146,7 @@ app.post('/api/consultar', async (req, res) => {
 
 app.post('/api/vehiculoR', async (req, res) => {
   const { patente } = req.body;
+  console.log(patente);
   try {
     const result = await pool.query('SELECT * FROM Vehiculo WHERE Patente = $1', [patente]);
     if (result.rows.length > 0) {
@@ -159,6 +163,8 @@ app.post('/api/vehiculoR', async (req, res) => {
 
 app.post('/api/updateProfile', async (req, res) => {
   const { correo, nombre } = req.body;
+  console.log(correo);
+  console.log(nombre);
 
   try {
     const result = await pool.query('UPDATE usuario SET nombre = $1 WHERE correo = $2 RETURNING *', [nombre, correo]);
@@ -196,6 +202,8 @@ app.post('/api/login', async (req, res) => {
 
 app.post('/api/loginGuardia', async (req, res) => {
   const { correo, contrasena } = req.body;
+  console.log(correo);
+  console.log(contrasena);
   try {
     // Modifica la consulta para incluir el tipo de usuario deseado en la condición
     const result = await pool.query(
@@ -217,6 +225,11 @@ app.post('/api/loginGuardia', async (req, res) => {
 
 app.post('/api/register', async (req, res) => {
   const { correo, nombre, telefono, tipo, contrasena } = req.body;
+  console.log(correo);
+  console.log(nombre);
+  console.log(telefono);
+  console.log(tipo);
+  console.log(contrasena);
   try {
     const result = await pool.query('INSERT INTO usuario VALUES ($1, $2, $3, $4, $5) RETURNING *', [correo, nombre, telefono, tipo, contrasena]);
     res.status(200).json({ success: true, id: result.rows[0].id });
@@ -227,9 +240,14 @@ app.post('/api/register', async (req, res) => {
 });
 
 app.post('/api/vehiculos', async (req, res) => {
-  const { patente, year, model, vehicleId, userId } = req.body;
+  const { patente, year, model, typevehicle, userId } = req.body;
+  console.log(patente);
+  console.log(year);
+  console.log(model);
+  console.log(typevehicle);
+  console.log(userId);
   try {
-    const result = await pool.query('INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *', [patente, year, model, vehicleId]);
+    const result = await pool.query('INSERT INTO Vehiculo VALUES ($1, $2, $3, $4) RETURNING *', [patente, year, model, typevehicle]);
     const resultado = await pool.query('INSERT INTO Registra VALUES ($1, $2) RETURNING *', [userId, patente]);
     res.status(200).send({ success: true, vehicle: result.rows[0].id, register: resultado.rows[0].id });
   } catch (error) {
@@ -240,8 +258,11 @@ app.post('/api/vehiculos', async (req, res) => {
 
 app.post('/api/verify-ppu', (req, res) => {
   const { patente, verificador } = req.body;
+  console.log(patente);
+  console.log(verificador);
   try {
     const ppuInstance = new Ppu(patente);
+    console.log(ppuInstance);
     if (ppuInstance.dv === verificador) {
       res.status(200).json({ success: true, ppu: ppuInstance });
     } else {
@@ -256,7 +277,9 @@ app.post('/api/verify-ppu', (req, res) => {
 
 app.post('/api/send-verification-code', async (req, res) => {
   const { email } = req.body;
+  console.log(email);
   const code = Math.floor(100000 + Math.random() * 900000).toString();
+  console.log(code);
   try {
     const result = await pool.query('SELECT * FROM usuario WHERE Correo = $1', [email]);
     if (result.rows[0] != null) {
@@ -274,6 +297,8 @@ app.post('/api/send-verification-code', async (req, res) => {
 
 app.post('/api/verify-code', async (req, res) => {
   const {code, codigo_verificacion } = req.body;
+  console.log(code);
+  console.log(codigo_verificacion);
   try {
     if (codigo_verificacion === code) {
       res.json({ success: true, message: 'Codigo Verificado Correctamente'  });
@@ -288,6 +313,9 @@ app.post('/api/verify-code', async (req, res) => {
 
 app.post('/api/actualizar_contrasena', async (req, res) => {
   const { email, newPassword, newPassword_verify} = req.body;
+  console.log(email);
+  console.log(newPassword);
+  console.log(newPassword_verify);
 
   try {
     // Ejecutar la consulta para actualizar la contraseña
@@ -310,6 +338,10 @@ app.post('/api/actualizar_contrasena', async (req, res) => {
 
 app.post('/api/ocupados', async (req, res) => {
   const { estNum, timeFrom, timeTo } = req.body;
+  console.log(estNum);
+  console.log(timeFrom);
+  console.log(timeTo);
+
   try {
     const result = await pool.query(`
     SELECT * FROM Ocupa 
@@ -332,6 +364,8 @@ app.post('/api/ocupados', async (req, res) => {
 
 app.post('/api/estacionamientos', async (req, res) => {
   const { sectionName, sedeName } = req.body;
+  console.log(sectionName);
+  console.log(sedeName);
   try {
     const result = await pool.query(
       `SELECT ID_Estacionamiento
@@ -361,6 +395,12 @@ app.post('/api/estacionamientos', async (req, res) => {
 
 app.post('/api/reserva', async (req, res) => {
   const { userId, estacionamiento, selectedDate, timeFrom, timeTo, vehicleid } = req.body;
+  console.log(userId);
+  console.log(estacionamiento);
+  console.log(selectedDate);
+  console.log(timeFrom);
+  console.log(timeTo);
+  console.log(vehicleid);
   try {
     const result = await pool.query('INSERT INTO Reserva VALUES ($1, $2, $3) RETURNING *', [selectedDate, userId, estacionamiento ]);
     const resultado = await pool.query('INSERT INTO Ocupa VALUES ($1, $2, True, $3, $4) RETURNING *', [timeFrom, timeTo, estacionamiento, vehicleid]);
@@ -373,6 +413,7 @@ app.post('/api/reserva', async (req, res) => {
 
 app.post('/api/cancelar-reserva', async (req, res) => {
   const { vehicleid } = req.body;
+  console.log(vehicleid);
   try {
     const result = await pool.query('DELETE FROM Ocupa WHERE ID_Vehiculo = $1', [vehicleid]);
     if (result.rowCount > 0) {
@@ -388,6 +429,7 @@ app.post('/api/cancelar-reserva', async (req, res) => {
 
 app.post('/api/reservations', async (req, res) => {
   const { correo } = req.body;
+  console.log(correo);
 
   try {
     const result = await pool.query(`

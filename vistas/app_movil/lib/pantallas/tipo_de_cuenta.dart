@@ -1,5 +1,3 @@
-//import 'codigo_verificado.dart';
-//import 'codigo_erroneo.dart';
 import 'package:flutter/material.dart';
 import 'registrar.dart';
 

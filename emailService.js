@@ -7,12 +7,6 @@ export async function sendVerificationEmail(email, code) {
     throw new Error('Configuración de correo electrónico no encontrada.');
   }
 
-  // Verifica que el destinatario no esté vacío
-  if (!email) {
-    console.error('No se ha proporcionado un destinatario.');
-    throw new Error('Destinatario no definido.');
-  }
-
   // Configura el transporter
   let transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -33,8 +27,12 @@ export async function sendVerificationEmail(email, code) {
   // Envía el correo
   try {
     await transporter.sendMail(mailOptions);
+    console.log('Correo enviado correctamente.');
   } catch (error) {
     console.error('Error al enviar el correo:', error);
+    if (error.code === 'EAUTH') {
+      console.error('Verifica las credenciales de tu correo electrónico.');
+    }
     throw new Error('Error al enviar el correo.');
   }
 }

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'chuyaca.dart';
-import 'meyer.dart';
 import 'usuario.dart';
 
 class GuardiaScreen extends StatelessWidget {
@@ -54,10 +52,10 @@ class GuardiaScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
               children: [
                 campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth /1, () {
-                  showSedeChuyacaSelector(context);
+                  //showSedeChuyacaSelector(context);
                 }),
                 campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth/ 1, () {
-                  showSedeMeyerSelector(context);
+                  //showSedeMeyerSelector(context);
                 }),
               ],
             ),
@@ -83,8 +81,8 @@ class GuardiaScreen extends StatelessWidget {
               },
               backgroundColor: const Color(0xFF456EFF),
               child: const Icon(Icons.home, color: Colors.white,size: 40),
-            ),  
-            const SizedBox(height: 20),          
+            ),
+            const SizedBox(height: 20),
             FloatingActionButton(
               onPressed: () {
                 // Acción para el botón Add

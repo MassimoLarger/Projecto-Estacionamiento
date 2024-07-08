@@ -3,7 +3,9 @@ import '../patentes.dart';
 
 class VehiculoAgregadoWidget extends StatefulWidget {
   final String userId;
-  const VehiculoAgregadoWidget({Key? key, required this.userId}) : super(key: key);
+  final int vehicleType;
+  const VehiculoAgregadoWidget({Key? key, required this.userId,
+    required this.vehicleType}) : super(key: key);
 
   @override
   VehiculoAgregadoWidgetState createState() => VehiculoAgregadoWidgetState();
@@ -15,7 +17,7 @@ class VehiculoAgregadoWidgetState extends State<VehiculoAgregadoWidget> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => PatentesPage(userId: widget.userId)),
+        MaterialPageRoute(builder: (_) => PatentesPage(userId: widget.userId, vehicleType: widget.vehicleType)),
       );
     });
   }

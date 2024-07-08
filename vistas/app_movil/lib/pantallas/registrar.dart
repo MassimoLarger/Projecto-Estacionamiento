@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'iniciar_sesion.dart';
-import 'verificaciones/verificacion1.dart'; // Asegúrate de que esta importación sea correcta
+import 'verificaciones/verificacion1.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -21,7 +21,7 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _registrarUsuario() async {
     final response = await http.post(
-      Uri.parse('http://localhost:3500/api/register'),
+      Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/register'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -52,7 +52,7 @@ class RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _sendemail() async {
     final response = await http.post(
-      Uri.parse('http://localhost:3500/api/send-verification-code'),
+      Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/send-verification-code'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -19,9 +19,13 @@ class LoginScreenState extends State<LoginScreen> {
   String? _errorMessage;
 
   Future<void> _iniciarSesion() async {
+    setState(() {
+      _errorMessage = null; // Resetea el mensaje de error
+    });
+
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/login'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -33,14 +37,16 @@ class LoginScreenState extends State<LoginScreen> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = json.decode(response.body);
+
         if (responseBody['success']) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => CarSelectionWidget(userId: responseBody['userId']),
-              ),
-            );
-          } else {
+          final String userId = responseBody['userId'];
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CarSelectionWidget(userId: userId),
+            ),
+          );
+        } else {
           // Usuario no encontrado, muestra mensaje de error
           setState(() {
             _errorMessage = responseBody['message'];
@@ -60,7 +66,6 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Obtiene las dimensiones de la pantalla para una adaptabilidad mejorada
     var screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -68,7 +73,7 @@ class LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: screenSize.height * 0.05), // Usa un porcentaje de la altura de la pantalla
+            SizedBox(height: screenSize.height * 0.05),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
               child: const Text(
@@ -82,7 +87,7 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            Image.asset('assets/images/inicio.png', height: screenSize.height * 0.3), // Ajusta la imagen al 30% de la altura de la pantalla
+            Image.asset('assets/images/inicio.png', height: screenSize.height * 0.3),
             SizedBox(height: screenSize.height * 0.02),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
@@ -92,7 +97,7 @@ class LoginScreenState extends State<LoginScreen> {
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: const Color(0xFF192342),
-                  fontSize: screenSize.width * 0.045, // Ajusta el tamaño de la fuente basado en el ancho de la pantalla
+                  fontSize: screenSize.width * 0.045,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -102,12 +107,12 @@ class LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Correo Electronico', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const Text('Correo Electrónico', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _correoController,
                     decoration: InputDecoration(
-                      hintText: 'Introduzca su correo electronico',
+                      hintText: 'Introduzca su correo electrónico',
                       prefixIcon: const Icon(Icons.email),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -141,7 +146,7 @@ class LoginScreenState extends State<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF567DF4),
                       foregroundColor: Colors.white,
-                      minimumSize: Size(screenSize.width * 0.90, 50), // Hace que el botón sea tan ancho como el 90% del ancho de la pantalla
+                      minimumSize: Size(screenSize.width * 0.90, 50),
                     ),
                     child: const Text('Iniciar Sesión'),
                   ),

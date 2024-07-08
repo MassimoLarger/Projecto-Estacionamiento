@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'usuario.dart';
-import 'patentes.dart';
+import 'tipo_vehiculo.dart';
 
 class VehicleInterface extends StatefulWidget {
   final String userId;
@@ -216,7 +216,7 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => PatentesPage(
+                builder: (_) => VehicleTypeSelector(
                   userId: widget.userId,
                 ),
               ),

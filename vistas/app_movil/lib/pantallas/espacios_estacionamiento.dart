@@ -37,7 +37,7 @@ class _EspacioEstacionamientoWidgetState
   Future<void> _loadEstacionamientos() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/estacionamientos'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/estacionamientos'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -70,7 +70,7 @@ class _EspacioEstacionamientoWidgetState
     try {
       for (String estNum in estacionamientos) {
         final response = await http.post(
-          Uri.parse('http://localhost:3500/api/ocupados'),
+          Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/ocupados'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },

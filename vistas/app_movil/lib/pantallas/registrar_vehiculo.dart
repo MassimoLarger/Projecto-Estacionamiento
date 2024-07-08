@@ -5,8 +5,9 @@ import 'patentes.dart';
 
 class RegisterVehiclePage extends StatelessWidget {
   final String userId;
+  final int vehicleType;
 
-  const RegisterVehiclePage({Key? key, required this.userId}) : super(key: key);
+  const RegisterVehiclePage({Key? key, required this.userId, required this.vehicleType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VehicleInfoPage(userId: userId),
+                      builder: (context) => VehicleInfoPage(userId: userId, vehicleType: vehicleType), // Pasar vehicleType a VehicleInfoPage
                     ),
                   );
                 },
@@ -88,7 +89,7 @@ class RegisterVehiclePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PatentesPage(userId: userId),
+                      builder: (context) => PatentesPage(userId: userId, vehicleType: vehicleType),
                     ),
                   );
                 },
