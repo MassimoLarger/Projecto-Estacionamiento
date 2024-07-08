@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <title>Modificar reserva</title>
+  <title>Detalle de Orden Actualizado</title>
   <style>
     body {
       font-family: sans-serif;
@@ -79,8 +79,8 @@
 
     .buttons {
       display: flex;
-      justify-content: space-between;
-      width: 400px;
+      justify-content: center; /* Centrar el botón */
+      width: 100%; /* Ajustar el ancho */
     }
 
     button {
@@ -113,7 +113,7 @@
   <div id="userNameDisplay" style="display:none;"></div>
 
   <div class="container">
-    <h2>Modificar reserva</h2>
+    <h2>Detalle de Orden Actualizado</h2>
     <div class="info-section">
       <div class="info-label">VEHÍCULO</div>
       <div id="vehicleModel" class="info-value"> </div>
@@ -130,8 +130,7 @@
       <div id="reservationDate" class="info-value"> </div>
     </div>
     <div class="buttons">
-      <button>Editar Reserva</button>
-      <button>Eliminar Reservar</button>
+      <button id="inicioButton">Volver al Inicio</button>
     </div>
   </div>
 
@@ -147,6 +146,10 @@
     } else {
         console.log("No space ID provided.");
     }
+
+    document.getElementById('inicioButton').addEventListener('click', function() {
+        window.location.href = '/sede.html'; // Cambia a la página de inicio deseada
+    });
 
     fetchUserName();
 
@@ -171,7 +174,6 @@
     });  
   });  
 
-
       async function loadReservationDetails(spaceId) {
         try {
             const response = await fetch(`/api/reserva-detalles`, {
@@ -186,8 +188,8 @@
             if (data.success) {
                 // Usar moment.js para parsear y formatear la fecha y hora
                 const startTime = moment(data.reserva.hora_inicio, "HH:mm:ss");
-            const endTime = moment(data.reserva.hora_fin, "HH:mm:ss");
-            const reservationDate = moment(data.reserva.fecha, "YYYY-MM-DD");
+                const endTime = moment(data.reserva.hora_fin, "HH:mm:ss");
+                const reservationDate = moment(data.reserva.fecha, "YYYY-MM-DD");
 
                 console.log(moment("2024-07-10T08:00:00").format('hh:mm'));
 
@@ -241,7 +243,6 @@
                 document.getElementById('userNameDisplay').textContent = 'Error de red';
             }
         }
-
 
   </script>
 </body>

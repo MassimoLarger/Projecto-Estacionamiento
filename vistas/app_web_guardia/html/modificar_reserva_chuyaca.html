@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <title>Modificar reserva</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f2f2f2;
+    }
+
+    .swal2-html-container button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #C6D4FF;
+            color: rgb(0, 0, 0);
+            border-radius: 10px;
+            display: block; /* hace que los botones se apilen verticalmente */
+            width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
+    }
+    .swal2-html-container button:hover {
+            background-color: #567DF4;
+            color: rgb(255, 255, 255);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 30px;
+      color: #333;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .info-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%; /* ajusta según necesidad */
+      padding: 10px 20px;
+      margin: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .info-label {
+      flex-basis: 30%; /* ajusta el ancho del label */
+      text-align: left; /* Alineación del texto de la etiqueta */
+      font-weight: bold;
+      color: #333;
+    }
+
+    .info-value {
+      flex-grow: 1; /* permite que el valor ocupe el espacio restante */
+      text-align: center; /* Centrado del texto del valor */
+      color: #666;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      width: 400px;
+    }
+
+    button {
+      background-color: #567DF4;
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #567DF4;
+    }
+
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 24px;
+      color: #333;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <i class="back-button fas fa-arrow-left" onclick="history.back()";></i>
+  <i class="user-icon fas fa-user-circle" id="userIcon"></i>
+  <div id="userNameDisplay" style="display:none;"></div>
+
+  <div class="container">
+    <h2>Modificar reserva</h2>
+    <div class="info-section">
+      <div class="info-label">VEHÍCULO</div>
+      <div id="vehicleModel" class="info-value"> </div>
+      <div id="vehicleLicense" class="info-value"> </div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">ESTACIONAMIENTO</div>
+      <div id="campusName" class="info-value"> </div>
+      <div id="parkingSpace" class="info-value"> </div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">HORA/FECHA</div>
+      <div id="timeRange" class="info-value"> </div>
+      <div id="reservationDate" class="info-value"> </div>
+    </div>
+    <div class="buttons">
+      <button id="editButton">Editar Reserva</button>
+      <button id="deleteButton">Eliminar Reserva</button>
+    </div>
+  </div>
+
+  <script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    const params = new URLSearchParams(window.location.search);
+    const spaceId = params.get('spaceId'); // Captura el ID del espacio desde la URL
+
+    if (spaceId) {
+        loadReservationDetails(spaceId); // Carga los detalles de la reserva
+    } else {
+        console.log("No space ID provided.");
+    }
+
+    document.getElementById('editButton').addEventListener('click', function() {
+    const reservationDetails = {
+        vehicleModel: document.getElementById('vehicleModel').textContent,
+        vehicleLicense: document.getElementById('vehicleLicense').textContent,
+        campusName: document.getElementById('campusName').textContent,
+        parkingSpace: document.getElementById('parkingSpace').textContent,
+        timeRange: document.getElementById('timeRange').textContent,
+        reservationDate: document.getElementById('reservationDate').textContent
+    };
+    localStorage.setItem('reservationDetails', JSON.stringify(reservationDetails));
+    window.location.href = `/modificar_reserva_1_chuyaca.html?spaceId=${spaceId}`;
+    });
+
+    // Añadir manejador de eventos para eliminar reserva
+    document.getElementById('deleteButton').addEventListener('click', function() {
+        deleteReservation(spaceId);
+    });
+
+    fetchUserName();
+
+    document.getElementById('userIcon').addEventListener('click', function() {
+        const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
+        const userName = document.getElementById('userNameDisplay').textContent;
+        Swal.fire({
+            html: `
+                <div style="text-align: center;">
+                <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
+                <h3>${userName}</h3>
+                </div>
+                <button onclick="accion1()">Detalles Personales</button>
+                <button onclick="accion2()">Contraseña y Seguridad</button>
+                <button onclick="accion3()">Historial de Reserva</button>
+                <button onclick="accion4()">Estacionamientos</button>
+                <button onclick="accion5()">Comentarios</button>
+                <button onclick="accion6()">Cerrar Sesión</button>
+            `,
+            showConfirmButton: false
+        });
+    });  
+  });  
+
+
+      async function loadReservationDetails(spaceId) {
+        try {
+            const response = await fetch(`/api/reserva-detalles`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({ idEstacionamiento: spaceId })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Usar moment.js para parsear y formatear la fecha y hora
+                const startTime = moment(data.reserva.hora_inicio, "HH:mm:ss");
+            const endTime = moment(data.reserva.hora_fin, "HH:mm:ss");
+            const reservationDate = moment(data.reserva.fecha, "YYYY-MM-DD");
+
+                console.log(moment("2024-07-10T08:00:00").format('hh:mm'));
+
+                document.getElementById('vehicleModel').textContent = data.reserva.modelo_vehiculo;
+                document.getElementById('vehicleLicense').textContent = data.reserva.patente;
+                document.getElementById('campusName').textContent = `Campus ${data.reserva.campus}`;
+                document.getElementById('parkingSpace').textContent = `Espacio ${spaceId}`;
+                document.getElementById('timeRange').textContent = startTime.format('HH:mm') + ' - ' + endTime.format('HH:mm');
+                document.getElementById('reservationDate').textContent = reservationDate.format('DD/MM/YYYY');
+            } else {
+                console.error('Failed to load reservation details:', data.message);
+                Swal.fire('Failed to load reservation details: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            Swal.fire('Network error: ' + error.message);
+        }
+    }
+
+    async function fetchUserName() {
+            const userEmail = localStorage.getItem('userEmail');
+            console.log(userEmail)
+            if (!userEmail) {
+                console.log('No user email found.');
+                document.getElementById('userNameDisplay').textContent = 'Usuario no definido';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/consultan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8'
+                    },
+                    body: JSON.stringify({ correo: userEmail })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    if (data.success) {
+                        document.getElementById('userNameDisplay').textContent = data.nombre;
+                    } else {
+                        document.getElementById('userNameDisplay').textContent = 'Usuario no encontrado';
+                    }
+                } else {
+                    document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('userNameDisplay').textContent = 'Error de red';
+            }
+        }
+     
+    async function editReservation(spaceId) {
+    const nuevaFecha = prompt("Ingrese la nueva fecha (YYYY-MM-DD):"); // Aquí puedes cambiar por un selector de fecha
+    const nuevoInicio = prompt("Ingrese la hora de inicio (HH:MM:SS):");
+    const nuevoFin = prompt("Ingrese la hora de fin (HH:MM:SS):");
+
+    try {
+        const response = await fetch('/api/editar-reserva', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idEstacionamiento: spaceId,
+                nuevaFecha: nuevaFecha,
+                nuevoInicio: nuevoInicio,
+                nuevoFin: nuevoFin
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+          Swal.fire('Reserva editada correctamente');
+            // Recargar los detalles de la reserva actualizados
+            loadReservationDetails(spaceId);
+        } else {
+          Swal.fire('Error al editar reserva: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire('Error al conectar con el servidor');
+    }
+}
+
+async function deleteReservation(spaceId) {
+    // Usar SweetAlert2 para la confirmación en lugar de confirm()
+    Swal.fire({
+        title: '¿Está seguro que desea eliminar esta reserva?',
+        text: "No podrás revertir esto!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Usuario confirmó la eliminación
+            performDeletion(spaceId);
+        }
+    });
+}
+
+async function performDeletion(spaceId) {
+    try {
+        const response = await fetch('/api/eliminar-reserva', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ idEstacionamiento: spaceId })
+        });
+        const data = await response.json();
+        if (data.success) {
+            Swal.fire(
+                'Eliminada!',
+                'La reserva ha sido eliminada.',
+                'success'
+            );
+            // Redireccionar a otra página o actualizar la vista
+            setTimeout(() => {
+                window.location.href = '/estacionamientos_chuyaca.html'; // Cambiar a la página deseada
+            }, 1500); // Retraso para que el usuario vea el mensaje
+        } else {
+            Swal.fire(
+                'Error!',
+                'Error al eliminar reserva: ' + data.message,
+                'error'
+            );
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire(
+            'Error de Conexión',
+            'Error al conectar con el servidor',
+            'error'
+        );
+    }
+}
+
+  </script>
+</body>
+</html>

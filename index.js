@@ -71,6 +71,10 @@ app.get('/estacionamientos_meyer.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos_meyer.html'));
 });
 
+app.get('/detalle_orden.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/detalle_orden.html'));
+});
+
 app.get('/estacionamientos_chuyaca.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos_chuyaca.html'));
 });
@@ -79,13 +83,111 @@ app.get('/sede.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/sede.html'));
 });
 
-app.get('/modificar_reserva_1.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_1.html'));
+app.get('/modificar_reserva_1_chuyaca.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_1_chuyaca.html'));
 });
 
-app.get('/modificar_reserva.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva.html'));
+app.get('/modificar_reserva_1_meyer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_1_meyer.html'));
 });
+
+app.get('/modificar_reserva_chuyaca.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_chuyaca.html'));
+});
+
+app.get('/modificar_reserva_meyer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/modificar_reserva_meyer.html'));
+});
+
+app.get('/api/estados-estacionamientos', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT e.ID_Estacionamiento, 
+             CASE WHEN o.Estado IS TRUE THEN 'reservado' ELSE 'disponible' END AS estado
+      FROM Estacionamiento e
+      LEFT JOIN Ocupa o ON e.ID_Estacionamiento = o.ID_Estacionamiento
+    `);
+    console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
+app.post('/api/editar-reserva', async (req, res) => {
+  const { idEstacionamiento, nuevaFecha, nuevoInicio, nuevoFin } = req.body;
+
+  console.log("Datos recibidos:", { idEstacionamiento, nuevaFecha, nuevoInicio, nuevoFin });
+
+  try {
+    // Obtener el ID_Usuario de la reserva
+    const resultadoUsuario = await pool.query(
+      "SELECT ID_Usuario FROM Reserva WHERE ID_Estacionamiento = $1",
+      [idEstacionamiento]
+    );
+
+    if (resultadoUsuario.rowCount === 0) {
+      return res.status(404).json({ success: false, message: "No se encontró la reserva especificada." });
+    }
+
+    const idUsuario = resultadoUsuario.rows[0].id_usuario;
+
+    // Actualizar la tabla Reserva
+    const updateReserva = `
+      UPDATE Reserva
+      SET fecha_reserva = $1
+      WHERE ID_Estacionamiento = $2 AND ID_Usuario = $3;
+    `;
+    await pool.query(updateReserva, [nuevaFecha, idEstacionamiento, idUsuario]);
+
+    // Actualizar la tabla Ocupa
+    const updateOcupa = `
+      UPDATE Ocupa
+      SET Fecha_Entrada = $1, Fecha_Salida = $2
+      WHERE ID_Estacionamiento = $3 AND ID_Vehiculo IN (
+        SELECT ID_Vehiculo FROM Ocupa WHERE ID_Estacionamiento = $3
+      );
+    `;
+    await pool.query(updateOcupa, [nuevoInicio, nuevoFin, idEstacionamiento]);
+
+    res.json({ success: true, message: 'Reserva actualizada correctamente' });
+  } catch (error) {
+    console.error('Error en la base de datos:', error);
+    res.status(500).json({ success: false, message: 'Error al actualizar la reserva' });
+  }
+});
+
+
+app.delete('/api/eliminar-reserva', async (req, res) => {
+  const { idEstacionamiento } = req.body;
+  try {
+    // Eliminar la ocupación asociada
+    const deleteOcupa = await pool.query(
+      `DELETE FROM Ocupa WHERE ID_Estacionamiento = $1`,
+      [idEstacionamiento]
+    );
+
+    // Eliminar la reserva
+    if (deleteOcupa.rowCount > 0) {
+      const deleteReserva = await pool.query(
+        `DELETE FROM Reserva WHERE ID_Estacionamiento = $1`,
+        [idEstacionamiento]
+      );
+      if (deleteReserva.rowCount > 0) {
+        res.json({ success: true, message: 'Reserva eliminada correctamente' });
+      } else {
+        res.status(404).send('Error al eliminar la reserva');
+      }
+    } else {
+      res.status(404).send('Ocupación no encontrada');
+    }
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).send('Error al eliminar la reserva');
+  }
+});
+
 
 // esto va en una carpeta aparte 
 // Rutas existentes

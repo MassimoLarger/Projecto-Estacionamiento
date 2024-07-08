@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <title>Estacionamiento Entrada</title>
 <style>
     .container {
@@ -168,130 +171,148 @@
     <div class="parking-lot">
         <div class="building">Edificio</div>
         <div class="row">
-            <div class="space reserved" id="A01">A01</div>
-            <div class="space available" id="A02">A02</div>
-            <div class="space reserved" id="A03">A03</div>
-            <div class="space reserved" id="A04">A04</div>
-            <div class="space available" id="A05">A05</div>
-            <div class="space reserved" id="A06">A06</div>
-            <div class="space reserved" id="A07">A07</div>
-            <div class="space available" id="A08">A08</div>
-            <div class="space available" id="A09">A09</div>
-            <div class="space available" id="A10">A10</div>
-            <div class="space reserved" id="A11">A11</div>
+            <div class="space" id="A01">A01</div>
+            <div class="space" id="A02">A02</div>
+            <div class="space" id="A03">A03</div>
+            <div class="space" id="A04">A04</div>
+            <div class="space" id="A05">A05</div>
+            <div class="space" id="A06">A06</div>
+            <div class="space" id="A07">A07</div>
+            <div class="space" id="A08">A08</div>
+            <div class="space" id="A09">A09</div>
+            <div class="space" id="A10">A10</div>
+            <div class="space" id="A11">A11</div>
         </div>
     </div>
     <div class="status">
-        <div class="reserved">Reservados <span id="reserved-count">6</span></div>
-        <div class="available">Disponibles <span id="available-count">5</span></div>
+        <div class="reserved">Reservados <span id="reserved-count"> </span></div>
+        <div class="available">Disponibles <span id="available-count"> </span></div>
     </div>
     <button class="button" id="continueButton">Continuar</button>
 </div>
 <input type="file" id="imageInput" style="display: none;" accept="image/*">
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
-        updateCounts();
-        
-        const params = new URLSearchParams(window.location.search);
-        const sector = params.get('sector');
-        if (sector) {
-            const titleElement = document.getElementById('title');
-            titleElement.textContent = `Estacionamiento ${sector}`;
-        }
 
-    const spaces = document.querySelectorAll('.space.reserved'); // Selecciona solo los espacios reservados.
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('/api/estados-estacionamientos');
+        const spaces = await response.json();
+        updateSpaces(spaces);
+    } catch (err) {
+        console.error('Error al cargar estados de los espacios:', err);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const sector = params.get('sector');
+    if (sector) {
+        const titleElement = document.getElementById('title');
+        titleElement.textContent = `Estacionamiento ${sector}`;
+    }
+
+    const allSpaces = document.querySelectorAll('.space'); // Selecciona todos los espacios.
     let selectedSpaceId = null;
 
-    spaces.forEach(space => {
+    allSpaces.forEach(space => {
         space.addEventListener('click', function() {
             if (!this.classList.contains('reserved')) return; // Salir si no es reservado
-            // Eliminar la clase selected de todos los espacios antes de agregarla al nuevo seleccionado
-            spaces.forEach(s => s.classList.remove('selected'));
+            allSpaces.forEach(s => s.classList.remove('selected'));
             this.classList.add('selected'); // Añade la clase 'selected' al espacio clickeado
             selectedSpaceId = this.id; // Guarda el ID del espacio seleccionado
             console.log(selectedSpaceId);
         });
     });
 
-        document.getElementById('continueButton').addEventListener('click', function() {
-            if (selectedSpaceId) {
-                window.location.href = `modificar_reserva.html?spaceId=${selectedSpaceId}`;
-            } else {
-                alert('Por favor, seleccione un espacio antes de continuar.');
-            }
-        });
-
-        fetchUserName();
-
-        document.getElementById('userIcon').addEventListener('click', function() {
-                        const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
-            const userName = document.getElementById('userNameDisplay').textContent;
-            Swal.fire({
-                html: `
-                    <div style="text-align: center;">
-                    <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
-                    <h3>${userName}</h3>
-                    </div>
-                    <button onclick="accion1()">Detalles Personales</button>
-                    <button onclick="accion2()">Contraseña y Seguridad</button>
-                    <button onclick="accion3()">Historial de Reserva</button>
-                    <button onclick="accion4()">Estacionamientos</button>
-                    <button onclick="accion5()">Comentarios</button>
-                    <button onclick="accion6()">Cerrar Sesión</button>
-                `,
-                showConfirmButton: false
-            });
-        });
-
-        function accion1() { console.log('Detalles Personales seleccionado'); Swal.close(); }
-        function accion2() { console.log('Contraseña y Seguridad seleccionado'); Swal.close(); }
-        function accion3() { console.log('Historial de Reserva seleccionado'); Swal.close(); }
-        function accion4() { console.log('Estacionamientos seleccionado'); Swal.close(); }
-        function accion5() { console.log('Comentarios seleccionado'); Swal.close(); }
-        function accion6() { console.log('Cerrar Sesión'); Swal.close(); }
-        
-        function updateCounts() {
-            const reserved = document.querySelectorAll('.space.reserved').length;
-            const available = document.querySelectorAll('.space.available').length;
-            document.getElementById('reserved-count').textContent = reserved;
-            document.getElementById('available-count').textContent = available;
+    document.getElementById('continueButton').addEventListener('click', function() {
+        if (selectedSpaceId) {
+            window.location.href = `modificar_reserva_chuyaca.html?spaceId=${selectedSpaceId}`;
+        } else {
+            Swal.fire('Por favor, seleccione un espacio antes de continuar.');
         }
     });
 
+    fetchUserName();
+
+    document.getElementById('userIcon').addEventListener('click', function() {
+        const userImageUrl = document.getElementById('userIcon2') ? document.getElementById('userIcon2').src : '/images/user_negro.png';
+        const userName = document.getElementById('userNameDisplay').textContent;
+        Swal.fire({
+            html: `
+                <div style="text-align: center;">
+                <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
+                <h3>${userName}</h3>
+                </div>
+                <button onclick="accion1()">Detalles Personales</button>
+                <button onclick="accion2()">Contraseña y Seguridad</button>
+                <button onclick="accion3()">Historial de Reserva</button>
+                <button onclick="accion4()">Estacionamientos</button>
+                <button onclick="accion5()">Comentarios</button>
+                <button onclick="accion6()">Cerrar Sesión</button>
+            `,
+            showConfirmButton: false
+        });
+    });
+
+    updateCounts();
+
     async function fetchUserName() {
-            const userEmail = localStorage.getItem('userEmail');
-            console.log(userEmail)
-            if (!userEmail) {
-                console.log('No user email found.');
-                document.getElementById('userNameDisplay').textContent = 'Usuario no definido';
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/consultan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json; charset=UTF-8'
-                    },
-                    body: JSON.stringify({ correo: userEmail })
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    if (data.success) {
-                        document.getElementById('userNameDisplay').textContent = data.nombre;
-                    } else {
-                        document.getElementById('userNameDisplay').textContent = 'Usuario no encontrado';
-                    }
-                } else {
-                    document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
-                }
-            } catch (e) {
-                console.error(e);
-                document.getElementById('userNameDisplay').textContent = 'Error de red';
-            }
+        const userEmail = localStorage.getItem('userEmail');
+        if (!userEmail) {
+            console.log('No user email found.');
+            document.getElementById('userNameDisplay').textContent = 'Usuario no definido';
+            return;
         }
+
+        try {
+            const response = await fetch('/api/consultan', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({ correo: userEmail })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById('userNameDisplay').textContent = data.nombre;
+                } else {
+                    document.getElementById('userNameDisplay').textContent = 'Usuario no encontrado';
+                }
+            } else {
+                document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
+            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('userNameDisplay').textContent = 'Error de red';
+        }
+    }
+
+    function updateSpaces(spaces) {
+        spaces.forEach(space => {
+            const spaceDiv = document.getElementById(space.id_estacionamiento); // Asegúrate de que la propiedad es correcta
+            if (spaceDiv) {
+                if (space.estado === 'reservado') {
+                    spaceDiv.classList.add('reserved');
+                    spaceDiv.classList.remove('available');
+                } else {
+                    spaceDiv.classList.add('available');
+                    spaceDiv.classList.remove('reserved');
+                }
+            } else {
+                console.error('No se encontró el elemento con ID:', space.id_estacionamiento);
+            }
+        });
+    }
+
+
+    function updateCounts() {
+        const reserved = document.querySelectorAll('.space.reserved').length;
+        const available = document.querySelectorAll('.space.available').length;
+        document.getElementById('reserved-count').textContent = reserved;
+        document.getElementById('available-count').textContent = available;
+    }
+});
+
 </script>
 </body>
 </html>
