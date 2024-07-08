@@ -162,13 +162,20 @@
                 <img src="${userImageUrl}" alt="User Image" style="width: 80px; height: 80px; border-radius: 50%;">
                 <h3>${userName}</h3>
                 </div>
-                <button onclick="accion1()">Detalles Personales</button>
-                <button onclick="accion2()">Contraseña y Seguridad</button>
-                <button onclick="accion3()">Historial de Reserva</button>
-                <button onclick="accion4()">Estacionamientos</button>
-                <button onclick="accion5()">Cerrar Sesión</button>
+                    <button id="detallesPersonalesButton">Detalles Personales</button>
+                    <button id="contrasenaSeguridadButton">Contraseña y Seguridad</button>
+                    <button id="historialReservaButton">Historial de Reserva</button>
+                    <button id="estacionamientosButton">Estacionamientos</button>
+                    <button id="cerrarSesionButton">Cerrar Sesión</button>
             `,
-            showConfirmButton: false
+            showConfirmButton: false,
+            didOpen: () => {
+                document.getElementById('detallesPersonalesButton').addEventListener('click', accion1);
+                document.getElementById('contrasenaSeguridadButton').addEventListener('click', accion2);
+                document.getElementById('historialReservaButton').addEventListener('click', accion3);
+                document.getElementById('estacionamientosButton').addEventListener('click', accion4);
+                document.getElementById('cerrarSesionButton').addEventListener('click', accion5);
+            }
         });
     });  
   });  
