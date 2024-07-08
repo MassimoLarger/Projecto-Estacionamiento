@@ -28,7 +28,7 @@ body {
   position: relative;
 }
 
-.swal2-html-container button {
+    .swal2-html-container button {
             padding: 10px;
             margin: 5px;
             border: none;
@@ -248,8 +248,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            Swal.fire('Error de Red', 'No se pudo conectar al servidor para modificar la reserva.', 'error');
+          Swal.fire('Error:', error);
+          Swal.fire('Error de Red', 'No se pudo conectar al servidor para modificar la reserva.', 'error');
         });
     }
 
@@ -339,8 +339,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
             }
         } catch (e) {
-            console.error(e);
-            document.getElementById('userNameDisplay').textContent = 'Error de red';
+          Swal.fire(e);
+          document.getElementById('userNameDisplay').textContent = 'Error de red';
         }
     }
 
@@ -361,12 +361,12 @@ async function loadReservationDetailsToEdit(spaceId) {
             document.getElementById('date').value = moment(data.reserva.fecha).format('YYYY-MM-DD');
             // Aquí puedes añadir más lógica para preseleccionar los horarios
         } else {
-            console.error('Failed to load reservation details:', data.message);
-            alert('Failed to load reservation details: ' + data.message);
+          Swal.fire('Failed to load reservation details:', data.message);
+          alert('Failed to load reservation details: ' + data.message);
         }
     } catch (error) {
-        console.error('Network error:', error);
-        alert('Network error: ' + error.message);
+      Swal.fire('Network error:', error);
+      alert('Network error: ' + error.message);
     }
 }
 

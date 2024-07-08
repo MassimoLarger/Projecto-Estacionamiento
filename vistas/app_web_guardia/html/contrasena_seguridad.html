@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css"/>
     <title>Contraseña y Seguridad</title>
     <style>
         body {
@@ -11,6 +13,21 @@
             background-color: white;
             margin: 0;
             padding: 0;
+        }
+
+        .swal2-html-container button {
+                padding: 10px;
+                margin: 5px;
+                border: none;
+                background-color: #C6D4FF;
+                color: rgb(0, 0, 0);
+                border-radius: 10px;
+                display: block; /* hace que los botones se apilen verticalmente */
+                width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
+        }
+        .swal2-html-container button:hover {
+                background-color: #567DF4;
+                color: rgb(255, 255, 255);
         }
         .container {
             width: 90%;
@@ -48,8 +65,10 @@
         }
         .form-group {
             margin-bottom: 16px;
+            text-align: center;
         }
         .form-group label {
+            text-align: left;
             display: block;
             margin-bottom: 8px;
         }
@@ -61,14 +80,14 @@
         .form-group button {
             padding: 10px 20px;
             background-color: #567DF4;
-            display: block;
-            text-align: center;
             color: white;
             border: none;
             cursor: pointer;
+            margin: 0 auto; /* Centramos el botón horizontalmente */
+            display: inline-block;
         }
         .form-group button:hover {
-            background-color: #445BB7;
+            background-color: #567DF4;
         }
         @media (max-width: 600px) {
             .title {
@@ -148,7 +167,7 @@
                 })
                 .catch(error => {
                     Swal.fire('Error', 'No se pudo actualizar la contraseña', 'error');
-                    console.error('Error updating password:', error);
+                    Swal.fire('Error updating password:', error);
                 });
             });
         });

@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const spaces = await response.json();
         updateSpaces(spaces);
     } catch (err) {
-        console.error('Error al cargar estados de los espacios:', err);
+        Swal.fire('Error al cargar estados de los espacios:', err);
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -315,7 +315,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
             }
         } catch (e) {
-            console.error(e);
+            Swal.fire(e);
             document.getElementById('userNameDisplay').textContent = 'Error de red';
         }
     }
@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     spaceDiv.classList.remove('reserved');
                 }
             } else {
-                console.error('No se encontró el elemento con ID:', space.id_estacionamiento);
+                Swal.fire('No se encontró el elemento con ID:', space.id_estacionamiento);
             }
         });
     }

@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire('Autenticación fallida. Por favor verifica tus credenciales.');
             }
         } else {
-            console.error('Error en la autenticación');
+            Swal.fire('Error en la autenticación');
             Swal.fire('Error interno del servidor. Por favor, intenta de nuevo más tarde.');
         }
     });

@@ -269,11 +269,11 @@ function accion1() {
             document.getElementById('timeRange').textContent = startTime.format('HH:mm') + ' - ' + endTime.format('HH:mm');
             document.getElementById('reservationDate').textContent = reservationDate.format('DD/MM/YYYY');
         } else {
-            console.error('Failed to load reservation details:', data.message);
+            Swal.fire('Failed to load reservation details:', data.message);
             Swal.fire('Failed to load reservation details: ' + data.message);
         }
     } catch (error) {
-        console.error('Network error:', error);
+        Swal.fire('Network error:', error);
         Swal.fire('Network error: ' + error.message);
     }
 }
@@ -308,7 +308,7 @@ async function fetchUserName() {
                 document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
             }
         } catch (e) {
-            console.error(e);
+            Swal.fire(e);
             document.getElementById('userNameDisplay').textContent = 'Error de red';
         }
     }
@@ -340,7 +340,7 @@ try {
       Swal.fire('Error al editar reserva: ' + data.message);
     }
 } catch (error) {
-    console.error('Error:', error);
+    Swal.fire('Error:', error);
     Swal.fire('Error al conectar con el servidor');
 }
 }

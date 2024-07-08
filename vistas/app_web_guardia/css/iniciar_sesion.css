@@ -9,6 +9,21 @@ body, html {
     background-color: #fff;
 }
 
+.swal2-html-container button {
+    padding: 10px;
+    margin: 5px;
+    border: none;
+    background-color: #C6D4FF;
+    color: rgb(0, 0, 0);
+    border-radius: 10px;
+    display: block; /* hace que los botones se apilen verticalmente */
+    width: 97%; /* asegura que los botones ocupen todo el ancho disponible */
+}
+.swal2-html-container button:hover {
+    background-color: #567DF4;
+    color: rgb(255, 255, 255);
+}
+
 .container {
     width: 100%; /* Ajuste para que el contenedor use todo el ancho en pantallas pequeñas */
     max-width: 400px; /* Limita el ancho máximo en pantallas más grandes */

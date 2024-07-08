@@ -178,7 +178,7 @@
                     document.getElementById('userNameDisplay').textContent = 'Error en la consulta';
                 }
             } catch (e) {
-                console.error(e);
+                Swal.fire(e);
                 document.getElementById('userNameDisplay').textContent = 'Error de red';
             }
         }
