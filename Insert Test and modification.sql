@@ -36,3 +36,23 @@ insert into Estacionamiento values
 	('E06',1,2),('E07',1,2),('E08',1,2),('E09',1,2),('E10',1,2),
 	('E11',1,2),('E12',1,2),('E13',1,2),('E14',1,2),('E15',1,2),
 	('E16',1,2),('E17',1,2),('E18',1,2),('E19',1,2),('E20',1,2);
+
+insert into Vehiculo (Patente, Año, Descripcion, ID_Tipo_V) values
+	('XYZ123', 2020, 'Ford EcoSport', 1),
+	('ABC456', 2019, 'Toyota Hilux', 4),
+	('DEF789', 2018, 'Honda Civic', 1);
+
+insert into Registra (ID_Usuario, ID_Vehiculo) values
+	('massimoalberto.larger@alumnos.ulagos.cl', 'XYZ123'),
+	('claudioandres.uribe@alumnos.ulagos.cl', 'ABC456'),
+	('carolinaivone.hernandez@alumnos.ulagos.cl', 'DEF789');
+
+insert into Reserva (fecha_reserva, ID_Usuario, ID_Estacionamiento) values
+	('2024-07-10', 'massimoalberto.larger@alumnos.ulagos.cl', 'A01'),
+	('2024-07-10', 'claudioandres.uribe@alumnos.ulagos.cl', 'B01'),
+	('2024-07-10', 'carolinaivone.hernandez@alumnos.ulagos.cl', 'C01');
+
+insert into Ocupa (Fecha_Entrada, Fecha_Salida, Estado, ID_Estacionamiento, ID_Vehiculo) values
+	('08:00:00', '16:00:00', true, 'A01', 'XYZ123'),
+	('09:00:00', '17:00:00', true, 'B01', 'ABC456'),
+	('10:00:00', '18:00:00', true, 'C01', 'DEF789');

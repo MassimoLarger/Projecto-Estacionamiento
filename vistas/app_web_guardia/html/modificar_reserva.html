@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <title>Modificar reserva</title>
   <style>
     body {
@@ -57,18 +58,22 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      width: 400px;
-      padding: 15px;
+      width: 100%; /* ajusta según necesidad */
+      padding: 10px 20px;
+      margin: 10px 0;
       border-bottom: 1px solid #ddd;
-      margin-bottom: 15px;
     }
 
     .info-label {
+      flex-basis: 30%; /* ajusta el ancho del label */
+      text-align: left; /* Alineación del texto de la etiqueta */
       font-weight: bold;
       color: #333;
     }
 
     .info-value {
+      flex-grow: 1; /* permite que el valor ocupe el espacio restante */
+      text-align: center; /* Centrado del texto del valor */
       color: #666;
     }
 
@@ -111,18 +116,18 @@
     <h2>Modificar reserva</h2>
     <div class="info-section">
       <div class="info-label">VEHÍCULO</div>
-      <div class="info-value">Ford Ecoesport</div>
-      <div class="info-value">CU ML 69</div>
+      <div id="vehicleModel" class="info-value"> </div>
+      <div id="vehicleLicense" class="info-value"> </div>
     </div>
     <div class="info-section">
       <div class="info-label">ESTACIONAMIENTO</div>
-      <div class="info-value">Campus Meyer</div>
-      <div class="info-value">Espacio AV01</div>
+      <div id="campusName" class="info-value"> </div>
+      <div id="parkingSpace" class="info-value"> </div>
     </div>
     <div class="info-section">
       <div class="info-label">HORA/FECHA</div>
-      <div class="info-value">16:00-17:00 PM</div>
-      <div class="info-value">23 Jun. 2024</div>
+      <div id="timeRange" class="info-value"> </div>
+      <div id="reservationDate" class="info-value"> </div>
     </div>
     <div class="buttons">
       <button>Editar Reserva</button>
@@ -134,13 +139,14 @@
 
   document.addEventListener('DOMContentLoaded', function() {
 
-    const backButton = document.querySelector('.back-button');
+    const params = new URLSearchParams(window.location.search);
+    const spaceId = params.get('spaceId'); // Captura el ID del espacio desde la URL
 
-    backButton.addEventListener('click', () => {
-      // Aquí debes agregar la lógica para volver a la página anterior.
-      // Por ejemplo, puedes usar window.history.back();
-    });
-
+    if (spaceId) {
+        loadReservationDetails(spaceId); // Carga los detalles de la reserva
+    } else {
+        console.log("No space ID provided.");
+    }
 
     fetchUserName();
 
@@ -158,11 +164,48 @@
                 <button onclick="accion3()">Historial de Reserva</button>
                 <button onclick="accion4()">Estacionamientos</button>
                 <button onclick="accion5()">Comentarios</button>
+                <button onclick="accion6()">Cerrar Sesión</button>
             `,
             showConfirmButton: false
         });
     });  
   });  
+
+
+      async function loadReservationDetails(spaceId) {
+        try {
+            const response = await fetch(`/api/reserva-detalles`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8'
+                },
+                body: JSON.stringify({ idEstacionamiento: spaceId })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Usar moment.js para parsear y formatear la fecha y hora
+                const startTime = moment(data.reserva.hora_inicio, "HH:mm:ss");
+            const endTime = moment(data.reserva.hora_fin, "HH:mm:ss");
+            const reservationDate = moment(data.reserva.fecha, "YYYY-MM-DD");
+
+                console.log(moment("2024-07-10T08:00:00").format('hh:mm'));
+
+                document.getElementById('vehicleModel').textContent = data.reserva.modelo_vehiculo;
+                document.getElementById('vehicleLicense').textContent = data.reserva.patente;
+                document.getElementById('campusName').textContent = `Campus ${data.reserva.campus}`;
+                document.getElementById('parkingSpace').textContent = `Espacio ${spaceId}`;
+                document.getElementById('timeRange').textContent = startTime.format('HH:mm') + ' - ' + endTime.format('HH:mm');
+                document.getElementById('reservationDate').textContent = reservationDate.format('DD/MM/YYYY');
+            } else {
+                console.error('Failed to load reservation details:', data.message);
+                Swal.fire('Failed to load reservation details: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Network error:', error);
+            Swal.fire('Network error: ' + error.message);
+        }
+    }
 
     async function fetchUserName() {
             const userEmail = localStorage.getItem('userEmail');

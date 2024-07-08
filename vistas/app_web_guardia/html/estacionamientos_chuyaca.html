@@ -189,7 +189,7 @@
 </div>
 <input type="file" id="imageInput" style="display: none;" accept="image/*">
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+   document.addEventListener('DOMContentLoaded', function() {
         updateCounts();
         
         const params = new URLSearchParams(window.location.search);
@@ -237,6 +237,7 @@
                     <button onclick="accion3()">Historial de Reserva</button>
                     <button onclick="accion4()">Estacionamientos</button>
                     <button onclick="accion5()">Comentarios</button>
+                    <button onclick="accion6()">Cerrar Sesión</button>
                 `,
                 showConfirmButton: false
             });
@@ -247,6 +248,7 @@
         function accion3() { console.log('Historial de Reserva seleccionado'); Swal.close(); }
         function accion4() { console.log('Estacionamientos seleccionado'); Swal.close(); }
         function accion5() { console.log('Comentarios seleccionado'); Swal.close(); }
+        function accion6() { console.log('Cerrar Sesión'); Swal.close(); }
         
         function updateCounts() {
             const reserved = document.querySelectorAll('.space.reserved').length;

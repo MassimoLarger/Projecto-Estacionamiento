@@ -41,7 +41,7 @@
         </div>
     </div>
     <div class="bottom-navigation">
-        <button id="home-button"><i class="fas fa-home"></i></button>
+        <button id="trash-button"><i class="fas fa-trash"></i></button>
         <button id="add-button"><i class="fas fa-plus"></i></button>
     </div>
     <input type="file" id="imageInput" style="display: none;" accept="image/*">
@@ -62,6 +62,7 @@
                         <button onclick="accion3()">Historial de Reserva</button>
                         <button onclick="accion4()">Estacionamientos</button>
                         <button onclick="accion5()">Comentarios</button>
+                        <button onclick="accion6()">Cerrar Sesión</button>
                     `,
                     showConfirmButton: false
                 });
@@ -92,20 +93,18 @@
                 Swal.close();
             }
 
+            function accion6() {
+                console.log('Cerrar sesión seleccionado');
+                Swal.close();
+            }
+
             document.getElementById('chuyacaButton').addEventListener('click', function() {
                 Swal.fire({
                     title: 'Selecciona el lugar a administrar en Chuyaca',
                     showConfirmButton: false,
-                    html: '<button onclick="sectorSeleccionado(\'Entrada\')">Entrada</button>' +
-                          '<button onclick="sectorSeleccionado(\'Gym 1\')">Gym 1</button>' +
-                          '<button onclick="sectorSeleccionado(\'Edificio Ingeco\')">Edificio Ingeco</button>' +
+                    html: '<button onclick="sectorSeleccionado(\'Entrada C\')">Entrada C</button>' +
+                          '<button onclick="sectorSeleccionado(\'Gym\')">Gym</button>' +
                           '<button onclick="sectorSeleccionado(\'Aulas Virtuales\')">Aulas Virtuales</button>' +
-                          '<button onclick="sectorSeleccionado(\'Edificio Arquitectura\')">Edificio Arquitectura</button>' +
-                          '<button onclick="sectorSeleccionado(\'Aulas Virtuales\')">Aulas Virtuales</button>' +
-                          '<button onclick="sectorSeleccionado(\'Gym 3\')">Gym 3</button>' +
-                          '<button onclick="sectorSeleccionado(\'Edificio Matematica\')">Edificio Matematica</button>' +
-                          '<button onclick="sectorSeleccionado(\'Edificio E\')">Edificio E</button>' +
-                          '<button onclick="sectorSeleccionado(\'Edificio Salud\')">Edificio Salud</button>' +
                           '<button onclick="sectorSeleccionado(\'Casino\')">Casino</button>'
                 });
             });
@@ -113,52 +112,27 @@
                 Swal.fire({
                     title: 'Selecciona el lugar a administrar en Meyer',
                     showConfirmButton: false,
-                    html: '<button onclick="sectorSeleccionado(\'Entrada Circular\')">Entrada Circular</button>' +
-                          '<button onclick="sectorSeleccionado(\'Entrada 2\')">Entrada 2</button>'
+                    html: '<button onclick="sectorSeleccionado(\'Entrada M\')">Entrada M</button>'
                 });
             });
         });
 
         function sectorSeleccionado(sector) {
             switch (sector) {
-                case 'Entrada':
-                    window.location.href = 'estacionamientos.html?sector=Entrada';
+                case 'Entrada C':
+                    window.location.href = 'estacionamientos_chuyaca.html?sector=Entrada%20C';
+                    break;                         
+                case 'Entrada M':
+                    window.location.href = 'estacionamientos_meyer.html?sector=Entrada%20M';
                     break;
-                case 'Edificio Matematica':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20Matematica';
-                    break;
-                case 'Edificio Ingeco':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20Ingeco';
-                    break;    
-                case 'Edificio E':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20E';
-                    break;                          
-                case 'Entrada Circular':
-                    window.location.href = 'estacionamientos.html?sector=Entrada%20Circular';
-                    break;
-                case 'Edificio E':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20E';
-                    break;      
-                case 'Edificio Arquitectura':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20Arquitectura';
-                    break;    
-                case 'Edificio Salud':
-                    window.location.href = 'estacionamientos.html?sector=Edificio%20Salud';
-                    break;    
-                case 'Gym 1':
-                    window.location.href = 'estacionamientos.html?sector=Gym%201';
-                    break;
-                case 'Gym 3':
-                    window.location.href = 'estacionamientos.html?sector=Gym%203';
+                case 'Gym':
+                    window.location.href = 'estacionamientos_chuyaca.html?sector=Gym';
                     break;
                 case 'Aulas Virtuales':
-                    window.location.href = 'estacionamientos.html?sector=Aulas%20Virtuales';
+                    window.location.href = 'estacionamientos_chuyaca.html?sector=Aulas%20Virtuales';
                     break;
                 case 'Casino':
-                    window.location.href = 'estacionamientos.html?sector=Casino';
-                    break;
-                case 'Entrada 2':
-                    window.location.href = 'estacionamientos.html?sector=Entrada%202';
+                    window.location.href = 'estacionamientos_chuyaca.html?sector=Casino';
                     break;
                 default:
                     Swal.fire('Error', 'No se encontró la página.', 'error');

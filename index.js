@@ -13,20 +13,20 @@ import _letterDvDb from './letterDvDB.json' assert { type: 'json' };
 const { Pool } = pkg;
 dotenv.config();
 
-const pool = new Pool({
+/*const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
   },
-});
+});*/
 
-/*const pool = new Pool({
+const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'estacionamientos_local',
   password: 'admin',
   port: 5432,
-});*/
+});
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -67,8 +67,12 @@ app.get('/iniciar_sesion.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/iniciar_sesion.html'));
 });
 
-app.get('/estacionamientos.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos.html'));
+app.get('/estacionamientos_meyer.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos_meyer.html'));
+});
+
+app.get('/estacionamientos_chuyaca.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'vistas/app_web_guardia/html/estacionamientos_chuyaca.html'));
 });
 
 app.get('/sede.html', (req, res) => {
@@ -412,6 +416,53 @@ app.post('/api/reservations', async (req, res) => {
     console.error('Error al obtener las reservas:', error);
     res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
   }
+});
+
+app.post('/api/reserva-detalles', async (req, res) => {
+  console.log(req.body);
+  const { idEstacionamiento } = req.body;
+
+  try {
+    const result = await pool.query(`
+      SELECT
+        e.ID_Estacionamiento,
+        cs.Nombre AS campus,
+        v.Patente,
+        v.Descripcion AS modelo_vehiculo,
+        o.Fecha_Entrada AS hora_inicio,
+        o.Fecha_Salida AS hora_fin,
+        r.fecha_reserva AS fecha
+      FROM Estacionamiento e
+      JOIN Ocupa o ON e.ID_Estacionamiento = o.ID_Estacionamiento
+      JOIN Vehiculo v ON o.ID_Vehiculo = v.Patente
+      JOIN Campus_Sede cs ON e.ID_Campus = cs.ID_Campus
+      JOIN Reserva r ON e.ID_Estacionamiento = r.ID_Estacionamiento
+      WHERE e.ID_Estacionamiento = $1
+      ORDER BY o.Fecha_Entrada DESC
+      LIMIT 1;
+    `, [idEstacionamiento]);
+
+    if (result.rows.length > 0) {
+      const reserva = result.rows[0];
+      res.status(200).json({
+        success: true,
+        reserva: {
+          estacionamiento: reserva.ID_Estacionamiento,
+          campus: reserva.campus,
+          patente: reserva.patente,
+          modelo_vehiculo: reserva.modelo_vehiculo,
+          hora_inicio: reserva.hora_inicio,
+          hora_fin: reserva.hora_fin,
+          fecha: reserva.fecha
+        }
+      });
+    } else {
+      res.status(404).json({ success: false, message: 'No se encontró una reserva para este espacio de estacionamiento.' });
+    }
+  } catch (error) {
+    console.error('Database error:', error);
+    res.status(500).json({ error: 'Error al consultar la base de datos.' });
+  }
 });
 
 // Start the server
