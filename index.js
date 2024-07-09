@@ -16,17 +16,9 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
+    rejectUnauthorized: false,
   },
 });
-
-/*const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'estacionamientos_local',
-  password: 'admin',
-  port: 5432,
-});*/
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -332,6 +324,7 @@ app.post('/api/loginGuardia', async (req, res) => {
       'SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2 AND tipo = $3',
       [correo, contrasena, 'Guardia']
     );
+    console.log(result);
 
     if (result.rows.length > 0) {
       const { correo, tipo } = result.rows[0];
@@ -768,7 +761,6 @@ app.get('/api/reserva-detalles-dos', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los detalles de la reserva' });
   }
 });
-
 
 // Start the server
 const PORT = process.env.PORT || 3500;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/modificar_reserva_erroneo.dart';
 import 'verificaciones/modificar_reserva_exitoso.dart';
-import 'usuario.dart';
+//import 'usuario.dart';
 
 class DetailScreen2 extends StatelessWidget {
   const DetailScreen2({super.key});
@@ -81,13 +81,13 @@ class DetailScreen2 extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return const CustomUserDialog();
-                },
-              );
+              //showDialog(
+                //context: context,
+                //barrierDismissible: false,
+                //builder: (BuildContext context) {
+                  //return const CustomUserDialog();
+                //},
+              //);
             },
           )
         ],

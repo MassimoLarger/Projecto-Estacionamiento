@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'usuario.dart';
+import 'espacios_estacionamiento.dart';
 
 class GuardiaScreen extends StatelessWidget {
-  const GuardiaScreen({super.key});
+  final String userId; // Cambiado a String
+
+  const GuardiaScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,15 +26,15 @@ class GuardiaScreen extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) => const CustomUserDialog(),
+                    builder: (context) => CustomUserDialog(userId: userId), // Pasar el userId al diálogo
                     barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.6),  // Ajusta esto para cambiar el color y la opacidad
                   );
                 },
                 child: const Icon(Icons.account_circle, color: Colors.white, size: 40),
               ),
               const SizedBox(width: 10),
-              const Expanded(
-                child: Text("Guardia123", style: TextStyle(color: Colors.white, fontSize: 20)),
+              Expanded(
+                child: Text(userId, style: const TextStyle(color: Colors.white, fontSize: 20)), // Mostrar el userId como nombre del guardia
               ),
             ],
           ),
@@ -52,10 +55,10 @@ class GuardiaScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
               children: [
                 campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth /1, () {
-                  //showSedeChuyacaSelector(context);
+                  _showPlaceSelectionSheet(context, userId, 'Chuyaca');
                 }),
                 campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth/ 1, () {
-                  //showSedeMeyerSelector(context);
+                  _showPlaceSelectionSheet(context, userId, 'Meyer');
                 }),
               ],
             ),
@@ -136,29 +139,122 @@ class GuardiaScreen extends StatelessWidget {
     );
   }
 
-  void showSedeChuyacaSelector(BuildContext context) {
+  void _showPlaceSelectionSheet(BuildContext context, String userId, String campus) {
     showModalBottomSheet(
       context: context,
-      builder: (BuildContext context) {
-        return const SedeChuyacaSelector();
-      },
+      barrierColor: Colors.black.withOpacity(0.5),
+      isDismissible: true,
+      enableDrag: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
-      isScrollControlled: true,
-    );
-  }
+      builder: (context) {
+        double width = MediaQuery.of(context).size.width;
+        double scaleText(double size) => size * MediaQuery.textScaleFactorOf(context);
 
-  void showSedeMeyerSelector(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return const SedeMeyerSelector();
+        int _selectedIndex = -1;
+        final List<Map<String, dynamic>> places = (campus == 'Chuyaca')
+            ? [
+          {'name': 'Entrada C'},
+          {'name': 'Gym'},
+          {'name': 'Aulas Virtuales'},
+          {'name': 'Casino'},
+        ]
+            : [
+          {'name': 'Entrada M'}, // Ejemplo con una sola entrada
+        ];
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 4,
+                      width: 40,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: scaleText(20)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                    child: Text(
+                      "SELECCIONA EL LUGAR",
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        fontSize: scaleText(16),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: scaleText(18)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                    child: SizedBox(
+                      height: 170,
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: places.length,
+                        itemBuilder: (context, index) {
+                          bool isSelected = _selectedIndex == index;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedIndex = index;
+                              });
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EspacioEstacionamientoWidget(
+                                    sectionName: places[index]['name'],
+                                    sedeName: campus,
+                                    userId: userId,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: SizedBox(
+                              width: width * 0.9,
+                              child: Card(
+                                color: isSelected ? const Color(0xFF567DF4) : const Color(0xFFB7C7F9),
+                                child: ListTile(
+                                  title: Text(
+                                    places[index]['name'],
+                                    style: TextStyle(
+                                      fontSize: scaleText(20),
+                                      color: isSelected ? Colors.white : Colors.black,
+                                    ),
+                                  ),
+                                  trailing: isSelected ? const Icon(Icons.check_box, color: Colors.white) : null,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
       },
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      isScrollControlled: true,
-    );
+    ).whenComplete(() {
+      // Do something if needed when the modal is dismissed
+    });
   }
 }
