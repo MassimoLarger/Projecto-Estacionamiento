@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'historial_de_reservas_detalles.dart';
 import 'verificaciones/eliminar_reserva_erroneo2.dart';
 import 'verificaciones/eliminar_reserva_exitoso2.dart';
-import 'historial_de_reservas_detalles.dart';
 
 class ReservasScreen extends StatefulWidget {
-  const ReservasScreen({super.key});
+  const ReservasScreen({Key? key}) : super(key: key);
+
   @override
   ReservasScreenState createState() => ReservasScreenState();
 }
@@ -19,7 +20,13 @@ class ReservasScreenState extends State<ReservasScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchReservas();
+    _fetchReservasWithDelay(); // Usar método con retraso
+  }
+
+  Future<void> _fetchReservasWithDelay() async {
+    // Retrasar la ejecución por 20 segundos antes de hacer la solicitud
+    await Future.delayed(Duration(seconds: 20));
+    await _fetchReservas();
   }
 
   Future<void> _fetchReservas() async {
@@ -33,7 +40,8 @@ class ReservasScreenState extends State<ReservasScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       setState(() {
-        reservas = List<Map<String, String>>.from(data['reservations']);
+        reservas = List<Map<String, String>>.from(data['reservations']
+            .map((reservation) => Map<String, String>.from(reservation)));
         filteredReservas = List.from(reservas);
         isLoading = false;
       });
@@ -73,7 +81,7 @@ class ReservasScreenState extends State<ReservasScreen> {
             "¿Estás seguro que deseas eliminar la reserva?",
             style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: 16,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black
             ),
@@ -125,7 +133,7 @@ class ReservasScreenState extends State<ReservasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width; // Obtener el ancho de pantalla
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -164,7 +172,7 @@ class ReservasScreenState extends State<ReservasScreen> {
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
                 ),
-                floatingLabelBehavior: FloatingLabelBehavior.never, // Mantiene la etiqueta en el campo de texto
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
             ),
           ),
@@ -201,7 +209,7 @@ class ReservasScreenState extends State<ReservasScreen> {
                         // Acción al tocar la reserva
                       },
                     ),
-                    const Divider(height: 1), // Añade un Divider debajo de cada elemento
+                    const Divider(height: 1),
                   ],
                 );
               },

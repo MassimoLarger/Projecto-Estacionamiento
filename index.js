@@ -774,9 +774,8 @@ app.post('/api/historial', async (req, res) => {
       JOIN Campus_Sede c ON e.ID_Campus = c.ID_Campus
       WHERE o.Estado = True;
   `);
-  console.log(result);
-
     if (result.rows.length > 0) {
+      console.log(result.rows);
       res.status(200).json({ success: true, reservations: result.rows });
     } else {
       res.status(404).json({ success: false, error: 'No se encontraron reservas para el usuario.' });
