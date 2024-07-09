@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 
 class UserDetails {
-  String idNumber;
-  String sedeWork;
+  String userId;
+  int userPhone;
+  String userType;
 
-  UserDetails({required this.idNumber, required this.sedeWork});
+  UserDetails({required this.userId, required this.userPhone, required this.userType});
 }
 
 class PersonalDetailsPage extends StatefulWidget {
-  const PersonalDetailsPage({super.key});
+  final String userId;
+  final int userPhone;
+  final String userType;
+
+  const PersonalDetailsPage({Key? key, required this.userId, required this.userPhone, required this.userType}) : super(key: key);
 
   @override
   PersonalDetailsPageState createState() => PersonalDetailsPageState();
 }
 
 class PersonalDetailsPageState extends State<PersonalDetailsPage> {
-  UserDetails user = UserDetails(idNumber: '21.152.149-5', sedeWork: 'Sede Chuyaca');
-
   @override
   Widget build(BuildContext context) {
     // Usando MediaQuery para adaptar el diseño a diferentes tamaños de pantalla
@@ -55,7 +58,7 @@ class PersonalDetailsPageState extends State<PersonalDetailsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Rut',
+                  'Tipo de Cuenta',
                   style: TextStyle(
                     fontFamily: 'Lato',
                     fontSize: fontSizeSubTitle,  // Tamaño de fuente adaptativo para subtítulo
@@ -65,7 +68,7 @@ class PersonalDetailsPageState extends State<PersonalDetailsPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
                   child: Text(
-                    user.idNumber,
+                    widget.userType,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       fontSize: fontSizeSubTitle - 2,  // Tamaño de fuente ligeramente menor para los detalles
@@ -75,7 +78,7 @@ class PersonalDetailsPageState extends State<PersonalDetailsPage> {
                 const Divider(),  // Línea horizontal debajo de cada detalle
                 const SizedBox(height: 16),
                 Text(
-                  'Sede de Trabajo',
+                  'Número de Teléfono',
                   style: TextStyle(
                     fontFamily: 'Lato',
                     fontSize: fontSizeSubTitle,  // Tamaño de fuente adaptativo para subtítulo
@@ -85,14 +88,33 @@ class PersonalDetailsPageState extends State<PersonalDetailsPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
                   child: Text(
-                    user.sedeWork,
+                    widget.userPhone.toString(),
                     style: TextStyle(
                       fontFamily: 'Lato',
                       fontSize: fontSizeSubTitle - 2,  // Tamaño de fuente ligeramente menor para los detalles
                     ),
                   ),
                 ),
-                const Divider(),  // Línea horizontal debajo de cada detalle
+                const Divider(),
+                const SizedBox(height: 16),
+                Text(
+                  'Correo Electrónico',
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    fontSize: fontSizeSubTitle,  // Tamaño de fuente adaptativo para subtítulo
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 4.0),
+                  child: Text(
+                    widget.userId,
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontSize: fontSizeSubTitle - 2,  // Tamaño de fuente ligeramente menor para los detalles
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

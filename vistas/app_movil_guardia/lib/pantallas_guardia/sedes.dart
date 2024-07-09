@@ -1,11 +1,62 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'usuario.dart';
 import 'espacios_estacionamiento.dart';
 
-class GuardiaScreen extends StatelessWidget {
-  final String userId; // Cambiado a String
+class GuardiaScreen extends StatefulWidget {
+  final String userId;
 
   const GuardiaScreen({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _GuardiaScreenState createState() => _GuardiaScreenState();
+}
+
+class _GuardiaScreenState extends State<GuardiaScreen> {
+  String? guardName;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchGuardName(widget.userId);
+  }
+
+  Future<void> _fetchGuardName(String userId) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultan'),
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: jsonEncode({'correo': userId}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['success']) {
+          setState(() {
+            guardName = responseData['nombre'];
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+            // Handle the error message as needed
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+          // Handle the request error as needed
+        });
+      }
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+        // Handle the exception as needed
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +66,10 @@ class GuardiaScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFF677191),
         automaticallyImplyLeading: false,
-        elevation: 0,  // Eliminar cualquier sombra por debajo del AppBar.
+        elevation: 0,
         title: Container(
           padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 16),
-          color: const Color(0xFF677191), // Asegúrate de que el color llene todo el AppBar.
+          color: const Color(0xFF677191),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -26,15 +77,20 @@ class GuardiaScreen extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (context) => CustomUserDialog(userId: userId), // Pasar el userId al diálogo
-                    barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.6),  // Ajusta esto para cambiar el color y la opacidad
+                    builder: (context) => CustomUserDialog(userId: widget.userId),
+                    barrierColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.6),
                   );
                 },
                 child: const Icon(Icons.account_circle, color: Colors.white, size: 40),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(userId, style: const TextStyle(color: Colors.white, fontSize: 20)), // Mostrar el userId como nombre del guardia
+                child: isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                  guardName ?? 'Nombre no encontrado',
+                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
             ],
           ),
@@ -54,11 +110,11 @@ class GuardiaScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.only(top: 30, right: 20, left: 20),
               children: [
-                campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth /1, () {
-                  _showPlaceSelectionSheet(context, userId, 'Chuyaca');
+                campusCard('Chuyaca', 'assets/images/chuyaca.png', context, screenWidth / 1, () {
+                  _showPlaceSelectionSheet(context, widget.userId, 'Chuyaca');
                 }),
-                campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth/ 1, () {
-                  _showPlaceSelectionSheet(context, userId, 'Meyer');
+                campusCard('Meyer', 'assets/images/meyer.png', context, screenWidth / 1, () {
+                  _showPlaceSelectionSheet(context, widget.userId, 'Meyer');
                 }),
               ],
             ),
@@ -70,12 +126,12 @@ class GuardiaScreen extends StatelessWidget {
         shape: const CircularNotchedRectangle(),
         notchMargin: -100,
         elevation: 0,
-        child: Container(height: 50),  // Adjust the height to ensure buttons fit well
+        child: Container(height: 50),
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09), // Adjust padding to position the FABs correctly
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.09),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround, // This will place the FABs evenly spaced from each other
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             const SizedBox(height: 20),
             FloatingActionButton(
@@ -83,7 +139,7 @@ class GuardiaScreen extends StatelessWidget {
                 // Acción para el botón Home
               },
               backgroundColor: const Color(0xFF456EFF),
-              child: const Icon(Icons.home, color: Colors.white,size: 40),
+              child: const Icon(Icons.home, color: Colors.white, size: 40),
             ),
             const SizedBox(height: 20),
             FloatingActionButton(
@@ -91,13 +147,13 @@ class GuardiaScreen extends StatelessWidget {
                 // Acción para el botón Add
               },
               backgroundColor: const Color(0xFF456EFF),
-              child: const Icon(Icons.add, color: Colors.white,size: 40),
+              child: const Icon(Icons.add, color: Colors.white, size: 40),
             ),
             const SizedBox(height: 10),
           ],
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked, // This positions the FABs in the center docked to the BottomAppBar
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -105,17 +161,17 @@ class GuardiaScreen extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10), // Agrega un margen para evitar que el borde toque los bordes de otros elementos
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8), // Bordes redondeados para la imagen
+            borderRadius: BorderRadius.circular(8),
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(8), // Asegura que la imagen también tenga bordes redondeados
+            borderRadius: BorderRadius.circular(8),
             child: Image.asset(
               imagePath,
               fit: BoxFit.cover,
-              width: screenWidth - 40, // Ajusta el ancho con respecto al padding general
-              height: (screenWidth - 40) / 2, // Mantiene la proporción original
+              width: screenWidth - 40,
+              height: (screenWidth - 40) / 2,
             ),
           ),
         ),
@@ -161,7 +217,7 @@ class GuardiaScreen extends StatelessWidget {
           {'name': 'Casino'},
         ]
             : [
-          {'name': 'Entrada M'}, // Ejemplo con una sola entrada
+          {'name': 'Entrada M'},
         ];
 
         return StatefulBuilder(

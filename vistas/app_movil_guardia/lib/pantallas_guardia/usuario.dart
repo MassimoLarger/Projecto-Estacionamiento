@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'verificaciones/cerrar_sesion.dart';
 import 'editar_perfil.dart';
 import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'datos_personales.dart';
 import 'contrasena_seguridad.dart';
 import 'estacionamientos.dart';
 import 'historial_de_reservas.dart';
-import 'comentarios_guardia.dart';
 
 class CustomUserDialog extends StatefulWidget {
   final String userId; // Cambiado a String
@@ -16,9 +17,67 @@ class CustomUserDialog extends StatefulWidget {
   @override
   CustomUserDialogState createState() => CustomUserDialogState();
 }
+
 class CustomUserDialogState extends State<CustomUserDialog> {
-  String userName = "Usuario123";  // Valor inicial, considera cambiarlo según tu lógica de negocio
+  String userName = "";
+  int userPhone = 0;
+  String userType = "";
+  String userPassword = "";
   File? userImage;
+
+  bool isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'correo': widget.userId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = json.decode(response.body);
+        if (responseBody['success']) {
+          setState(() {
+            userName = responseBody['usuario']['nombre'] ?? "";
+            userPhone = responseBody['usuario']['telefono'] ?? 0;
+            userType = responseBody['usuario']['tipo'] ?? "";
+            userPassword = responseBody['usuario']['contrasena'] ?? "";
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(responseBody['message'])),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error en la consulta al servidor')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   void _showCerrarSesionDialog(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -33,10 +92,10 @@ class CustomUserDialogState extends State<CustomUserDialog> {
           title: Text(
             "¿Estás seguro que deseas cerrar sesión?",
             style: TextStyle(
-              fontFamily: 'Lato',
-              fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
-              fontWeight: FontWeight.bold,
-              color: Colors.black
+                fontFamily: 'Lato',
+                fontSize: width * 0.045,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+                fontWeight: FontWeight.bold,
+                color: Colors.black
             ),
             textAlign: TextAlign.center,
           ),
@@ -46,7 +105,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const CerrarSesionWidget()));
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => CerrarSesionWidget()));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF567DF4), // Color azul claro para el botón
@@ -55,7 +114,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
                   ),
-                  child: const Text("Sí", style: TextStyle(color: Colors.white)),
+                  child: Text("Sí", style: TextStyle(color: Colors.white)),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -66,7 +125,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     ),
                     padding: EdgeInsets.symmetric(horizontal: width * 0.06, vertical: 15),  // Padding relativo al ancho
                   ),
-                  child: const Text("No", style: TextStyle(color: Colors.white)),
+                  child: Text("No", style: TextStyle(color: Colors.white)),
                 ),
               ],
             ),
@@ -81,17 +140,51 @@ class CustomUserDialogState extends State<CustomUserDialog> {
       context,
       MaterialPageRoute(
         builder: (context) => EditProfilePage(
-          nombreInicial: userName,  // pasa el nombre actual
-          imagenInicial: userImage,  // pasa la imagen actual si la hay
+          nombreInicial: userName,
         ),
       ),
     );
 
-    if (result != null && result.containsKey('nombre') && result.containsKey('imagen')) {
+    if (result != null && result.containsKey('nombre')) {
       setState(() {
-        userName = result['nombre'];
-        userImage = result['imagen'] as File?;
+        isLoading = true;
       });
+
+      String updatedName = result['nombre'];
+
+      try {
+        final response = await http.post(
+          Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/updateProfile'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(<String, String>{
+            'correo': widget.userId,
+            'nombre': updatedName,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            userName = updatedName;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Perfil actualizado correctamente')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error al actualizar el perfil')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      } finally {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -116,63 +209,56 @@ class CustomUserDialogState extends State<CustomUserDialog> {
                     backgroundColor: Colors.grey,
                     radius: 40,
                     backgroundImage: userImage != null ? FileImage(userImage!) : null,
-                    child: userImage == null ? const Icon(Icons.person, size: 40) : null,
+                    child: userImage == null ? Icon(Icons.person, size: 40) : null,
                   ),
                   const SizedBox(height: 10),
-                  Text(userName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  isLoading
+                      ? CircularProgressIndicator()
+                      : Text(userName, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   IconButton(
-                    icon: const Icon(Icons.edit),
+                    icon: Icon(Icons.edit),
                     onPressed: _openEditProfile,
                   ),
                   ListTile(
-                    leading: const Icon(Icons.person),
-                    title: const Text('Detalles Personales'),
+                    leading: Icon(Icons.person),
+                    title: Text('Detalles Personales'),
                     onTap: () {
                       Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => const PersonalDetailsPage()),
+                        context, MaterialPageRoute(builder: (context) => PersonalDetailsPage(userId: widget.userId, userPhone: userPhone, userType: userType)),
                       );
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.lock),
-                    title: const Text('Contraseña y seguridad'),
+                    leading: Icon(Icons.lock),
+                    title: Text('Contraseña y seguridad'),
                     onTap: () {
                       Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => const PasswordAndSecurityPage()),
+                        context, MaterialPageRoute(builder: (context) => PasswordAndSecurityPage(userId: widget.userId, userPassword: userPassword)),
                       );
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.book),
-                    title: const Text('Historial Reservas'),
+                    leading: Icon(Icons.book),
+                    title: Text('Historial Reservas'),
                     onTap: () {
                       Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => const ReservasScreen()),
+                        context, MaterialPageRoute(builder: (context) => ReservasScreen()),
                       );
                     },
                   ),
                   ListTile(
-                    leading: const Icon(Icons.directions_car),
-                    title: const Text('Estacionamientos'),
+                    leading: Icon(Icons.directions_car),
+                    title: Text('Estacionamientos'),
                     onTap: () {
                       Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => const ParkingScreen()),
+                        context, MaterialPageRoute(builder: (context) => ParkingScreen()),
                       );
                     },
                   ),
+                  Divider(),
                   ListTile(
-                    leading: const Icon(Icons.comment),
-                    title: const Text('Comentarios'),
-                    onTap: () {
-                      Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => const AdminCommentResponsePage()),
-                      );
-                    },
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(Icons.exit_to_app),
-                    title: const Text('Cerrar Sesión'),
+                    leading: Icon(Icons.exit_to_app),
+                    title: Text('Cerrar Sesión'),
                     onTap: () => _showCerrarSesionDialog(context),
                   ),
                 ],
@@ -183,7 +269,7 @@ class CustomUserDialogState extends State<CustomUserDialog> {
             right: 4, // Posición desde la derecha
             top: 4, // Posición desde arriba
             child: IconButton(
-              icon: const Icon(Icons.close),
+              icon: Icon(Icons.close),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ),
