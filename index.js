@@ -774,6 +774,7 @@ app.post('/api/historial', async (req, res) => {
       JOIN Campus_Sede c ON e.ID_Campus = c.ID_Campus
       WHERE o.Estado = True;
   `);
+  console.log(result);
 
     if (result.rows.length > 0) {
       res.status(200).json({ success: true, reservations: result.rows });
