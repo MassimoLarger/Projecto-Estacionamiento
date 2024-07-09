@@ -9,7 +9,9 @@ import 'historial_de_reservas.dart';
 import 'comentarios_guardia.dart';
 
 class CustomUserDialog extends StatefulWidget {
-  const CustomUserDialog({super.key});
+  final String userId; // Cambiado a String
+
+  const CustomUserDialog({Key? key, required this.userId}) : super(key: key);
 
   @override
   CustomUserDialogState createState() => CustomUserDialogState();

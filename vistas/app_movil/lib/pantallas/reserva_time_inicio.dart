@@ -1,5 +1,5 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'usuario.dart';
@@ -24,32 +24,22 @@ class VehicleTimeReserva extends StatefulWidget {
 }
 
 class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
+  int _seconds = 0; // Inicializado en 0, se actualizará con la duración calculada
   late Timer _timer;
-  int _seconds = 0; // Declaración e inicialización de _seconds
   String _userName = 'Usuario';
   String _vehicleModel = 'Vehículo';
   String _vehiclePlate = 'CJ CH 25';
-  String _vehicleImage = 'assets/images/auto.png'; // Imagen por defecto
+  String _vehicleImage = 'assets/images/auto.png'; // Default image
 
   @override
   void initState() {
     super.initState();
     _fetchUserName();
     _fetchVehicleInfo();
-    _calculateDuration(); // Calcular la duración inicial
+    _calculateDuration(); // Calcular la duración inicial al inicio
 
-    // Iniciar el timer si la hora local es mayor o igual a timeFrom
-    DateTime now = DateTime.now();
-    DateTime timeFromDateTime = DateTime(now.year, now.month, now.day, widget.timeFrom.hour, widget.timeFrom.minute);
-    if (now.isAfter(timeFromDateTime) || now.isAtSameMomentAs(timeFromDateTime)) {
-      _startTimer();
-    }
-
-    // Verificar si la hora actual es mayor que timeTo para cancelar la reserva automáticamente
-    DateTime timeToDateTime = DateTime(now.year, now.month, now.day, widget.timeTo.hour, widget.timeTo.minute);
-    if (now.isAfter(timeToDateTime)) {
-      _cancelarReservaAutomatica();
-    }
+    // Iniciar el timer
+    _startTimer();
   }
 
   Future<void> _fetchUserName() async {
@@ -102,24 +92,28 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
             _vehicleModel = data['patentes']['descripcion'];
             _vehiclePlate = data['patentes']['patente'];
             int vehicleTypeId = data['patentes']['id_tipo_v'];
-            _setVehicleImage(vehicleTypeId);
+            _setVehicleImage(vehicleTypeId); // Actualizar la imagen del vehículo
           });
         } else {
           setState(() {
-            _vehicleModel = 'Vehículo no encontrado';
+            _vehicleModel = 'Error: ${data['error']}';
+            _vehiclePlate = 'Vehículo no encontrado';
           });
         }
       } else {
         setState(() {
           _vehicleModel = 'Error en la consulta';
+          _vehiclePlate = 'Vehículo no encontrado';
         });
       }
     } catch (e) {
       setState(() {
-        _vehicleModel = 'Error de red';
+        _vehicleModel = 'Error de red: $e';
+        _vehiclePlate = 'Vehículo no encontrado';
       });
     }
   }
+
 
   void _setVehicleImage(int vehicleTypeId) {
     switch (vehicleTypeId) {
@@ -139,20 +133,8 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
         _vehicleImage = 'assets/images/furgon.png';
         break;
       default:
-        _vehicleImage = 'assets/images/auto.png';
+        _vehicleImage = 'assets/images/auto.png'; // Default fallback image
     }
-  }
-
-  void _cancelarReservaAutomatica() {
-    _timer.cancel();
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => CancelarReservatimeWidget(
-          userId: widget.userId,
-          vehicleid: widget.vehicleid,
-        ),
-      ),
-    );
   }
 
   void _cancelarReserva() async {
@@ -172,7 +154,7 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
         final data = jsonDecode(response.body);
         if (data['success']) {
           setState(() {
-            _timer.cancel();
+            _seconds = 0;
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (_) => CancelarReservatimeWidget(
@@ -184,28 +166,81 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
           });
         } else {
           // Manejo de errores si no se pudo cancelar la reserva
-          _showErrorDialog(data['error'] ?? 'No se pudo cancelar la reserva.');
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Error'),
+              content: Text(data['error'] ?? 'No se pudo cancelar la reserva.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'),
+                ),
+              ],
+            ),
+          );
         }
       } else {
         // Manejo de errores si no se pudo conectar con el servidor
-        _showErrorDialog('Error de conexión con el servidor.');
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Error'),
+            content: Text('Error de conexión con el servidor.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
       // Manejo de errores si hubo una excepción
-      _showErrorDialog('Error inesperado: $e');
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Error'),
+          content: Text('Error inesperado: $e'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
     }
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_seconds > 0) {
-        setState(() {
-          _seconds--;
-        });
-      } else {
-        timer.cancel();
-      }
-    });
+    // Obtener la fecha y hora actual
+    DateTime now = DateTime.now();
+    TimeOfDay currentTime = TimeOfDay.fromDateTime(now);
+
+    // Comparar la hora actual con la hora de inicio de la reserva
+    if (currentTime.hour < widget.timeFrom.hour ||
+        (currentTime.hour == widget.timeFrom.hour && currentTime.minute < widget.timeFrom.minute)) {
+    } else {
+      // Iniciar el temporizador si la hora actual es igual o mayor que la hora de inicio de reserva
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (_seconds > 0) {
+          setState(() {
+            _seconds--;
+          });
+        } else {
+          timer.cancel();
+        }
+      });
+    }
+  }
+
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   void _calculateDuration() {
@@ -279,22 +314,6 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
     );
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Error'),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -330,42 +349,57 @@ class _VehicleTimeReservaState extends State<VehicleTimeReserva> {
             ),
             SizedBox(height: size.height * 0.05),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _vehicleModel,
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Image.asset(
-                    _vehicleImage,
-                    height: 120,
-                    width: 120,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Placa: $_vehiclePlate',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Tiempo restante:',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    _formatDuration(_seconds),
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showCancelarReservaDialog(context);
-                    },
-                    child: const Text('Cancelar Reserva'),
-                  ),
-                ],
+              child: Image.asset(_vehicleImage, fit: BoxFit.contain), // Mostrar la imagen del vehículo
+            ),
+            SizedBox(height: size.height * 0.01),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+              child: Container(
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("Vehículo", style: TextStyle(fontFamily: 'Inter', fontWeight: FontWeight.w500, fontSize: 25)),
+                    const SizedBox(height: 10),
+                    Text(_vehicleModel, style: const TextStyle(fontSize: 18)),
+                    const SizedBox(height: 5),
+                    Text(_vehiclePlate, style: const TextStyle(fontSize: 18)),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: size.height * 0.05),
+            Container(
+              width: size.width,
+              color: const Color(0xFF677191),
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      _formatDuration(_seconds),
+                      style: TextStyle(fontSize: size.width * 0.05, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(Icons.pause, color: Colors.white, size: size.width * 0.08),
+                      onPressed: () => _showCancelarReservaDialog(context),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

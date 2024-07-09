@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'usuario.dart';
-import 'tipo_vehiculo.dart';
+import 'movilizacion.dart';
 
 class VehicleInterface extends StatefulWidget {
   final String userId;
@@ -23,14 +23,17 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
   @override
   void initState() {
     super.initState();
-    _fetchUserName();
-    _fetchVehicleInfo();
+    // Delay the initialization by 10 seconds
+    Future.delayed(Duration(seconds: 10), () {
+      _fetchUserName();
+      _fetchVehicleInfo();
+    });
   }
 
   Future<void> _fetchUserName() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/consultau'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/consultau'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -63,7 +66,7 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
   Future<void> _fetchVehicleInfo() async {
     try {
       final response = await http.post(
-        Uri.parse('http://localhost:3500/api/vehiculoR'),
+        Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/vehiculoR'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -216,7 +219,7 @@ class _VehicleInterfaceState extends State<VehicleInterface> {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (_) => VehicleTypeSelector(
+                builder: (_) => CarSelectionWidget(
                   userId: widget.userId,
                 ),
               ),

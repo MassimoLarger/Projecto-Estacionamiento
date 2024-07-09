@@ -273,6 +273,8 @@ app.post('/api/vehiculoR', async (req, res) => {
     const result = await pool.query('SELECT * FROM Vehiculo WHERE Patente = $1', [patente]);
     if (result.rows.length > 0) {
       const { patente, descripcion, id_tipo_v } = result.rows[0];
+      console.log(descripcion);
+      console.log(id_tipo_v);
       res.json({ success: true, patentes:{ patente, descripcion, id_tipo_v } , message: 'Vehículos encontrados' });
     } else {
       res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
