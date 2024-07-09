@@ -764,6 +764,46 @@ app.get('/api/reserva-detalles-dos', async (req, res) => {
   }
 });
 
+app.post('/api/historial', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT o.ID_Vehiculo as Patente, v.Descripcion as Nombre, c.Nombre as Sede
+      FROM Ocupa o
+      JOIN Vehiculo v ON o.ID_Vehiculo = v.patente
+      JOIN Estacionamiento e ON o.ID_Estacionamiento = e.ID_Estacionamiento
+      JOIN Campus_Sede c ON e.ID_Campus = c.ID_Campus
+      WHERE o.Estado = True;
+  `);
+
+    if (result.rows.length > 0) {
+      res.status(200).json({ success: true, reservations: result.rows });
+    } else {
+      res.status(404).json({ success: false, error: 'No se encontraron reservas para el usuario.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener las reservas:', error);
+    res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
+  }
+});
+
+app.post('/api/consultaRegistro', async (req, res) => {
+  const { vehicleid } = req.body;
+  console.log(vehicleid);
+  try {
+    const result = await pool.query('SELECT ID_Usuario FROM registra WHERE ID_Vehiculo = $1', [vehicleid]);
+    if (result.rows.length > 0) {
+      // Extraer todos los id_vehiculo en una lista
+      const usuario = result.rows.map(row => row.ID_Usuario);
+      res.json({ success: true, correo: usuario, message: 'Vehículos encontrados' });
+    } else {
+      res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
+
 // Start the server
 const PORT = process.env.PORT || 3500;
 app.listen(PORT, () => {
