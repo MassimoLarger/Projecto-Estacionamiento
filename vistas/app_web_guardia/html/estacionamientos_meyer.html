@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         function accion4() {
             console.log('Estacionamientos seleccionado');
             Swal.close();
+            window.location.href = 'estacionamientos.html';
         }
 
         function accion5() {
@@ -332,7 +333,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     spaceDiv.classList.remove('reserved');
                 }
             } else {
-                Swal.fire('No se encontró el elemento con ID:', space.id_estacionamiento);
+                console.error('No se encontró el elemento con ID:', space.id_estacionamiento);
             }
         });
     }
