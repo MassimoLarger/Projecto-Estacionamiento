@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'verificaciones/eliminar_reserva_erroneo.dart';
 import 'verificaciones/eliminar_reserva_exitoso.dart';
-import 'usuario.dart';
-import 'modificar_reserva.dart';
+//import 'usuario.dart';
+//import 'modificar_reserva.dart';
 
 
 class DetailScreen1 extends StatelessWidget {
   const DetailScreen1({super.key});
- 
+
   void _showEliminarReservaDialog(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
@@ -64,7 +64,7 @@ class DetailScreen1 extends StatelessWidget {
         );
       },
     );
-  }  
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +83,13 @@ class DetailScreen1 extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.account_circle, color: Colors.black),
             onPressed: () {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (BuildContext context) {
-                  return const CustomUserDialog();
-                },
-              );
+              //showDialog(
+                //context: context,
+                //barrierDismissible: false,
+                //builder: (BuildContext context) {
+                  //return const CustomUserDialog();
+                //},
+              //);
             },
           )
         ],
@@ -132,10 +132,10 @@ class DetailScreen1 extends StatelessWidget {
                 ),
                 child: const Text('Editar Reserva', style: TextStyle(fontSize: 16, fontFamily: 'Lato', fontWeight: FontWeight.bold, color: Colors.white)),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const BookingScreen()),
-                  );
+                  //Navigator.push(
+                    //context,
+                    //MaterialPageRoute(builder: (context) => const BookingScreen()),
+                  //);
                 }, 
               ),
             ),

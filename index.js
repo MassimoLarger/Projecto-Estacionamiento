@@ -16,17 +16,9 @@ dotenv.config();
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
-    rejectUnauthorized: false, // Esta opción es para desarrollo. En producción, usa certificados adecuados.
+    rejectUnauthorized: false,
   },
 });
-
-/*const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'estacionamientos_local',
-  password: 'admin',
-  port: 5432,
-});*/
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -273,6 +265,8 @@ app.post('/api/vehiculoR', async (req, res) => {
     const result = await pool.query('SELECT * FROM Vehiculo WHERE Patente = $1', [patente]);
     if (result.rows.length > 0) {
       const { patente, descripcion, id_tipo_v } = result.rows[0];
+      console.log(descripcion);
+      console.log(id_tipo_v);
       res.json({ success: true, patentes:{ patente, descripcion, id_tipo_v } , message: 'Vehículos encontrados' });
     } else {
       res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
@@ -332,6 +326,7 @@ app.post('/api/loginGuardia', async (req, res) => {
       'SELECT * FROM usuario WHERE correo = $1 AND contrasena = $2 AND tipo = $3',
       [correo, contrasena, 'Guardia']
     );
+    console.log(result);
 
     if (result.rows.length > 0) {
       const { correo, tipo } = result.rows[0];
@@ -769,6 +764,45 @@ app.get('/api/reserva-detalles-dos', async (req, res) => {
   }
 });
 
+app.post('/api/historial', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT o.ID_Vehiculo as Patente, v.Descripcion as Nombre, c.Nombre as Sede
+      FROM Ocupa o
+      JOIN Vehiculo v ON o.ID_Vehiculo = v.patente
+      JOIN Estacionamiento e ON o.ID_Estacionamiento = e.ID_Estacionamiento
+      JOIN Campus_Sede c ON e.ID_Campus = c.ID_Campus
+      WHERE o.Estado = True;
+  `);
+    if (result.rows.length > 0) {
+      console.log(result.rows);
+      res.status(200).json({ success: true, reservations: result.rows });
+    } else {
+      res.status(404).json({ success: false, error: 'No se encontraron reservas para el usuario.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener las reservas:', error);
+    res.status(500).json({ success: false, error: 'Error al obtener las reservas' });
+  }
+});
+
+app.post('/api/consultaRegistro', async (req, res) => {
+  const { vehicleid } = req.body;
+  console.log(vehicleid);
+  try {
+    const result = await pool.query('SELECT ID_Usuario FROM registra WHERE ID_Vehiculo = $1', [vehicleid]);
+    if (result.rows.length > 0) {
+      // Extraer todos los id_vehiculo en una lista
+      const usuario = result.rows.map(row => row.ID_Usuario);
+      res.json({ success: true, correo: usuario, message: 'Vehículos encontrados' });
+    } else {
+      res.json({ success: false, message: 'No hay vehículos registrados para este usuario' });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error en la consulta a la base de datos' });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 3500;

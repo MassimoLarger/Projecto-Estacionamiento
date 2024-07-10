@@ -1,27 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'historial_de_reservas_detalles.dart';
 import 'verificaciones/eliminar_reserva_erroneo2.dart';
 import 'verificaciones/eliminar_reserva_exitoso2.dart';
-import 'historial_de_reservas_detalles.dart';
 
 class ReservasScreen extends StatefulWidget {
-  const ReservasScreen({super.key});
+  const ReservasScreen({Key? key}) : super(key: key);
+
   @override
   ReservasScreenState createState() => ReservasScreenState();
 }
 
 class ReservasScreenState extends State<ReservasScreen> {
-  List<Map<String, String>> reservas = [
-    {'modelo': 'Ford Ecoesport', 'patente': 'CU ML 69', 'campus': 'Meyer', 'fecha': '23/06/2024', 'hora': '16:00:17'},
-    {'modelo': 'Audi A8', 'patente': 'CA MT 22', 'campus': 'Chuyaca', 'fecha': '10/05/2024', 'hora': '11:30:12'},
-    // Añade más reservas aquí...
-  ];
-
+  List<Map<String, String>> reservas = [];
   List<Map<String, String>> filteredReservas = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    filteredReservas = List.from(reservas);
+    _fetchReservasWithDelay(); // Usar método con retraso
+  }
+
+  Future<void> _fetchReservasWithDelay() async {
+    // Retrasar la ejecución por 20 segundos antes de hacer la solicitud
+    await Future.delayed(Duration(seconds: 20));
+    await _fetchReservas();
+  }
+
+  Future<void> _fetchReservas() async {
+    final response = await http.post(
+      Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/historial'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        reservas = List<Map<String, String>>.from(data['reservations']
+            .map((reservation) => Map<String, String>.from(reservation)));
+        filteredReservas = List.from(reservas);
+        isLoading = false;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al obtener el historial de reservas')),
+      );
+    }
   }
 
   void _filterReservas(String query) {
@@ -32,9 +60,9 @@ class ReservasScreenState extends State<ReservasScreen> {
     } else {
       setState(() {
         filteredReservas = reservas.where((reserva) {
-          return reserva['modelo']!.toLowerCase().contains(query.toLowerCase()) ||
-                 reserva['patente']!.toLowerCase().contains(query.toLowerCase()) ||
-                 reserva['campus']!.toLowerCase().contains(query.toLowerCase());
+          return reserva['Modelo']!.toLowerCase().contains(query.toLowerCase()) ||
+              reserva['Patente']!.toLowerCase().contains(query.toLowerCase()) ||
+              reserva['Campus']!.toLowerCase().contains(query.toLowerCase());
         }).toList();
       });
     }
@@ -51,12 +79,12 @@ class ReservasScreenState extends State<ReservasScreen> {
           backgroundColor: Colors.white,
           title: const Text(
             "¿Estás seguro que deseas eliminar la reserva?",
-              style: TextStyle(
+            style: TextStyle(
                 fontFamily: 'Lato',
-                fontSize: 16,  // Escala el tamaño de la fuente basado en el ancho de la pantalla
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.black
-              ),          
+            ),
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
@@ -105,7 +133,7 @@ class ReservasScreenState extends State<ReservasScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width; // Obtener el ancho de pantalla
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -116,7 +144,9 @@ class ReservasScreenState extends State<ReservasScreen> {
         elevation: 0,
       ),
       backgroundColor: Colors.white,
-      body: Column(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.all(width * 0.04),
@@ -142,7 +172,7 @@ class ReservasScreenState extends State<ReservasScreen> {
                 enabledBorder: const OutlineInputBorder(
                   borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0), width: 2.0),
                 ),
-                floatingLabelBehavior: FloatingLabelBehavior.never, // Mantiene la etiqueta en el campo de texto
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
             ),
           ),
@@ -153,8 +183,8 @@ class ReservasScreenState extends State<ReservasScreen> {
                 return Column(
                   children: [
                     ListTile(
-                      title: Text(filteredReservas[index]['modelo']!),
-                      subtitle: Text('${filteredReservas[index]['patente']} - ${filteredReservas[index]['campus']}'),
+                      title: Text(filteredReservas[index]['Modelo']!),
+                      subtitle: Text('${filteredReservas[index]['Patente']} - ${filteredReservas[index]['Campus']}'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -179,7 +209,7 @@ class ReservasScreenState extends State<ReservasScreen> {
                         // Acción al tocar la reserva
                       },
                     ),
-                    const Divider(height: 1), // Añade un Divider debajo de cada elemento
+                    const Divider(height: 1),
                   ],
                 );
               },

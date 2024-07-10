@@ -1,37 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'usuario.dart';
-import 'modificar_reserva_1.dart';
+//import 'modificar_reserva_1.dart';
 
 class EspacioEstacionamientoWidget extends StatefulWidget {
   final String sectionName;
   final String sedeName;
+  final String userId;
 
-  const EspacioEstacionamientoWidget({super.key, required this.sectionName, required this.sedeName});
+  const EspacioEstacionamientoWidget({super.key, required this.sectionName, required this.sedeName, required this.userId});
 
   @override
   EspacioEstacionamientoWidgetState createState() => EspacioEstacionamientoWidgetState();
 }
 
 class EspacioEstacionamientoWidgetState extends State<EspacioEstacionamientoWidget> {
-  int espaciosDisponibles = 0;  // Iniciar con cero
-  int espaciosReservados = 0;   // Iniciar con cero
+  int espaciosDisponibles = 0;
+  int espaciosReservados = 0;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    updateParkingData();
+    fetchParkingData();
   }
 
-  void updateParkingData() {
-    // Lógica para determinar los espacios disponibles y reservados
-    if (widget.sedeName == "Meyer" && widget.sectionName == "Entrada") {
-      espaciosDisponibles = 8;
-      espaciosReservados = 2;
-    } else {
-      espaciosDisponibles = 6;  // Valores predeterminados
-      espaciosReservados = 14;
+  Future<void> fetchParkingData() async {
+    try {
+      final response = await http.get(
+          Uri.parse('https://proyecto-estacionamiento-dy1e.onrender.com/api/estados-estacionamientos')
+      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List;
+        setState(() {
+          espaciosDisponibles = data.where((e) => e['estado'] == 'disponible').length;
+          espaciosReservados = data.where((e) => e['estado'] == 'reservado').length;
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load parking data');
+      }
+    } catch (error) {
+      print('Error fetching parking data: $error');
+      setState(() {
+        isLoading = false;
+      });
     }
-    // Añadir más condiciones según la configuración de tu aplicación
   }
 
   @override
@@ -54,7 +69,7 @@ class EspacioEstacionamientoWidgetState extends State<EspacioEstacionamientoWidg
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const CustomUserDialog();
+                  return CustomUserDialog(userId: widget.userId);
                 },
               );
             },
@@ -63,13 +78,15 @@ class EspacioEstacionamientoWidgetState extends State<EspacioEstacionamientoWidg
         backgroundColor: const Color.fromRGBO(255, 255, 255, 1),
         elevation: 0,
       ),
-      body: Column(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(vertical: screenHeight * 0.05),
             child: Text(
-              'Estacionamiento ${widget.sectionName}',  // Usar la sección dinámica
+              'Estacionamiento ${widget.sectionName}', // Usar la sección dinámica
               style: const TextStyle(
                 fontFamily: 'Lato',
                 fontSize: 24,
@@ -98,17 +115,17 @@ class EspacioEstacionamientoWidgetState extends State<EspacioEstacionamientoWidg
               width: screenWidth * 0.9,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DetailScreen1()),
-                  );
-                },                
+                  //Navigator.push(
+                    //context,
+                    //MaterialPageRoute(builder: (context) => const DetailScreen1()),
+                  //);
+                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF567DF4),
-                  padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(27.5)
-                  )
+                    backgroundColor: const Color(0xFF567DF4),
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(27.5)
+                    )
                 ),
                 child: const Text(
                   'Continuar',
